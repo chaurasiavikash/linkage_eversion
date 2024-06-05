@@ -36,7 +36,7 @@ var linspace;
 
 
 // initial values 
-var N;
+var N =9;
 var n = 3;
 var nMax = 75;
 var hl = 0.2;
@@ -112,4 +112,4 @@ var nui_to_n;
 var n_to_nui;
 
 
- 
+var sequence;

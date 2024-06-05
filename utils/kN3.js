@@ -9,299 +9,122 @@ var N;
 var N1;
 
 var Pi = Math.PI;
-var tau;
-var n;
+ var n;
 var h;
 var kappa0 = [];  // curvature of the midline at time t = 0
 var kappa = [];  // curvature of the midline at time t = 0
 
 var plotClicked;
+var bx_data;
+var by_data;
+var bz_data;
+var tmax;
 
-var init_parameters = function (nu_i) {
+
+var init_parameters = function (sequence) {
+  var strData;
+  if(sequence==1){
+    strData = 'ACBACBACB';
+  } 
+  else if(sequence==2){
+    strData = 'ABCABCABC';
+  }
+  else{
+    strData = 'AAABCBCBC';
+  }
+  
+   strData;
+  bx_data = numData[strData].bx_data;
+  by_data = numData[strData].by_data;
+  bz_data = numData[strData].bz_data;
  
-     numArray = numData[nu_i - 1];
-    
-  N = Math.round((numArray.length -3)/3);
-   N1 = N - 1;
-  h = 1 / N;
-
+  tmax = bx_data[1].length;
   // creating the init_parameters
 };
 var avg = function (arr) {
    return arr.reduce((a, b) => a + b, 0) / arr.length;
 };
-
-var hx0 = [];
-var hy0 = [];
-var hz0 = [];
-
-var rx0 = [];
-var ry0 = [];
-var rz0 = [];
-
-
+  
 
 var cen = [0, 0, 0];
-
-var data_t0 = function (nu_i) {
-  h = 1/N;
-
-  let tau = (1.29 + 0.015877763328999*(nu_i-1))*2*Pi;
-  let tx0 = [];
-  let ty0 = [];
-  let tz0 = []; 
-
-  let hx2p = [];
-  let hy2p = [];
-  let hz2p = [];
-
-  kappa0 = Array(N + 1).fill(0);
-
-    numArray = numData[nu_i - 1];
-  // data read. now calculating quantities
-
  
-  i = 0;
-  hx0[i] = numArray[i * 3];
-  hy0[i] = numArray[i * 3 + 1];
-  hz0[i] = numArray[i * 3 + 2];
 
-  for (var i = 1; i < N + 1; i++) {
-    hx0[i] = numArray[i * 3];
-    hy0[i] = numArray[i * 3 + 1];
-    hz0[i] = numArray[i * 3 + 2];
+//  midline and binormal loaded from the saved file 
+const arrayColumn = (arr, n) => arr.map(x => x[n]);
 
-    tx0[i] = (hy0[i - 1] * hz0[i] - hy0[i] * hz0[i - 1])/tau/h;
-    ty0[i] = (hz0[i - 1] * hx0[i] - hz0[i] * hx0[i - 1])/tau/h;
-    tz0[i] = (hx0[i - 1] * hy0[i] - hx0[i] * hy0[i - 1])/tau/h;
+//the function below generates animation data 
+var animationData = function(j) {
+  let ind = j % (tmax); // ensuring that index is not out of bound
 
+  hx = arrayColumn(bx_data,ind); //
+  hy = arrayColumn(by_data,ind); //
+  hz = arrayColumn(bz_data,ind); //
+  
+  let tx = [];
+  let ty = [];
+  let tz = []; 
+ 
+  let h = 1;
+     for (var i = 1; i < N + 1; i++) {
     
 
+    tx[i] = (hy[i - 1] * hz[i] - hy[i] * hz[i - 1])/tau/h;
+    ty[i] = (hz[i - 1] * hx[i] - hz[i] * hx[i - 1])/tau/h;
+    tz[i] = (hx[i - 1] * hy[i] - hx[i] * hy[i - 1])/tau/h;
+ 
+
   }
-  // if (isNaN(hx0  ) || isNaN(hy0  ) || isNaN(hz0   )) {
+  // if (isNaN(hx  ) || isNaN(hy  ) || isNaN(hz   )) {
   //   console.log(`Found NaN at index ${i}`);
   // }
 
-  tx0[0] = tx0[N];
-  ty0[0] = ty0[N];
-  tz0[0] = tz0[N];
-
-  //let kmax = Math.max(...kappa0.map(Math.abs));;
- 
-// calculating curvature 
-// curvature
-hx2p[0] = (hx0[1] - hx0[N - 1] - 2 * hx0[0]) / h ** 2;
-hy2p[0] = (hy0[1] - hy0[N - 1] - 2 * hy0[0]) / h ** 2;
-hz2p[0] = (hz0[1] - hz0[N - 1] - 2 * hz0[0]) / h ** 2;
-
-hx2p[N] = -hx2p[0];
-hy2p[N] = -hy2p[0];;
-hz2p[N] = -hz2p[0];;
-
-
- kappa0[0] = tx0[0] * hx2p[0] + ty0[0] * hy2p[0] + tz0[0] * hz2p[0];
-
-for (var i = 1; i < N; i++) {
-  hx2p[i] = (hx0[i + 1] + hx0[i - 1] - 2 * hx0[i]) / h ** 2;
-  hy2p[i] = (hy0[i + 1] + hy0[i - 1] - 2 * hy0[i]) / h ** 2;
-  hz2p[i] = (hz0[i + 1] + hz0[i - 1] - 2 * hz0[i]) / h ** 2;
-
-  kappa0[i] = tx0[i] * hx2p[i] + ty0[i] * hy2p[i] + tz0[i] * hz2p[i];
-}
-
- kappa0[N] = tx0[N] * hx2p[N] + ty0[N] * hy2p[N] + tz0[N] * hz2p[N];
-
-//  // normalizing curvature 
-
-   let kmax = Math.max(...kappa0.map(Math.abs));;
-  kappa0 = kappa0.map((num) => num / tau);
-
+  tx[0] = tx[N];
+  ty[0] = ty[N];
+  tz[0] = tz[N];
  
 ///////////////////////
 
 
  
   // Midline
-  rx0[0] = 0.0;
-  ry0[0] = 0.0;
-  rz0[0] = 0.0;
+  rx[0] = 0.0;
+  ry[0] = 0.0;
+  rz[0] = 0.0;
   h = 1;
   for (var i = 0; i < N; i++) {
-    rx0[i + 1] = rx0[i] + h * tx0[i + 1];
-    ry0[i + 1] = ry0[i] + h * ty0[i + 1];
-    rz0[i + 1] = rz0[i] + h * tz0[i + 1];
+    rx[i + 1] = rx[i] + h * tx[i + 1];
+    ry[i + 1] = ry[i] + h * ty[i + 1];
+    rz[i + 1] = rz[i] + h * tz[i + 1];
   }
 
-  cen[0] = avg(rx0);
-  cen[1] = avg(ry0);
-  cen[2] = avg(rz0);
-
-  for (var i = 0; i < N + 1; i++) {
-    rx0[i] = rx0[i] - cen[0];
-    ry0[i] = ry0[i] - cen[1];
-    rz0[i] = rz0[i] - cen[2];
-  }
-  // nomrlalizing the midline
-  let dl = 0;
-  for (let i = 0; i < N; i++) {
-    let dx = rx0[i + 1] - rx0[i];
-    let dy = ry0[i + 1] - ry0[i];
-    let dz = rz0[i + 1] - rz0[i];
-    dl += Math.sqrt(dx * dx + dy * dy + dz * dz);
-  }
-  dl = dl / 6;
-  for (let i = 0; i <= N; i++) {
-    rx0[i] /= dl;
-    ry0[i] /= dl;
-    rz0[i] /= dl;
-  }
-
-   
-};
-
-//  midline and binormal loaded from the saved file 
-
-//the function below generates animation data 
-var animationData = function(j) {
-  let ind = j % (2*N); // ensuring that index is not out of bound
-  let ind2 = j % (N); // ensuring that index is not out of bound
-   if (ind == 0) {
-     ind = 1;
-  }
-   let or = -1;
-
-  if(ind<N+1){
- 
-  let ar1 = Array.from(hx0.slice(ind - 1, N));
-  let ar2 = Array.from(hx0.slice(0, ind).map((x) => or * x));
-  
-  var hx = ar1.concat(ar2);
-
-  ar1 = Array.from(hy0.slice(ind - 1, N ));
-  ar2 = Array.from(hy0.slice(0, ind).map((x) => or * x));
-  var hy = ar1.concat(ar2);
-
-  ar1 = Array.from(hz0.slice(ind - 1, N));
-  ar2 = Array.from(hz0.slice(0, ind).map((x) => or * x));
-  var hz = ar1.concat(ar2);
-
-  ar1 = Array.from(kappa0.slice(ind - 1, N ));
-  ar2 = Array.from(kappa0.slice(0, ind).map((x) => or * x));
-  var kappa = ar1.concat(ar2);
-
-  // updated binormal 
-   ar1 = Array.from(rx0.slice(ind - 1, N));
-   ar2 = Array.from(rx0.slice(0, ind).map((x) => 1 * x));
-  
-   var rx = ar1.concat(ar2);
-
-
-
-   ar1 = Array.from(ry0.slice(ind - 1, N));
-   ar2 = Array.from(ry0.slice(0, ind).map((x) => 1 * x));
-  
-   var ry = ar1.concat(ar2);
-
-   ar1 = Array.from(rz0.slice(ind - 1, N));
-   ar2 = Array.from(rz0.slice(0, ind).map((x) => 1 * x));
-  
-   var rz = ar1.concat(ar2);
-   
-    
-  }
-  else {
-  let ar1 = Array.from(hx0.slice(ind2-1, N).map((x) => or * x));
-  let ar2 = Array.from(hx0.slice(0, ind2));
-
-  var hx = ar1.concat(ar2);
-
-   ar1 = Array.from(hy0.slice(ind2-1, N).map((x) => or * x));
-   ar2 = Array.from(hy0.slice(0, ind2));
-
-  var hy = ar1.concat(ar2);
-
-   ar1 = Array.from(hz0.slice(ind2-1, N).map((x) => or * x));
-   ar2 = Array.from(hz0.slice(0, ind2));
-
-  var hz = ar1.concat(ar2);
-
-  ar1 = Array.from(kappa0.slice(ind2-1, N).map((x) => or * x));
-   ar2 = Array.from(kappa0.slice(0, ind2));
-
-  var kappa = ar1.concat(ar2);
-
-  // updated binormal 
-   ar1 = Array.from(rx0.slice(ind2-1, N) );
-   ar2 = Array.from(rx0.slice(0, ind2));
-
-  var rx = ar1.concat(ar2);
-
-   ar1 = Array.from(ry0.slice(ind2-1, N) );
-   ar2 = Array.from(ry0.slice(0, ind2));
-
-  var ry = ar1.concat(ar2);
-
-   ar1 = Array.from(rz0.slice(ind2-1, N) );
-   ar2 = Array.from(rz0.slice(0, ind2));
-
-  var rz = ar1.concat(ar2);
- 
-  };
-
-
-   // ensuring that centroid is at the origin 
-   cen[0] = avg(rx);
+  cen[0] = avg(rx);
   cen[1] = avg(ry);
   cen[2] = avg(rz);
-
 
   for (var i = 0; i < N + 1; i++) {
     rx[i] = rx[i] - cen[0];
     ry[i] = ry[i] - cen[1];
     rz[i] = rz[i] - cen[2];
   }
-   /// rotating appropriately 
-   
-   // first rotating the hand such that index 0 is fixed
-   
-  let th =  -Math.acos(rx[0] / Math.sqrt(rx[0]*rx[0] + ry[0]*ry[0]));
-   // angle hetween point at s==0 and x axis
-   if (ry[0] < 0) {
-    th = 2 * Math.PI - th;
+  // nomrlalizing the midline
+  let dl = 0;
+  for (let i = 0; i < N; i++) {
+    let dx = rx[i + 1] - rx[i];
+    let dy = ry[i + 1] - ry[i];
+    let dz = rz[i + 1] - rz[i];
+    dl += Math.sqrt(dx * dx + dy * dy + dz * dz);
   }
-  
-  if (ry[0] == 0 && rx[0] > 0) {
-    th = 0;
-  } else if (ry[0] == 0 && rx[0] < 0) {
-    th = Math.PI;
-  }
-  //th = 0;
-  norm1 =Math.sqrt(rx[0]**2 + ry[0] **2)
-  //let costh = ry[0]/norm1;
-  //let sinth = rx[0]/norm1;
-  let costh = -rx[0]/norm1;
-  let sinth = ry[0]/norm1;
-  let tempx = 0;
-  let tempy = 0;
-   
-    for (let i = 0; i <  N+1; i++) {
-     
-      
-     tempx  = costh *hx[i]  - sinth *hy[i];
-     tempy  = sinth *hx[i]  + costh *hy[i];
-     hx[i] = tempx;
-     hy[i] = tempy;
+  dl = dl / 6;
+  for (let i = 0; i <= N; i++) {
+    rx[i] /= dl;
+    ry[i] /= dl;
+    rz[i] /= dl;
+  } 
 
-     tempx  = costh *rx[i]  - sinth *ry[i];
-     tempy  = sinth *rx[i]  + costh *ry[i];
-     rx[i] = tempx;
-     ry[i] = tempy;
- 
-
+  return [hx,hy,hz,rx,ry,rz];
   };
-  
 
-
+ 
  
   //console.log(rx ); // returns true if any element is NaN
   //console.log(rx.some(Number.isNaN)); // returns true if any element is NaN
@@ -320,13 +143,7 @@ var animationData = function(j) {
   //   rz[i] = rz[i] - cen[2];
   // }
 
-  
  
-   
-   
-  return [hx,hy,hz,rx,ry,rz,kappa];
-  // rotating appropriately
-}
 // matrix multiplication
 
  
@@ -344,8 +161,7 @@ var fourierExpansion = function (n, t, hl) {
    l = (hl * 1.7) / 2;
    var v = [];
   
-   console.log(l);
-  const result = animationData(t);
+   const result = animationData(t);
    hx = result[0];
    hy = result[1];
    hz = result[2];
@@ -359,7 +175,7 @@ var fourierExpansion = function (n, t, hl) {
     //rz[i]=rz[i]-.35;
    };
 
-   kappa = result[6];
+   kappa = rx;
   
    cen[0] = avg(rx);
    cen[1] = avg(ry);
@@ -377,8 +193,7 @@ var fourierExpansion = function (n, t, hl) {
     let dz = rz[i + 1] - rz[i];
     dl += Math.sqrt(dx * dx + dy * dy + dz * dz);
   }
-  console.log(dl);
-
+ 
  
   // creating tetrahedron vertices
   
@@ -420,7 +235,7 @@ var paths = function (n, hl, selector,ind) {
   var path = [];
   var v0  = [];
   var v   = [];
-  for (var t = 0; t <N+3; t++) {
+  for (var t = 100; t <260; t++) {
      v0 = fourierExpansion(n, t, hl)[0];
     v[1] = v0[6 * ind - 5]; 
     v[2] = v0[6 * ind - 4]; 
@@ -573,6 +388,174 @@ tip1.scaling.z  = h_tip*4.8;
 arrow1.material = anchorMaterial;
 tip1.material = anchorMaterial;
 //tail1.material = anchorMaterial;
+
+};
+ 
+// assigning position and orientation to arrows, connectors etc. 
+
+function locationAndDirection(v1, v2) {
+  var mod = Math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2 + (v1[2] - v2[2])**2);
+  let direction = new BABYLON.Vector3((v1[0] - v2[0]) / mod, (v1[1] - v2[1]) / mod, (v1[2] - v2[2]) / mod);
+  let mid_position = new BABYLON.Vector3((v1[0] + v2[0]) / 2.0, (v1[1] + v2[1]) / 2.0, (v1[2] + v2[2]) / 2.0);
+  let lenV1V2 = mod;
+ 
+  return [  mid_position, direction];
+}
+
+function assignStructure(v,hingeLength,arrowBody,tip,topDisc,bottomDisc,hingeBody,connector){
+  
+  
+  for (var i = 1;i<N+1;++i){
+
+    var v1 = [v[6 * i - 5], v[6 * i - 3], -v[6 * i - 4]];
+    var v2 = [v[6 * i - 2], v[6 * i], -v[6 * i - 1]];
+ 
+   // assigning coordinate and direction to arrows 
+   // direction for alignment  
+  // Compute the rotation to align the body with the given direction
+
+  let lenV1V2 = Math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2 + (v1[2] - v2[2])**2);
+
+  let [  mid_position, direction] = locationAndDirection(v1, v2);
+
+ 
+  var axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
+  var angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
+  var quater = BABYLON.Quaternion.RotationAxis(axis, angle);
+  // position and orientation 
+ 
+  arrowBody[i].position = mid_position;
+  arrowBody[i].rotationQuaternion = quater;
+  // Assign the height value later
+  arrowBody[i].scaling.x =  3.1 * hingeLength;            
+  arrowBody[i].scaling.y =  .8 * hingeLength;            
+  arrowBody[i].scaling.z =  3.1 * hingeLength;            
+  
+   
+  var h_tip  = .5*hingeLength;
+ 
+  var fac1 = h_tip/2 + .9*hingeLength;
+ 
+ 
+tip[i].rotationQuaternion = quater;
+tip[i].position  =new BABYLON.Vector3(mid_position.x + fac1*direction.x ,mid_position.y +  fac1*direction.y
+                  ,mid_position.z +  fac1* direction.z);
+tip[i].scaling.x  = h_tip*4.8;
+tip[i].scaling.y  = h_tip*.8;
+tip[i].scaling.z  = h_tip*4.8;
+  
+ // assigning hinges 
+
+ 
+ hingeBody[i].position = mid_position;
+ hingeBody[i].rotationQuaternion = quater;
+ hingeBody[i].scaling.x =  4.1 * hingeLength;
+ hingeBody[i].scaling.y =  .4 * hingeLength;
+ hingeBody[i].scaling.z =  4.1 * hingeLength;
+ 
+ fac1 = hingeLength;
+
+ topDisc[i].rotationQuaternion = quater;
+ topDisc[i].position  =new BABYLON.Vector3(mid_position.x + fac1*direction.x ,mid_position.y +  fac1*direction.y
+                   ,mid_position.z +  fac1* direction.z);
+ topDisc[i].scaling.x  = 5.1 * hingeLength;
+ topDisc[i].scaling.y  = 0;
+ topDisc[i].scaling.z  = 5.1 * hingeLength;
+
+ fac1 = -hingeLength;
+
+ bottomDisc[i].rotationQuaternion = quater;
+ bottomDisc[i].position  =new BABYLON.Vector3(mid_position.x + fac1*direction.x ,mid_position.y +  fac1*direction.y
+                   ,mid_position.z +  fac1* direction.z);
+ bottomDisc[i].scaling.x  = 5.1 * hingeLength;
+ bottomDisc[i].scaling.y  = 0;
+ bottomDisc[i].scaling.z  = 5.1 * hingeLength;
+
+
+// assigning connectors 
+var iPlus1;
+if(i<N){
+  iPlus1 = i+1;
+   var v3 = [v[6 * iPlus1 - 5], v[6 * iPlus1 - 3], -v[6 * iPlus1 - 4]];
+  var v4 = [v[6 * iPlus1 - 2], v[6 * iPlus1], -v[6 * iPlus1 - 1]];
+}
+else{
+  iPlus1 = 1;
+
+  var v4 = [v[6 * iPlus1 - 5], v[6 * iPlus1 - 3], -v[6 * iPlus1 - 4]];
+  var v3 = [v[6 * iPlus1 - 2], v[6 * iPlus1], -v[6 * iPlus1 - 1]];
+};
+ 
+   // assigning coordinate and direction to arrows 
+   // direction for alignment  
+  // Compute the rotation to align the body with the given direction
+
+  let temp1 = [(v1[0] + v2[0]) / 2, (v1[1] + v2[1]) / 2, (v1[2] + v2[2]) / 2];
+  let temp2 = [(v3[0] + v4[0]) / 2, (v3[1] + v4[1]) / 2, (v3[2] + v4[2]) / 2];
+    
+   [mid_position, direction] = locationAndDirection(temp1,temp2);
+
+  axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
+  angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
+  quater = BABYLON.Quaternion.RotationAxis(axis, angle);
+
+
+  connector[i].position = mid_position;
+  connector[i].rotationQuaternion = quater;
+   
+  x1 = (v1[0]+v2[0])/2;
+  y1 = (v1[1]+v2[1])/2;
+  z1 = (v1[2]+v2[2])/2;
+
+  x2 = (v3[0]+v4[0])/2;
+  y2 = (v3[1]+v4[1])/2;
+  z2 = (v3[2]+v4[2])/2;
+
+   lenV1V2 = 0.5*Math.sqrt((x1 - x2)**2 + (y1 - y2)**2 + (z1 - z2)**2);
+
+   connector[i].scaling.x =  .2;            
+   connector[i].scaling.y =  1*lenV1V2;;            
+   connector[i].scaling.z =  .2;            
+   
+
+  };
+
+  /// assigning coordinates to the N+1th arrow 
+  i = 1;
+  var v2 = [v[6 * i - 5], v[6 * i - 3], -v[6 * i - 4]];
+    var v1 = [v[6 * i - 2], v[6 * i], -v[6 * i - 1]];
+ 
+    i = N+1;
+   // assigning coordinate and direction to arrows 
+   // direction for alignment  
+  // Compute the rotation to align the body with the given direction
+
+  let [mid_position,direction] = locationAndDirection(v1,v2) ;
+ 
+  var axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
+  var angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
+  var quater = BABYLON.Quaternion.RotationAxis(axis, angle);
+  // position and orientation 
+ 
+  arrowBody[i].position = mid_position;
+  arrowBody[i].rotationQuaternion = quater;
+  // Assign the height value later
+  arrowBody[i].scaling.x =  3.1 * hingeLength;            
+  arrowBody[i].scaling.y =  .9 * hingeLength;            
+  arrowBody[i].scaling.z =  3.1 * hingeLength;            
+  
+   
+  var h_tip  = .4*hingeLength;
+ 
+  var fac1 = h_tip/2 + hingeLength;
+ 
+ 
+tip[i].rotationQuaternion = quater;
+tip[i].position  =new BABYLON.Vector3(mid_position.x + fac1*direction.x ,mid_position.y +  fac1*direction.y
+                  ,mid_position.z +  fac1* direction.z);
+tip[i].scaling.x  = h_tip*4.8;
+tip[i].scaling.y  = h_tip*.8;
+tip[i].scaling.z  = h_tip*4.8;
 
 };
  
@@ -908,410 +891,4 @@ var nui_to_n = function (nu_i) {
 
   return n; // Will be null if no matching row is found
 };
-
-
-
-var  deleteDataset = function(chart, label) {
-  var datasetIndex = chart.data.datasets.findIndex(dataset => dataset.label === label);
-
-  if (datasetIndex !== -1) {
-    chart.data.datasets.splice(datasetIndex, 1);
-    chart.update();
-  };
-};
-
-var  pushDataset = function(chart, ind) {
-  var markerCoordinate = { x: xData[ind], y: yData[ind] };
-
-
-  chart.data.datasets.push({
-    label: 'Marker',
-    data: [markerCoordinate],
-    backgroundColor: 'rgba(0, 0, 0, 0)', // Set the background color to transparent
-    borderColor: 'red',
-    borderWidth: 3,
-    pointRadius: 5,  // Adjust this to change the size of the marker
-    pointStyle: 'circle', // optional: to ensure the marker is a circle
-    order: 1
-  });
-  var tempx = [xData[0], xData[ind] + 1.185];
-  var tempy = [yData[ind], yData[ind]];
-  chart.data.datasets.push({
-    label: 'cursor1',
-    data: tempx.map((value, index) => ({ x: value, y: tempy[index] })),
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    borderColor: "rgba(255, 255, 255, 0.5)", // White color with transparency
-    borderWidth: 1,
-    borderDash: [5, 5], // Dotted line pattern (5px line, 5px space)
-    pointRadius: 0,
-    order: 2
-
-  });
-  var tempx = [xData[ind], xData[ind]];
-  var tempy = [35, yData[ind] + 11.5];
-  chart.data.datasets.push({
-    label: 'cursor2',
-    data: tempx.map((value, index) => ({ x: value, y: tempy[index] })),
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    borderColor: "rgba(255, 255, 255, 0.5)", // White color with transparency
-    borderWidth: 1,
-    borderDash: [5, 5], // Dotted line pattern (5px line, 5px space)
-    pointRadius: 0,
-    order: 2
-
-  });
-
-  chart.update();
-};
-
-
  
-var createChart = function(nu_i) {
-  if (chart != null) {
-    chart.destroy();
-  }
-
-  var ctx = document.getElementById('renderCanvasE').getContext('2d', { willReadFrequently: true });
-
-  chart = new Chart(ctx, {
-    type: "line",
-    data: {
-      datasets: [],
-    },
-    options: {
-  
-      maintainAspectRatio: false, // Disable aspect ratio to fit the canvas
-      scales: {
-        x: {
-          min: xData[0] - .4,
-          max: xData[len_ydata - 1],
-          type: "linear",
-          position: "bottom",
-          ticks: {
-            font: {
-              size: 16 // Increase the font size for x-axis ticks
-            },
-            color: 'white',  // this will change the color of the y-axis labels to white
-          },
-          grid: {
-            color: 'rgba(255, 255, 255, 0.1)',  // this will change the color of y-axis grid lines to white (with 10% opacity)
-            borderColor: 'white',  // this will change the color of the y-axis itself to white
-            //   drawOnChartArea: false,  // Extend gridlines across the entire canvas
-            borderDash: [2, 4],  // Optional: Customize the appearance of the gridlines
-
-          },
-          title: {
-            display: true,
-            text: "dimensionless torsion",//'\u03BD', // HTML to display x^2
-            color: "white",//
-            font: {
-              size: 14 // Increase the font size for x-axis ticks
-            },
-          }
-        },
-        y: {
-          min: 35,
-          max: 115,
-          type: "linear",
-          position: "left",
-          ticks: {
-            font: {
-              size: 16
-            },
-            color: 'white',
-            stepSize: 40,
-          },
-          grid: {
-            color: 'rgba(255, 255, 255, 0.1)',  // this will change the color of y-axis grid lines to white (with 10% opacity)
-            borderColor: 'white',  // this will change the color of the y-axis itself to white
-            borderDash: [1, 4],  // Optional: Customize the appearance of the gridlines
-
-          },
-          title: {
-            display: true,
-            text: "dimensionless energy", // HTML to display x^2
-            color: "white",//
-            font: {
-              size: 14 // Increase the font size for x-axis ticks
-            },
-          }
-        },
-
-      },
-      plugins: {
-        legend: {
-          display: true,
-
-          labels: {
-            filter: function (item, chart) {
-              // Return false to hide the legend item
-              if (item.text === 'Marker') return false;
-              if (item.text === 'cursor1') return false;
-              if (item.text === 'cursor2') return false;
-              // Return true to show the legend item
-              return true;
-            },
-            color: 'white', // Set the legend labels' color to white
-            font: {
-              size: 12 // Increase the font size for legend labels
-            },
-            usePointStyle:true
-          },
-          //   align: 'start'  // Spread out legend labels to occupy the same space as the horizontal axis
-
-        }
-      }
-    },
-  });
-  let ind_marker = nu_i - 1;
-  var markerCoordinate = { x: xData[ind_marker], y: yData[ind_marker] };
-
-
-  chart.data.datasets.push({
-    label: 'Marker',
-    data: [markerCoordinate],
-    backgroundColor: 'rgba(0, 0, 0, 0)', // Set the background color to transparent
-    borderColor: 'red',
-    borderWidth: 3,
-    pointRadius: 5,  // Adjust this to change the size of the marker
-    pointStyle: 'circle' // optional: to ensure the marker is a circle
-  });
-
-  var tempx = [xData[0], xData[ind_marker] + 1.185];
-  var tempy = [yData[ind_marker], yData[ind_marker]];
-  chart.data.datasets.push({
-    label: 'cursor1',
-    data: tempx.map((value, index) => ({ x: value, y: tempy[index] })),
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    borderColor: "rgba(255, 255, 255, 0.5)", // White color with transparency
-    borderWidth: 1,
-    borderDash: [5, 5], // Dotted line pattern (5px line, 5px space)
-    pointRadius: 0,
-    order: 2
-
-  });
-  var tempx = [xData[ind_marker], xData[ind_marker]];
-  var tempy = [35, yData[ind_marker] + 11.5];
-  chart.data.datasets.push({
-    label: 'cursor2',
-    data: tempx.map((value, index) => ({ x: value, y: tempy[index] })),
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    borderColor: "rgba(255, 255, 255, 0.5)", // White color with transparency
-    borderWidth: 1,
-    borderDash: [5, 5], // Dotted line pattern (5px line, 5px space)
-    pointRadius: 0,
-    order: 2
-
-  });
-
-  var ind = ind_energy.concat();
- // var legendBoxWidths = [20, 20, 20, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300]; // Example: Define desired x-coordinates for each legend label
-
-  for (var i = 0; i < 13; i++) {
-    var startIndex = ind[i][1];
-    var endIndex = ind[i + 1][1];
-
-    var slicedXData = xData.slice(startIndex, endIndex + 1);
-    var slicedYData = yData.slice(startIndex, endIndex + 1);
-
-    var color = `rgb(${colEnergy[i].join(", ")})`;
-    chart.data.datasets.push({
-      label: "n=" + (2 * i + 3),
-      data: slicedXData.map((value, index) => ({ x: value, y: slicedYData[index] })),
-      backgroundColor: "rgba(0, 0, 0, 0)",
-      borderColor: color,
-      borderWidth: 2,
-      pointRadius: 0,
-      //pointStyle: 'circle' // optional: to ensure the marker is a circle
-      order: 2,
-
-      options: {
-        // ...
-        plugins: {
-          title: {
-            display: true,
-            text: 'curvature of the midline'
-          },
-          legend: {
-            display: true,
-            labels: {
-              color: 'white',
-              font: {
-                size: 16
-              },
-              desiredX: x_legend[i], // Assign the x-location of the legend label from x_legend array
-              usePointStyle: true  // Use the same style as points for legend symbols
-            },
-            align: 'start' // Spread out legend labels to occupy the same space as the horizontal axis
-          }
-        }
-      }
-    });
-  }
-  // Set the boxWidth property for the current legend label
-  chart.update(); // Update the chart to display the added datasets
-}
-
-function destroyChart(chart) {
-  if (chart) {  // Check if chart is defined
-    chart.destroy();
-    chart = null;
-  }
-}
-
-// curvature chart
-
-var  createchartK = function(kappa) {
-  if (chartK != null) {
-    chartK.destroy();
-  }
-  var kmin = Math.min(...kappa0);
-  var kmax = Math.max(...kappa0);
-
-  if (kmax > Math.abs(kmin)) {
-    var klim = Math.abs(kmax);
-  }
-  else {
-    var klim = Math.abs(kmin);
-  }
-
-  var yticklocation = linspace(-1 * klim, klim, 4);
-
-  var kappa_y = Array.from(kappa).concat();
-  //var kappa_x = linspace(1, kappa_y.length, kappa_y.length);
-  var kappa_x = linspace(0, 1, kappa_y.length);
-
-
-  var ctxK = document.getElementById('renderCanvasK').getContext('2d', { willReadFrequently: true });
-  chartK = new Chart(ctxK, {
-    type: "line",
-    data: {
-      datasets: [],
-
-    },
-    options: {
-
-      responsive: true,
-      animation: false, // Disable animation
-      maintainAspectRatio: false, // Disable aspect ratio to fit the canvas
-      scales: {
-        x: {
-          min: 0,  
-          max: 1,
-          type: "linear",
-          position: "bottom",
-          ticks: {
-            color: 'white',
-            font: {
-              size: 16 // Increase the font size for x-axis ticks
-            },  // this will change the color of the y-axis labels to white
-          },
-          grid: {
-            color: 'rgba(255, 255, 255, 0.1)',  // this will change the color of y-axis grid lines to white (with 10% opacity)
-            borderColor: 'white',  // this will change the color of the y-axis itself to white
-            //   drawOnchartKArea: false,  // Extend gridlines across the entire canvas
-            borderDash: [2, 4],  // Optional: Customize the appearance of the gridlines
-
-          },
-          title: {
-            display: true,
-            text: 'arclength', // HTML to display x^2
-            color: "white", //
-            font: {
-              size: 14 // Increase the font size for x-axis ticks
-            },
-          }
-        },
-        y: {
-          min: -1 * klim - 2,
-          max: klim + 2,
-          type: "linear",
-          position: "left",
-          ticks: {
-            maxTicksLimit: 4,  // Maximum number of ticks on the y-axis
-            color: 'white',  // this will change the color of the y-axis labels to white
-            font: {
-              size: 16 // Increase the font size for x-axis ticks
-            },
-            //           callback: function(value, index) {
-            //   if (yticklocation.includes(value)) {
-            //     return value;
-            //   } else {
-            //     return '';
-            //   }
-            // }
-          },
-          grid: {
-            color: 'rgba(255, 255, 255, 0.1)',  // this will change the color of y-axis grid lines to white (with 10% opacity)
-            borderColor: 'white',  // this will change the color of the y-axis itself to white
-            borderDash: [1, 4],  // Optional: Customize the appearance of the gridlines
-
-          },
-          title: {
-            display: true,
-            text: "curvature of midline", // HTML to display x^2
-            color: "white", font: {
-              size: 14
-            }, //
-          }
-        },
-
-      },
-      plugins: {
-        legend: {
-          display: false,
-
-          labels: {
-
-            color: 'white', // Set the legend labels' color to white
-            font: {
-              size: 16 // Increase the font size for legend labels
-            },
-            usePointStyle:true,
-          },
-
-        },
-
-      }
-    },
-  });
-  
-  
-  // var indices = [];
-  // var temp = Math.round(N / (1 * n));
-  // for (var i = 1; i < n + 1; i++) {
-  //   indices[i - 1] = (i - 1) * temp + Math.round(temp / 2);
-  // }
- 
- 
-  // chartK.data.datasets.push({
-  //   label: 'markers',
-  //   data: indices.map((index) => ({ x: kappa_x[index], y: kappa_y[index] })),
-  //   backgroundColor: 'red',
-  //   borderColor: 'red',
-  //   pointBackgroundColor: 'red',
-  //   pointBorderColor: 'red',
-  //   pointRadius: 6,
-  //   pointHoverRadius: 6,
-  //   type: 'scatter',
-  //   order: 1,
-  // });
-
-  for (var i = 0; i < kappa_y.length - 1; i++) {
-    chartK.data.datasets.push({
-      label: 'curvature of the midline',
-      data: [
-        { x: kappa_x[i], y: kappa_y[i] },
-        { x: kappa_x[i + 1], y: kappa_y[i + 1] },
-      ],
-      backgroundColor: 'rgba(0, 0, 0, 0)',
-      borderColor: jetK(i),
-      borderWidth: 3,
-      pointRadius: 0,
-      order: 1,
-    });
-  }
-
-  chartK.update(); // Update the chartK to display the added datasets
-
-}

@@ -15,7 +15,7 @@
   <script src='utils/tetToggler.js'></script>
   <script src='utils/global_variable.js'></script>
   <script src='utils/kN3.js'></script>
-  <script src='utils/data_lower_envelope.js'></script>
+  <script src='utils/data_bennett.js'></script>
 
   <script src='utils/chart.umd.js' defer></script>
   <script src='utils/mathjax_min.js' defer></script>
@@ -27,7 +27,14 @@
   <script src='utils/shepherd.js'></script>
   <script src='utils/tour.js'></script>
 
+  <style>
+    .small-button {
+    width: 40%; /* Override width to be 40% of the main button */
+       flex-shrink: 0;  
+
+  }
   
+  </style>
 </head>
 
 <body>
@@ -53,28 +60,51 @@
 
   <div class='leftbar'>
 
-    <svg width='200' height='110' viewBox='-100 -55 200 110' style='margin-top:10px'>
+    <!-- <svg width='200' height='110' viewBox='-100 -55 200 110' style='margin-top:10px'>
       <g class='touchElement glow-effect' id='buttNumOfTetMinus'>
         <title>decrease the number n of half twists of the optimal band with n fold rotational symmetry</title>
-        <circle cx='-62' cy='10' r='34' /> <!-- Modified cy here -->
-        <polygon points='-80 7 -80 13 -44 13 -44 7' fill='#fff' /> <!-- Adjusted y values in points -->
-      </g>
+        <circle cx='-62' cy='10' r='34' />   Modified cy here -->
+        <!-- <polygon points='-80 7 -80 13 -44 13 -44 7' fill='#fff' /> Adjusted y values in points -->
+      <!-- </g>
       <g class='touchElement glow-effect' id='buttNumOfTetPlus'>
         <title>increase the number n of half twists of the optimal band with n fold rotational symmetry</title>
-        <circle cx='62' cy='10' r='34' /> <!-- Modified cy here -->
-        <polygon points='80 7 80 13 65 13 65 28 59 28 59 13 44 13 44 7 59 7 59 -8 65 -8 65 7' fill='#fff' />
-        <!-- Adjusted y values in points -->
-      </g>
+        <circle cx='62' cy='10' r='34' />   Modified cy here -->
+        <!-- <polygon points='80 7 80 13 65 13 65 28 59 28 59 13 44 13 44 7 59 7 59 -8 65 -8 65 7' fill='#fff' />
+         Adjusted y values in points -->
+      <!-- </g>
       <g class="textElement" id='infoTet'>
         <text y='-40'>symmetric bands</text>
         <text id='infoNumOfTet' y='16'>3</text>
       </g>
-    </svg>
- 
-    <button class='button' id="buttShowEnergy"
+    </svg> --> 
+  
+      <g class="textElement" id="infoTet">
+        <text y="-40">chirality</text>
+        <text id="infoNumOfTet" y="16"> </text>
+      </g>
+      <button class="button " id="leftButton" title="Left button tooltip">left-handed</button>
+      <button class="button  " id="rightButton" title="Right button tooltip">right-handed</button>
+
+    
+    
+    
+  <g class="textElement" id='infoTet'>
+    <text y='-40'>sequence</text>
+    <text id='infoNumOfTet' y='16'> </text>
+  </g>
+  <button class='button' id="buttACBACBACB"
+  title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+  ACBACBACB</button>
+ <br>
+    <button class='button' id="buttABCABCABC"
       title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
-      asymmetric bands</button>
+      ABCABCABC</button>
      <br>
+    <button class='button' id="buttAAABCBCBC"
+      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+      AAABCBCBC</button>
+     <br>
+   
   
     <svg id='playSVG' width='200' height='300' viewBox='-60 -60 120 120' style='margin-top:10px'>
       <g class='touchElement glow-effect' id='buttPlayPause'>
@@ -120,12 +150,12 @@
       <text x='-100' y='-25'></text>
     </svg>
 
-    <svg id='hingeLengthSlider' class='slider glow-effect' width='200' height='100' viewBox='-100 -25 200 50'>
+    <!-- <svg id='hingeLengthSlider' class='slider glow-effect' width='200' height='100' viewBox='-100 -25 200 50'>
       <title> slide to change the width of the band</title>
       <polygon fill='#555' points='-100 -20 -100 20 100 20 100 -20' />
       <rect width='38' height='38' x='-19' y='-19' />
       <text x='-100' y='-25'></text>
-    </svg>
+    </svg> -->
 
   </div>
 
@@ -134,31 +164,17 @@
     <br>
     <br>
     
-    <g class="textElement">
-
-      <text> swept volume </text>
-    </g>
-    <!-- eversion path of the edge  -->
-    <button class='button' id='buttshowEdgeVol' title='volume swept by the edge
-    of the band  during the everting motion'> edge volume </button>
+   
 <!-- eversion path of the edge  -->
 <button class='button' id='buttShowMidVol' title='volume swept by the midline
-of the band  during the everting motion'> midline volume  </button>
+of the band  during the everting motion'> swept volume  </button>
     <br>
-    <g class="textElement">
-
-      <text> eversion path </text>
-    </g>
-    <br>
-    <!-- eversion path of the edge -->
-    <button class='button' id='buttShowEdge' title='path traced by a point on the edge
-    of the band  during the everting motion'> edge path </button>
+   
    
     <!-- eversion path of the midline -->
     <button class='button' id='buttShowMid' title='path traced by a point on the midline
-    of the band  during the everting motion'> midline path </button>
-    <button class='button' id='buttShowUnit' title='show 1/n th of the band with n half twists '> show unit </button>
-    <!-- <button class='button' id='buttShowAxis'> show axis </button> -->
+    of the band  during the everting motion'> eversion path </button>
+     <!-- <button class='button' id='buttShowAxis'> show axis </button> -->
     <br>
     <br>
     <!-- <g class="textElement">
@@ -166,18 +182,16 @@ of the band  during the everting motion'> midline volume  </button>
       <text> physics </text>
     </g> -->
 
-    <button class='button' id="buttShowKappa"
+    <!-- <button class='button' id="buttShowKappa"
       title='curvature of the midline. the rainbow color corresponds to the arclength. the n red dots are evenly spaced points on the band with n half twists'>
-      midline curvature</button>
+      midline curvature</button> -->
 
     <br>
     <br>
     <g class="textElement">
 
       <text> colors </text>
-    </g>
-    <button class='button' id='buttColor1' title='rainbow color scheme for the surface of the band'> rainbow </button>
-    <button class='button' id='buttColor2' title='two faces of the band colored with white and red'> digital </button>
+    </g> 
     <!-- <button class='button' id='buttColor3'> M&ouml;bius rainbow 3 </button>
     <button class='button' id='buttColor4'> digital </button>
     <button class='button' id='buttColor5'> M&ouml;bius BRW 3 </button> -->
@@ -218,36 +232,33 @@ of the band  during the everting motion'> midline volume  </button>
 
   <div id="animatedCursor"></div>
 
-
+<!-- 
   <div id="tourModal" class="modal-backdrop">
     <div class="modal-content">
       <h2>Welcome!</h2>
       <p>Would you like a guided tour of the application?</p>
       <button id="startTourBtn" class="modal-button">Start Tour</button>
       <button id="dismissTourBtn" class="modal-button">No Thanks</button>
-      <!-- <p> Press c on the keyboard to interrupt the tour.</p> -->
-    </div>
-  </div>
+       <p> Press c on the keyboard to interrupt the tour.</p> -->
+    <!-- </div> -->
+  <!-- </div> -->  
 
 
 
   <script>
 
-    colEnergy = colEnergy.map(rgb => rgb.map(val => Math.round(val * 255)));
+var tau = 1;
     var contentE = document.querySelector('.contentE');
     var content = document.querySelector('.content');
     var contentK = document.querySelector('.contentK');
     var contentEWidth = contentE.clientWidth;
-    var nChanged = new Event('nChanged'); // triggered by plus/minus buttons
+    var sequenceChanged = new Event('sequenceChanged'); // triggered by plus/minus buttons
     var energyChanged = new Event('energyChanged'); // triggered by plus/minus buttons
     // var N = 240
     var nu_i;
     var plotClicked;
 
-
-    var yData = Array.from(energy).concat();
-    var len_ydata = yData.length;
-    var xData = linspace(8.095, 85.4, len_ydata);
+ 
 
 
     'use strict';
@@ -387,73 +398,94 @@ of the band  during the everting motion'> midline volume  </button>
 
 
         init_parameters(1);
-        data_t0(1);
+       animationData(1);
+
+ 
 
 
+ 
+ 
+         
+        // creating a function to initialize hinges and connectors 
 
-        var midlineMaterial = new BABYLON.PBRMaterial("tubeMaterial", scene);
-        midlineMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); // Set a dark color for the ground
-        //midlineMaterial.specularColor = new BABYLON.Color3(1, 0, 0);; // Disable specular highlights
-        midlineMaterial.emissiveColor = new BABYLON.Color4(1, 0, 0, 1);
+    // Create a material for the arrow body
+    const arrowBodyMaterial = new BABYLON.StandardMaterial("arrowBodyMaterial" , scene);
 
-        var optionsMidline = [];
-        var midline = [];
+    // Assign the color from the color sequence
+    arrowBodyMaterial.diffuseColor = new BABYLON.Color4(0,0,0,1);
 
-        // rulings 
-        var rulingsMaterial = new BABYLON.PBRMaterial("tubeMaterial", scene);
-        rulingsMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); // Set a dark color for the ground
-        //midlineMaterial.specularColor = new BABYLON.Color3(1, 0, 0);; // Disable specular highlights
-        rulingsMaterial.emissiveColor = new BABYLON.Color4(1, 1, 1, 1);
+    // Assign the material to the arrow body
+       var arrowBody =[];
+       var tip =[];
+       var topDisc =[];
+       var bottomDisc =[];
+       var hingeBody=[];
+       var connector=[];
+       
 
-        var optionsRulings = [];
-        var rulings = [];
+        function structureInit() {
+          for (var i = 1; i < N+1; ++i) {
+            // arrow and tip
+            arrowBody[i] = BABYLON.MeshBuilder.CreateCylinder("arrowBody" + i, { diameterTop: .05, diameterBottom: 0.05 }, scene);
+            
+            arrowBody[i].material = arrowBodyMaterial;
+            // Create a cone for the tip of the arrow
+            tip[i] = BABYLON.MeshBuilder.CreateCylinder("arrowTip" + i, { diameterTop: 0, diameterBottom: .15 }, scene);
 
+            tip[i].material = arrowBodyMaterial;
+            // Create a box for the tail of the arrow
+           // Create the top disc
+           
+            // hinges and disc to cover it up--
 
+            hingeBody[i] = BABYLON.MeshBuilder.CreateCylinder("hingeBody" +i, { diameterTop: .1, diameterBottom: 0.1 }, scene);
+            topDisc[i] = BABYLON.MeshBuilder.CreateDisc("topDisc" +i, { radius: 0.05 }, scene);
+            topDisc[i].position.y = 0.5; // Adjust the position to place it at the top of the cylinder
 
-        function midlineInit() {
-          // Update the path
-          var initialPath = [];
-          for (var i = 0; i < N + 1; i++) {
-            initialPath.push(new BABYLON.Vector3(0, 0, 0));
-          }
+            // Create the bottom disc
+            bottomDisc[i] = BABYLON.MeshBuilder.CreateDisc("bottomDisc" +i, { radius: 0.05 }, scene);
+            bottomDisc[i].position.y = -0.5; // Adjust the position to place it at the bottom of the cylinder
+            bottomDisc[i].rotation.x = Math.PI; // Flip the disc to cover the bottom end
 
-          optionsMidline = {
-            path: initialPath, //vec3 array,
-            radius: 0.004, // set the radius of the tube
-            updatable: true
+            // Optionally, you can parent the discs to the cylinder so they move together
+            topDisc[i].parent = hingeBody[i];
+            bottomDisc[i].parent = hingeBody[i];
+
+            // connectors connecting the hinges
+            connector[i]  = BABYLON.MeshBuilder.CreateCylinder("connector" +i, { diameterTop: .25, diameterBottom: 0.25  }, scene);
+            // Create a material for the arrow body
+            const connectorMaterial = new BABYLON.StandardMaterial("connectorMaterial" + i, scene);
+
+            // Assign the color from the color sequence
+            connectorMaterial.diffuseColor = colorSequence[i % colorSequence.length];
+
+            // Assign the material to the arrow body
+            connector[i].material  = connectorMaterial;
+            hingeBody[i].material  = white;//connectorMaterial;
+            topDisc[i].material    = white;//connectorMaterial;
+            bottomDisc[i].material = white;//connectorMaterial;
+ 
           };
-          // Update the tube mesh with the new data
-          midline = BABYLON.MeshBuilder.CreateTube("midline", optionsMidline, scene);
-          midline.material = midlineMaterial;
+          i  = N+1;
+          arrowBody[N+1] = BABYLON.MeshBuilder.CreateCylinder("arrowBody" +i, { diameterTop: .05, diameterBottom: 0.05 }, scene);
+            // Create a cone for the tip of the arrow
+            tip[N+1] = BABYLON.MeshBuilder.CreateCylinder("arrowTip" +i, { diameterTop: 0, diameterBottom: .15 }, scene);
+            arrowBody[i].material = arrowBodyMaterial;
+            tip[i].material = brightGreen;//arrowBodyMaterial;
 
-          // initialize rulings 
+        }
+         ///  interaction with buttons and sliders start here 
+        // Define the colors
+        const colA = new BABYLON.Color3(1, 0.294, 0);    // Color A
+        const colB = new BABYLON.Color3(0, 1, 0.902);    // Color B
+        const colC = new BABYLON.Color3(0.961, 0.396, 0.847); // Color C
 
-
-          for (var i = 1; i < n + 1; i++) {
-            let temp = [];
-            temp.push(new BABYLON.Vector3(0, 0, 0));
-            temp.push(new BABYLON.Vector3(0, 0, 0));
-
-            optionsRulings = {
-              path: temp, //vec3 array,
-              radius: 0.01, // set the radius of the tube
-              updatable: true
-            };
-
-            rulings[i] = BABYLON.MeshBuilder.CreateTube("rulings", optionsRulings, scene);
-            rulings[i].material = rulingsMaterial;
-
-
-          };
-
-        };
-        midlineInit();
-
-
-
+        // Define the color sequence based on the given sequence
+        var colorSequence =  [colA, colC, colB, colA, colC, colB, colA, colC, colB]; 
+        structureInit() ;
 
         function k_to_t(k) {
-          return Math.round(k * N / (2 * Math.PI));
+          return Math.round(k * tmax / (2 * Math.PI));
         };
         var t;
 
@@ -466,194 +498,19 @@ of the band  during the everting motion'> midline volume  </button>
         var band = new BABYLON.Mesh('custom', scene);
         var bandBack = new BABYLON.Mesh('custom', scene);
 
-
-
-        function updateBandMesh(k, hingeLength) {
+        
+         function updateBandMesh(k, hingeLength) {
           t = k_to_t(k);
           let temp = fourierExpansion(N, t, hingeLength);
           var v = temp[0];
-
+            
+         assignStructure(v,hingeLength,arrowBody,tip,topDisc,bottomDisc,hingeBody,connector);
           // updating curvature 
-          kappa = temp[1].concat();
-          document.body.dispatchEvent(eversionPlay);
+           document.body.dispatchEvent(eversionPlay);
+ 
+ 
 
-
-          if (showKappa == true) {
-            if (chartK != null) {
-              destroyChart(chartK);
-            }
-            createchartK(kappa);
-          }
-
-
-
-
-
-          // N = 105;
-          var pos = [];
-          var pathMidline = [];
-          var indices = [];
-          var indicesBack = [];
-          var colors = [];
-          var colorsBack = [];
-
-          for (var i = 1; i < N + 1; i++) {
-            var v1 = [v[6 * i - 5], v[6 * i - 3], -v[6 * i - 4]];
-            var v2 = [v[6 * i - 2], v[6 * i], -v[6 * i - 1]];
-
-
-
-            pathMidline.push(new BABYLON.Vector3((v1[0] + v2[0]) / 2, (v1[1] + v2[1]) / 2, (v1[2] + v2[2]) / 2));
-
-            // surface 
-
-            pos.push(v1[0], v1[1], v1[2]);
-            pos.push(v2[0], v2[1], v2[2]);
-
-            if (colorScheme == 1) {
-              var c1 = jet(i - 1);
-
-              colors.push(c1[0], c1[1], c1[2], c1[3]);
-              colors.push(c1[0], c1[1], c1[2], c1[3]);
-              colorsBack.push(c1[0], c1[1], c1[2], c1[3]);
-              colorsBack.push(c1[0], c1[1], c1[2], c1[3]);
-            } else {
-              colors.push(1, 1, 1, 1);
-              colors.push(1, 1, 1, 1);
-              colorsBack.push(1, 0, 0, 1);
-              colorsBack.push(1, 0, 0, 1);
-            }
-
-            if (i > 0) {
-              indices.push(2 * i - 1, 2 * i, 2 * i - 2);
-              indices.push(2 * i, 2 * i - 1, 2 * i + 1);
-
-              indicesBack.push(2 * i, 2 * i - 1, 2 * i - 2);
-              indicesBack.push(2 * i - 1, 2 * i, 2 * i + 1);
-
-            };
-          };
-
-          //   console.log(pathMidline)
-          // Update the tube mesh with the new path
-          // Remove the existing tube mesh
-
-
-          i = 1;
-          var v2 = [v[6 * i - 5], v[6 * i - 3], -v[6 * i - 4]];
-          var v1 = [v[6 * i - 2], v[6 * i], -v[6 * i - 1]];
-
-          pathMidline.push(new BABYLON.Vector3((v1[0] + v2[0]) / 2, (v1[1] + v2[1]) / 2, (v1[2] + v2[2]) / 2));
-
-          pos.push(v1[0], v1[1], v1[2]);
-          pos.push(v2[0], v2[1], v2[2]);
-
-          if (colorScheme == 1) {
-            var c1 = jet(i - 1);
-
-            colors.push(c1[0], c1[1], c1[2], c1[3]);
-            colors.push(c1[0], c1[1], c1[2], c1[3]);
-            colorsBack.push(c1[0], c1[1], c1[2], c1[3]);
-            colorsBack.push(c1[0], c1[1], c1[2], c1[3]);
-          } else {
-            colors.push(1, 1, 1, 1);
-            colors.push(1, 1, 1, 1);
-            colorsBack.push(1, 0, 0, 1);
-            colorsBack.push(1, 0, 0, 1);
-          }
-
-          // indicesBack.push(2*N-1, 1, 0);
-          // indicesBack.push(2*N-1, 0, 2*N);
-
-          //   indices.push( 0,2*N-1, 2*N);
-          //   indices.push( 1,2*N-1, 0);
-
-
-          var normals = [];
-          BABYLON.VertexData.ComputeNormals(pos, indices, normals);
-
-          var vertexData = new BABYLON.VertexData();
-          vertexData.positions = pos;
-          vertexData.indices = indices;
-          vertexData.normals = normals;
-          vertexData.colors = colors;
-
-          vertexData.applyToMesh(band);
-
-
-
-          var normalsBack = [];
-          BABYLON.VertexData.ComputeNormals(pos, indicesBack, normalsBack);
-          vertexDataBack = new BABYLON.VertexData();
-          vertexDataBack.positions = pos;
-          vertexDataBack.indices = indicesBack;
-          vertexDataBack.normals = normalsBack;
-          vertexDataBack.colors = colorsBack;
-
-          vertexDataBack.applyToMesh(bandBack);
-
-          ///  surface created 
-
-          /// creating midline 
-
-          // Update
-          optionsMidline.path = pathMidline;
-          optionsMidline.instance = midline;
-          midline = BABYLON.MeshBuilder.CreateTube("midline", optionsMidline); //No scene parameter when using instance
-          //midline = BABYLON.MeshBuilder.CreateTube(null, optionsMidline, scene, midline);
-          //midline = BABYLON.MeshBuilder.CreateTube(null, optionsMidline, scene, midline);
-
-
-          if (showUnit) {
-            // Enable vertex alpha for the mesh
-            band.hasVertexAlpha = true;
-            bandBack.hasVertexAlpha = true;
-
-            // Disable backface culling
-            //band.backFaceCulling = false;
-            //bandBack.backFaceCulling = false;
-
-            var vertexData = band.getVerticesData(BABYLON.VertexBuffer.ColorKind);
-            var vertexDataBack = bandBack.getVerticesData(BABYLON.VertexBuffer.ColorKind);
-
-            // Ensure the vertex buffer is large enough to accommodate the modifications
-            if (!vertexData || vertexData.length < 4 * (N + 1)) {
-              vertexData = new Float32Array(4 * (N + 1));
-            }
-            if (!vertexDataBack || vertexDataBack.length < 4 * (N + 1)) {
-              vertexDataBack = new Float32Array(4 * (N + 1));
-            }
-
-            var ind = Math.round(N / n) + 1;
-            var unit_alpha = 0.2
-            for (var i = ind; i < N + 1; i++) {
-              var j = 2 * i;
-              vertexData[4 * j + 3] = 0.2;
-              vertexDataBack[4 * j + 3] = 0.2;
-
-              j = 2 * i + 1;
-              vertexData[4 * j + 3] = 0.2;
-              vertexDataBack[4 * j + 3] = 0.2;
-
-              j = 2 * i + 2;
-              vertexData[4 * j + 3] = 0.2;
-              vertexDataBack[4 * j + 3] = 0.2;
-
-              j = 2 * i + 3;
-              vertexData[4 * j + 3] = 0.2;
-              vertexDataBack[4 * j + 3] = 0.2;
-            };
-
-            // Update the vertex colors with modified alpha values
-            band.setVerticesData(BABYLON.VertexBuffer.ColorKind, vertexData);
-            bandBack.setVerticesData(BABYLON.VertexBuffer.ColorKind, vertexDataBack);
-
-
-          };
-
-
-
-
+           
           var ind1 = Math.round(N / (2 * n));
           
            
@@ -686,27 +543,7 @@ of the band  during the everting motion'> midline volume  </button>
            
 
 
-
-
-          var ind1 = Math.round(N / (2 * n));
-
-
-          // creating rulings 
-          for (var i = 1; i < n + 1; i++) {
-            // l =  i * ind1   ;
-            l = 2 * i * ind1 - 2 * ind1 + 1;
-            var v1 = [v[6 * l - 5], v[6 * l - 3], -v[6 * l - 4]];
-            var v2 = [v[6 * l - 2], v[6 * l], -v[6 * l - 1]];
-            let path = [];
-            path.push(new BABYLON.Vector3(v1[0], v1[1], v1[2]));
-            path.push(new BABYLON.Vector3(v2[0], v2[1], v2[2]));
-
-            optionsRulings.path = path;
-            optionsRulings.instance = rulings[i];
-            rulings[i] = BABYLON.MeshBuilder.CreateTube("rulings", optionsRulings); //No scene parameter when using instance
-
-
-          };
+ 
 
           // meshDispose(golf) 
 
@@ -723,8 +560,8 @@ of the band  during the everting motion'> midline volume  </button>
           var ind0 = Math.round(N / (2 * n));
 
           if(type==1){
-          for (var i = 1; i < n + 1; i++) {
-            var ind = 2 * i * ind0 - 2 * ind0 + 1;
+          for (var i = 1; i < N+1; i++) {
+            var ind = i;//2 * i * ind0 - 2 * ind0 + 1;
 
             var curve = paths(n, hl, type, ind);
             tube[i] = BABYLON.Mesh.CreateTube('tube', curve, 0.007, 8, null, null, scene);
@@ -749,7 +586,7 @@ of the band  during the everting motion'> midline volume  </button>
               var v   = [];
               let N1 = Math.round(N/2);
 
-           for (var t = 1; t <N+1;  t++) {
+           for (var t = 100 ; t <390;  t++) {
              //console.log(t)
               v0  = fourierExpansion(n, t, hl)[0];   // vertex at time stamp t
               v[1] = v0[6 * ind - 5]; 
@@ -760,18 +597,18 @@ of the band  during the everting motion'> midline volume  </button>
               v[6] = v0[6 * ind  ];  
 
                
-              path.splice(t-1, 0, new BABYLON.Vector3(v[1], v[3], -v[2]));
-              path.splice(N+t-1 , 0, new BABYLON.Vector3(v[4], v[6], -v[5]));
+              path.splice(t-100, 0, new BABYLON.Vector3(v[1], v[3], -v[2]));
+            //  path.splice(N+t-1 , 0, new BABYLON.Vector3(v[4], v[6], -v[5]));
             };
            
-            t =1;
-            v0  = fourierExpansion(n, t, hl)[0];
-            v[1] = v0[6 * ind - 5]; 
-            v[2] = v0[6 * ind - 4]; 
-            v[3] = v0[6 * ind - 3]; 
+            // t =1;
+            // v0  = fourierExpansion(n, t, hl)[0];
+            // v[1] = v0[6 * ind - 5]; 
+            // v[2] = v0[6 * ind - 4]; 
+            // v[3] = v0[6 * ind - 3]; 
            
 
-              path.push(new BABYLON.Vector3(v[1], v[3], -v[2]));
+            //   path.push(new BABYLON.Vector3(v[1], v[3], -v[2]));
             // creating path 
             tube[i] = BABYLON.Mesh.CreateTube('tube', path, 0.01, 8, null, null, scene);
             tube[i].material = color;
@@ -822,7 +659,7 @@ of the band  during the everting motion'> midline volume  </button>
  
           if(type==2){
             
-            for (var t = 1; t < Math.round(N/4)+1; ++t) {
+            for (var t = 1; t < 100; ++t) {
               var path = [];
               var v0  = [];
               var v   = [];
@@ -875,7 +712,7 @@ of the band  during the everting motion'> midline volume  </button>
 
           if(type==3){
             
-            for (var t = 1; t < Math.round(N/3) ; ++t) {
+            for (var t = 1; t < 100 ; ++t) {
               var path = [];
               var v0  = [];
               var v   = [];
@@ -969,29 +806,122 @@ of the band  during the everting motion'> midline volume  </button>
         }
 
         //#################################################################################
-        //#################################################################################
-
-        // change number of half twists ////////////////////////////////////////////////////
-
-        ebID('buttNumOfTetMinus').addEventListener('click', function () {
-          if (n > 3) {
-            n = n - 2;
-
-            // change the position of the energy slider 
-
-            document.body.dispatchEvent(nChanged);
-
-            // document.body.dispatchEvent(nuiChanged);
+        //###########################################################################
+        //chirality
+        var chiral_L = true;
+         ebID('leftButton').addEventListener('click', function () {
+          tau = -1;
+          init_parameters(sequence);
+           
+          if(tau==-1){
+            buttonSwitchColor(ebID('leftButton'), true);
+            buttonSwitchColor(ebID('rightButton'), false);
           }
-        });
-        ebID('buttNumOfTetPlus').addEventListener('click', function () {
-          if (n < 27) {
-            n = n + 2;
-
-            document.body.dispatchEvent(nChanged);
-            // document.body.dispatchEvent(nuiChanged);
+          else{
+            buttonSwitchColor(ebID('leftButton'), false);
+            buttonSwitchColor(ebID('rightButton'), true);
           }
+          document.body.dispatchEvent(sequenceChanged);
         });
+        buttonSwitchColor(ebID('rightButton'), true);
+
+        ebID('rightButton').addEventListener('click', function () {
+          tau = 1;
+          
+          
+          if(tau==-1){
+            buttonSwitchColor(ebID('leftButton'), true);
+            buttonSwitchColor(ebID('rightButton'), false);
+          }
+          else{
+            buttonSwitchColor(ebID('leftButton'), false);
+            buttonSwitchColor(ebID('rightButton'), true);
+          }
+
+          
+          init_parameters(sequence);
+           
+          document.body.dispatchEvent(sequenceChanged);
+        });
+
+
+ 
+        var sequence = 1;
+        var sequence1 = true;
+        var sequence2 = false;
+        var sequence3 = false;
+        buttonSwitchColor(ebID('buttACBACBACB'), sequence1);
+
+        ebID('buttACBACBACB').addEventListener('click', function () {
+          sequence = 1;
+          colorSequence = [colA, colC, colB, colA, colC, colB, colA, colC, colB];
+
+          init_parameters(sequence);
+          sequence1 = !sequence1;
+       
+          buttonSwitchColor(ebID('buttACBACBACB'), sequence1);
+          
+          if(sequence1) {
+            sequence2 = false;
+            sequence3 = false;
+            buttonSwitchColor(ebID('buttABCABCABC'), sequence2);
+            buttonSwitchColor(ebID('buttAAABCBCBC'), sequence3);
+          }
+
+          // updating color sequence 
+         
+        //   if (sequence === 1) {
+        //     colorSequence = [colA, colC, colB, colA, colC, colB, colA, colC, colB];
+        // } else if (sequence === 2) {
+        //     colorSequence = [colA, colA, colA, colB, colB, colB, colC, colC, colC];
+        // } else {
+        //     colorSequence = [colA, colB, colC, colA, colB, colC, colA, colB, colC];
+        // }
+          document.body.dispatchEvent(sequenceChanged);
+        });
+        ebID('buttABCABCABC').addEventListener('click', function () {
+          sequence = 2;
+          colorSequence = [colA, colB, colC, colA, colB, colC, colA, colB, colC];
+
+          init_parameters(sequence);
+          sequence2 = !sequence2;
+          
+          buttonSwitchColor(ebID('buttABCABCABC'), sequence2);
+          if(sequence2){
+
+            sequence1 = false;
+            sequence3 = false;
+
+          buttonSwitchColor(ebID('buttACBACBACB'), false);
+          buttonSwitchColor(ebID('buttAAABCBCBC'), false);
+          }
+
+
+          
+          document.body.dispatchEvent(sequenceChanged);
+        });
+
+        
+        ebID('buttAAABCBCBC').addEventListener('click', function () {
+          sequence = 3;
+          colorSequence = [colA, colA, colA, colB, colB, colB, colC, colC, colC];
+
+
+          init_parameters(sequence);
+          sequence3 = !sequence3;
+          buttonSwitchColor(ebID('buttAAABCBCBC'), sequence3);
+
+          if(sequence3){
+            sequence1 = false;
+            sequence2 = false;
+
+            buttonSwitchColor(ebID('buttACBACBACB'), false);
+            buttonSwitchColor(ebID('buttABCABCABC'), false);
+          }
+
+          document.body.dispatchEvent(sequenceChanged);
+        });
+ 
 
 
         // show corner/midpoint paths /////////////////////////////////////////////////////
@@ -1009,7 +939,7 @@ of the band  during the everting motion'> midline volume  </button>
         //   nuSlider = new Slider('nuSlider', nu_min, nu_max, nu_opt, '&nu;    ', 0, ' ');
         //   ebID('nuSlider').addEventListener('sliderChange', function (e) {
         //     nu_i = parseInt(nuSlider.getValue());
-        //      document.body.dispatchEvent(nChanged);
+        //      document.body.dispatchEvent(sequenceChanged);
         //     refresh = true;
         //   });
 
@@ -1018,202 +948,69 @@ of the band  during the everting motion'> midline volume  </button>
         /////////////////////////nui changed////////////////////////////
 
         /////////////////////////n  changed////////////////////////////
+       var disposeAllMesh = function(){
+        
 
-
-        document.body.addEventListener('nChanged', function (e) {
-          ebID('infoNumOfTet').innerHTML = n;
-
-          n_to_nui(n)
-          // modifying the slider and its limits when n is changed 
-
-          nu_i = nu_opt;
-
-          // change the energy slider 
-          setSliderPosition(nu_i);
-
-          init_parameters(nu_i)
-          data_t0(nu_i);
-
-          midline.dispose();
-          meshDispose(rulings);
-          midlineInit();
-
-
-          if (showMid) {
+        if (showMid) {
             meshDispose(tubeMid);
             meshDispose(golf);
-            createTube(tubeMid, 1, 0.5 * 3, yellow);
-          }
-
-          if (showEdge) {
-            meshDispose(tubeEdge);
-            meshDispose(golfEdge);
-            createTube(tubeEdge, 2, 0.5 * 3, brightGreen);
-          }
-
-          if (showEdgeVol) {
-            meshDispose(tubeEdgeVol);
-            meshDispose(golf);
-            createSweptVolume(tubeEdgeVol, 2, 0.5 * 3, cyan);
-          }
+          //  createTube(tubeMid, 1, 0.5 * 3, yellow);
+          };
+        
+       
+ 
 
           if (showMidVol) {
             meshDispose(tubeMidVol);
             meshDispose(golf);
-            createSweptVolume(tubeMidVol, 3, 0.5 * 3, cyan);
+            //createSweptVolume(tubeMidVol, 3, 0.5 * 3, cyan);
           }
-
-          updateBandMesh(k, hl);
-
-          refresh = true;
-        }, false);
-
-        //plotClicked = new CustomEvent('plotClicked', { detail: { nu_i:nu_i,n:n } });
-
-        function magnify(canvasId, zoom) {
-          var canvas = document.getElementById(canvasId);
-          var magnifier = document.getElementById("magnifier");
-          var magnifierCtx = magnifier.getContext("2d");
-          var magnifierDiameter = magnifier.width; // Assuming width and height are the same
-          var magnifierRadius = magnifierDiameter / 2;
-
-          function moveMagnifier(e) {
-            var canvasRect = canvas.getBoundingClientRect();
-            var mouseX = e.clientX - canvasRect.left;
-            var mouseY = e.clientY - canvasRect.top;
-
-            // Adjust magnifier position to be centered on cursor
-            var magnifierX = e.pageX - magnifierRadius;
-            var magnifierY = e.pageY - magnifierRadius;
-
-            // Position the magnifier
-            magnifier.style.left = magnifierX - 55 + "px";
-            magnifier.style.top = magnifierY + 96 + "px";
-
-            // Clear previous content
-            magnifierCtx.clearRect(0, 0, magnifierDiameter, magnifierDiameter);
-
-            // Calculate the zoomed area
-            magnifierCtx.drawImage(canvas,
-              mouseX * (canvas.width / canvas.offsetWidth) - magnifierRadius / zoom,
-              mouseY * (canvas.height / canvas.offsetHeight) - magnifierRadius / zoom,
-              magnifierDiameter / zoom, magnifierDiameter / zoom,
-              0, 0, magnifierDiameter, magnifierDiameter);
-          }
-
-          canvas.addEventListener("mousemove", moveMagnifier);
-        }
-
-        // Initialize the magnifier
-        //magnify("renderCanvasE", 3); // Adjust the zoom level as needed
-
-
-
-
-        // // Update the canvas position when the window is resized
-        // var canvasPosition = document.getElementById('renderCanvasE').getBoundingClientRect();
-        // window.addEventListener('resize', debounce(function () {
-        //   canvasPosition = document.getElementById('renderCanvasE').getBoundingClientRect();
-        // }, 250));
-
-        // // Event listener for the click on renderCanvasE
-        // document.getElementById('renderCanvasE').addEventListener('click', function (evt) {
-        //   // Calculate the click position relative to the canvas
-        //   const clickX = evt.clientX - canvasPosition.left;
-        //   const clickY = evt.clientY - canvasPosition.top;
-
-        //   console.log("Canvas clicked at: ", clickX, clickY);
-
-        //   // Chart.js method to find the nearest point
-        //   var points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: false }, true);
-        //   if (points.length) {
-        //     var nearestPoint = points[0];
-        //     const dataPoint = chart.data.datasets[nearestPoint.datasetIndex].data[nearestPoint.index];
-        //     nu_i = getIndexFromLinspace(dataPoint.x);
-        //     nui_to_n(nu_i);
-
-        //     plotClicked = new CustomEvent('plotClicked', { detail: { nu_i: nu_i, n: n } });
-        //     document.body.dispatchEvent(plotClicked);
-
-        //     refresh = true;
-        //   }
-        // });
-
-        function debounce(func, wait) {
-          var timeout;
-          return function () {
-            var context = this, args = arguments;
-            clearTimeout(timeout);
-            timeout = setTimeout(function () {
-              func.apply(context, args);
-            }, wait);
-          };
-        }
-
-
-
-        // Debounce function to limit the rate at which a function can fire
-        function debounce(func, wait, immediate) {
-          var timeout;
-          return function () {
-            var context = this, args = arguments;
-            var later = function () {
-              timeout = null;
-              if (!immediate) func.apply(context, args);
-            };
-            var callNow = immediate && !timeout;
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-            if (callNow) func.apply(context, args);
-          };
-        }
-
-
-
-        document.body.addEventListener('plotClicked', function (e) {
-
-          n = e.detail.n;
-          nu_i = e.detail.nu_i;
-
-
-          ebID('infoNumOfTet').innerHTML = n;
-
-
-          init_parameters(nu_i);
-          data_t0(nu_i);
-          midline.dispose();
-          meshDispose(rulings);
-          midlineInit();
-
-          if (showMid) {
-            meshDispose(tubeMid);
-            meshDispose(golf);
-            createTube(tubeMid, 1, 0.5 * 3, yellow);
-          }
+ 
+            meshDispose(arrowBody);
+            meshDispose(tip);
+            meshDispose(topDisc);
+            meshDispose(bottomDisc);
+            meshDispose(hingeBody);
+            meshDispose(connector);
+             //createSweptVolume(tubeMidVol, 3, 0.5 * 3, cyan);
           
-          if (showEdge) {
-            meshDispose(tubeEdge);
-            meshDispose(golfEdge);
-            createTube(tubeEdge, 2, 0.5 * 3, brightGreen);
-          }
 
 
-          if (showEdgeVol) {
-            meshDispose(tubeEdgeVol);
-            meshDispose(golf);
-            createSweptVolume(tubeEdgeVol, 2, 0.5 * 3, cyan);
-          }
+       }
+
+       var createUpdatedMesh = function(){
+ 
+        if (showMid) {
+           createTube(tubeMid, 1, 0.5 * 3, yellow);
+          };
+        
+         
 
           if (showMidVol) {
-            meshDispose(tubeMidVol);
-            meshDispose(golf);
-            createSweptVolume(tubeMidVol, 3, 0.5 * 3, cyan);
-          }
+           createSweptVolume(tubeMidVol, 3, 0.5 * 3, cyan);
+          };
 
+ 
+       }
+
+        document.body.addEventListener('sequenceChanged', function (e) {
+
+          disposeAllMesh();
+          structureInit();
+       
+          // modifying the slider and its limits when n is changed 
+          animationData(1);
+          
+          createUpdatedMesh();
+ 
+ 
           updateBandMesh(k, hl);
+
           refresh = true;
         }, false);
-
+ 
+ 
+      
         // toggle tetrahedra //////////////////////////////////////////////////////////////
 
         var tetToggled = new Event('tetToggled'); // triggered by tetTogStar
@@ -1298,29 +1095,29 @@ of the band  during the everting motion'> midline volume  </button>
 
         // change width/length ////////////////////////////////////////////////////////////
 
-        var hingeLengthSlider = new Slider('hingeLengthSlider', 0, 100, 20, 'width', 0, '%');
-        ebID('hingeLengthSlider').addEventListener('sliderChange', function () {
-          hl = hingeLengthSlider.getValue() / 100.0;
-          if (!play) updateBandMesh(k, hl);
+        // var hingeLengthSlider = new Slider('hingeLengthSlider', 0, 100, 20, 'width', 0, '%');
+        // ebID('hingeLengthSlider').addEventListener('sliderChange', function () {
+        //   hl = hingeLengthSlider.getValue() / 100.0;
+        //   if (!play) updateBandMesh(k, hl);
 
-          if (showEdgeVol) {
-            meshDispose(tubeEdgeVol);
-            //meshDispose(golf);
-            createSweptVolume(tubeEdgeVol, 2, 0.5 * 3, cyan);
-          }
-          if (showEdge) {
-            meshDispose(tubeEdge);
-            meshDispose(golfEdge);
-            createTube(tubeEdge, 2, 0.5 * 3, brightGreen);
-          }
+        //   if (showEdgeVol) {
+        //     meshDispose(tubeEdgeVol);
+        //     //meshDispose(golf);
+        //     createSweptVolume(tubeEdgeVol, 2, 0.5 * 3, cyan);
+        //   }
+        //   if (showEdge) {
+        //     meshDispose(tubeEdge);
+        //     meshDispose(golfEdge);
+        //     createTube(tubeEdge, 2, 0.5 * 3, brightGreen);
+        //   }
           
            
-          // if (showCorn) {
-          //   meshDispose(tubeCorn);
-          //   createTube(tubeCorn,1,hl,white);
-          // }
-          refresh = true;
-        })
+        //   // if (showCorn) {
+        //   //   meshDispose(tubeCorn);
+        //   //   createTube(tubeCorn,1,hl,white);
+        //   // }
+        //   refresh = true;
+        // })
 
 
         ///  modifying sliders during the guiding tour 
@@ -1335,28 +1132,28 @@ of the band  during the everting motion'> midline volume  </button>
         });
 
 
-        ebID('hingeLengthSlider').addEventListener('tourWidth', function () {
-          hl = 0.4;
-          hingeLengthSlider = new Slider('hingeLengthSlider', 0, 100, 40, 'width', 0, '%');
+        // ebID('hingeLengthSlider').addEventListener('tourWidth', function () {
+        //   hl = 0.4;
+        //   hingeLengthSlider = new Slider('hingeLengthSlider', 0, 100, 40, 'width', 0, '%');
 
-          if (!play) updateBandMesh(k, hl);
-          // if (showCorn) {
-          //   meshDispose(tubeCorn);
-          //   createTube(tubeCorn,1,hl,white);
-          // }
-          refresh = true;
-        })
-        ebID('hingeLengthSlider').addEventListener('tourWidthBack', function () {
-          hl = 0.2;
-          hingeLengthSlider = new Slider('hingeLengthSlider', 0, 100, 20, 'width', 0, '%');
+        //   if (!play) updateBandMesh(k, hl);
+        //   // if (showCorn) {
+        //   //   meshDispose(tubeCorn);
+        //   //   createTube(tubeCorn,1,hl,white);
+        //   // }
+        //   refresh = true;
+        // })
+        // ebID('hingeLengthSlider').addEventListener('tourWidthBack', function () {
+        //   hl = 0.2;
+        //   hingeLengthSlider = new Slider('hingeLengthSlider', 0, 100, 20, 'width', 0, '%');
 
-          if (!play) updateBandMesh(k, hl);
-          // if (showCorn) {
-          //   meshDispose(tubeCorn);
-          //   createTube(tubeCorn,1,hl,white);
-          // }
-          refresh = true;
-        })
+        //   if (!play) updateBandMesh(k, hl);
+        //   // if (showCorn) {
+        //   //   meshDispose(tubeCorn);
+        //   //   createTube(tubeCorn,1,hl,white);
+        //   // }
+        //   refresh = true;
+        // })
 
         ////////////////////////////////////////////////////////////////
 
@@ -1379,16 +1176,7 @@ of the band  during the everting motion'> midline volume  </button>
 
 
 
-
-
-        var showUnit = false;
-        ebID('buttShowUnit').addEventListener('click', function () {
-          showUnit = !showUnit;
-          buttonSwitchColor(ebID('buttShowUnit'), showUnit);
-
-  
-          refresh = true;
-        });
+ 
 
         // align to plane/axis ////////////////////////////////////////////////////////////
         var alignPlane = false;
@@ -1422,69 +1210,44 @@ of the band  during the everting motion'> midline volume  </button>
 
         // change surface colors //////////////////////////////////////////////////////////
 
-        var previousColorScheme = colorScheme;
-        buttonSwitchColor(ebID('buttColor' + colorScheme), true);
+        // var previousColorScheme = colorScheme;
+        // buttonSwitchColor(ebID('buttColor' + colorScheme), true);
 
-        for (var i = 1; i < maxColor + 1; i++) {
-          (function (i) {
-            ebID('buttColor' + i).addEventListener('click', function () {
-              previousColorScheme = colorScheme;
-              colorScheme = i;
-              document.body.dispatchEvent(colorChanged);
-            });
-          }(i));
-        }
+        // for (var i = 1; i < maxColor + 1; i++) {
+        //   (function (i) {
+        //     ebID('buttColor' + i).addEventListener('click', function () {
+        //       previousColorScheme = colorScheme;
+        //       colorScheme = i;
+        //       document.body.dispatchEvent(colorChanged);
+        //     });
+        //   }(i));
+        // }
 
-        var colorChanged = new Event('colorChanged'); // triggered by plus/minus buttons
+        // var colorChanged = new Event('colorChanged'); // triggered by plus/minus buttons
 
-        document.body.addEventListener('colorChanged', function (e) {
-          buttonSwitchColor(ebID('buttColor' + previousColorScheme), false);
-          buttonSwitchColor(ebID('buttColor' + colorScheme), true);
-          if (!play) updateBandMesh(k, hl);
-          refresh = true;
-        }, false);
+        // document.body.addEventListener('colorChanged', function (e) {
+        //   buttonSwitchColor(ebID('buttColor' + previousColorScheme), false);
+        //   buttonSwitchColor(ebID('buttColor' + colorScheme), true);
+        //   if (!play) updateBandMesh(k, hl);
+        //   refresh = true;
+        // }, false);
 
 // eversion path by midline and edge
         var tubeMid = [];
         ebID('buttShowMid').addEventListener('click', function () {
           showMid = !showMid;
           buttonSwitchColor(ebID('buttShowMid'), showMid);
-          if (showMid) createTube(tubeMid, 1, 0.5 * 3, yellow);
+          if (showMid)
+          { meshDispose(tubeMid);
+            meshDispose(golf);
+            createTube(tubeMid, 1, 0.5 * 3, yellow)}
           else {
             meshDispose(tubeMid);
             meshDispose(golf);
           }
           refresh = true;
         });
-
-        var tubeEdge = [];
-        var showEdge = false;
-        ebID('buttShowEdge').addEventListener('click', function () {
-          showEdge = !showEdge;
-          buttonSwitchColor(ebID('buttShowEdge'), showEdge);
-          if (showEdge) createTube(tubeEdge, 2, 0.5 * 3, brightGreen);
-          else {
-            meshDispose(tubeEdge);
-            meshDispose(golfEdge);
-          }
-          refresh = true;
-        });
-
-
-//  volume swept
-        var tubeEdgeVol = [];
-        var showEdgeVol = false;
-
-        ebID('buttshowEdgeVol').addEventListener('click', function () {
-          showEdgeVol = !showEdgeVol;
-          buttonSwitchColor(ebID('buttshowEdgeVol'), showEdgeVol);
-          if (showEdgeVol) createSweptVolume(tubeEdgeVol, 2, 0.5 * 3, cyan);
-          else {
-            meshDispose(tubeEdgeVol);
-            // meshDispose(golf);
-          }
-          refresh = true;
-        });
+ 
 
         var tubeMidVol = [];
         var showMidVol = false;
@@ -1576,61 +1339,7 @@ of the band  during the everting motion'> midline volume  </button>
 
 
 
-
-
-        var showEnergy = false;
-        var showKappa = false;
-        var showEversionPath = false;
-
-
-
-
-        ebID('buttShowEnergy').addEventListener('click', function () {
-          showEnergy = !showEnergy;
-          buttonSwitchColor(ebID('buttShowEnergy'), showEnergy);
-
-          if (showEnergy == false) {
-            contentK.style.top = '0%';
-            contentE.style.height = '0%';
-            destroyChart(chart);  // Destroy the chart when showEnergy is false
-          } else {
-            contentE.style.height = '25%';
-            //nu_i = parseInt(nuSlider.getValue());
-            createChart(nu_i);
-            document.body.addEventListener('nuiChanged', function () {
-              deleteDataset(chart, 'Marker');
-              deleteDataset(chart, 'cursor1');
-              deleteDataset(chart, 'cursor2');
-
-              pushDataset(chart, nu_i - 1);
-
-              if (showKappa == true) {
-                contentK.style.top = '25%';
-              }
-
-            });
-            document.body.dispatchEvent(energyChanged);
-
-            document.body.addEventListener('nChanged', function (e) {
-              deleteDataset(chart, 'Marker');
-              deleteDataset(chart, 'cursor1');
-              deleteDataset(chart, 'cursor2');
-
-              pushDataset(chart, nu_i - 1);
-            });
-            document.body.addEventListener('plotClicked', function (e) {
-              nu_i = e.detail.nu_i;
-              n = e.detail.n;
-              deleteDataset(chart, 'Marker');
-              deleteDataset(chart, 'cursor1');
-              deleteDataset(chart, 'cursor2');
-
-              pushDataset(chart, nu_i - 1);
-            });
-
-            // Create the chart when showEnergy is true
-          }
-        });
+ 
         // energy changed during the tour
 
 
@@ -1643,127 +1352,9 @@ of the band  during the everting motion'> midline volume  </button>
 
         // creating the plot for paths
         //var curve = paths(n, hingeLength, type, ind);
+ 
 
-
-
-
-        ebID('buttShowKappa').addEventListener('click', function () {
-          showKappa = !showKappa;
-          buttonSwitchColor(ebID('buttShowKappa'), showKappa);
-
-          if (showKappa == false) {
-            contentK.style.height = '0%';
-            destroyChart(chartK);  // Destroy the chartK when showKappa is false
-          } if (showKappa == true) {
-            if (showEnergy == true) {
-              contentK.style.top = '25%';
-            }
-            contentK.style.height = '22%';
-            //  createchartK(kappa);
-
-            document.body.addEventListener('energyChanged', function () {
-              contentK.style.top = '25%';
-            });
-
-
-            if (showEnergy === false) {
-              contentK.style.top = '0%';
-            }
-
-
-
-
-
-            // Create the chartK when showKappa is true
-          }
-        });
-
-        function positionSliderAbovePlot(slider, chart) {
-          var canvasRect = chart.canvas.getBoundingClientRect();
-          var chartArea = chart.chartArea;
-
-          var leftOffset = canvasRect.left + chartArea.left;
-          var topOffset = canvasRect.top + chartArea.bottom; // Positioning it just below the x-axis
-          var width = chartArea.right - chartArea.left;
-
-          slider.style.position = 'absolute';
-          slider.style.left = 15 + '%';
-          slider.style.top = 23 + '%';
-          slider.style.width = width + 'px';
-        }
-
-
-        function addSlider() {
-          var canvas = document.getElementById("renderCanvasE");
-          var slider = document.createElement("input");
-          slider.setAttribute("type", "range");
-          slider.setAttribute("id", "energySlider");
-          slider.setAttribute("min", "1");
-          slider.setAttribute("max", len_ydata.toString());
-          slider.classList.add("energySlider");
-
-          document.body.appendChild(slider);
-          positionSliderAbovePlot(slider, chart);
-
-          slider.addEventListener("input", function () {
-
-            // deleting the eversion path for efficiently dragging
-            meshDispose(tubeMid);
-            meshDispose(golf);
-            showMid = false;
-            buttonSwitchColor(ebID('buttShowMid'), showMid);
-
-            // updated nu value based on the slider
-            nu_i = parseInt(this.value);
-
-            // Convert the value from [0, 100] to [8.095, 85.4]
-
-            nui_to_n(nu_i);
-
-            plotClicked = new CustomEvent('plotClicked', { detail: { nu_i: nu_i, n: n } });
-            document.body.dispatchEvent(plotClicked);
-            ;
-          });
-        }
-
-        function removeSlider() {
-          var slider = document.getElementById("energySlider");
-          if (slider) {
-            slider.remove();
-          }
-        }
-
-
-
-
-        // window.addEventListener("resize", function () {
-        //   var slider = document.getElementById("energySlider");
-        //   var canvas = document.getElementById("renderCanvasE");
-        //   if (slider && canvas) {
-        //     positionSliderAbovePlot(slider, canvas);
-        //   }
-        // });
-
-        ebID("buttShowEnergy").addEventListener('click', function () {
-          if (showEnergy) {
-            addSlider(); // Add the slider only if showEnergy is true
-            // When the slider is created
-            var energySlider = document.getElementById('energySlider');
-            if (energySlider) {
-              // Initially set the opacity to 1
-              energySlider.style.opacity = 1;
-
-              // Set a timeout to change the opacity back to 0 after a specified time
-              setTimeout(function () {
-                energySlider.style.opacity = '';
-              }, 2000); // 5000 milliseconds = 5 seconds
-            }
-          } else {
-            removeSlider(); // Remove the slider only if showEnergy is false
-          }
-
-
-        });
+ 
 
         ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
@@ -1811,12 +1402,12 @@ of the band  during the everting motion'> midline volume  </button>
 
     // ...add more steps for other buttons...
 
-    // Start the tour
-    var showTour = true;
-    document.addEventListener('DOMContentLoaded', function () {
-    // Show the modal
-    ebID('tourModal').style.display = 'block';
-});
+//     // Start the tour
+//     var showTour = true;
+//     document.addEventListener('DOMContentLoaded', function () {
+//     // Show the modal
+//     ebID('tourModal').style.display = 'block';
+// });
 
 // Initialize your tour
 var tour = new Shepherd.Tour({
@@ -1853,16 +1444,16 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Start tour when "Start Tour" button is clicked
-ebID('startTourBtn').addEventListener('click', function () {
-    window.startTour();
-    ebID('tourModal').style.display = 'none'; // Hide modal
-});
+// // Start tour when "Start Tour" button is clicked
+// ebID('startTourBtn').addEventListener('click', function () {
+//     window.startTour();
+//     ebID('tourModal').style.display = 'none'; // Hide modal
+// });
 
-// Close modal when "No Thanks" button is clicked
-ebID('dismissTourBtn').addEventListener('click', function () {
-    ebID('tourModal').style.display = 'none'; // Hide modal
-});
+// // Close modal when "No Thanks" button is clicked
+// ebID('dismissTourBtn').addEventListener('click', function () {
+//     ebID('tourModal').style.display = 'none'; // Hide modal
+// });
 
 
     // document.addEventListener('keydown', function(event) {
