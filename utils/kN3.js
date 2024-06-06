@@ -29,8 +29,11 @@ var init_parameters = function (sequence) {
   else if(sequence==2){
     strData = 'ABCABCABC';
   }
-  else{
+  else if(sequence==3){
     strData = 'AAABCBCBC';
+  }
+  else{
+    strData = 'AAACCCBBB';
   }
   
    strData;

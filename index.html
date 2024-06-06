@@ -105,6 +105,11 @@
       AAABCBCBC</button>
      <br>
    
+    <button class='button' id="buttAAACCCBBB"
+      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+      AAACCCBBB</button>
+     <br>
+   
   
     <svg id='playSVG' width='200' height='300' viewBox='-60 -60 120 120' style='margin-top:10px'>
       <g class='touchElement glow-effect' id='buttPlayPause'>
@@ -850,6 +855,9 @@ var tau = 1;
         var sequence1 = true;
         var sequence2 = false;
         var sequence3 = false;
+        var sequence4 = false;
+
+        
         buttonSwitchColor(ebID('buttACBACBACB'), sequence1);
 
         ebID('buttACBACBACB').addEventListener('click', function () {
@@ -864,8 +872,10 @@ var tau = 1;
           if(sequence1) {
             sequence2 = false;
             sequence3 = false;
+            sequence4 = false;
             buttonSwitchColor(ebID('buttABCABCABC'), sequence2);
             buttonSwitchColor(ebID('buttAAABCBCBC'), sequence3);
+            buttonSwitchColor(ebID('buttAAACCCBBB'), sequence3);
           }
 
           // updating color sequence 
@@ -891,9 +901,11 @@ var tau = 1;
 
             sequence1 = false;
             sequence3 = false;
+            sequence4 = false;
 
           buttonSwitchColor(ebID('buttACBACBACB'), false);
           buttonSwitchColor(ebID('buttAAABCBCBC'), false);
+          buttonSwitchColor(ebID('buttAAACCCBBB'), false);
           }
 
 
@@ -904,7 +916,7 @@ var tau = 1;
         
         ebID('buttAAABCBCBC').addEventListener('click', function () {
           sequence = 3;
-          colorSequence = [colA, colA, colA, colB, colB, colB, colC, colC, colC];
+          colorSequence = [colA, colA, colA, colB, colC, colB, colC, colB, colC];
 
 
           init_parameters(sequence);
@@ -914,9 +926,33 @@ var tau = 1;
           if(sequence3){
             sequence1 = false;
             sequence2 = false;
+            sequence4 = false;
+           
+            buttonSwitchColor(ebID('buttACBACBACB'), false);
+            buttonSwitchColor(ebID('buttABCABCABC'), false);
+            buttonSwitchColor(ebID('buttAAACCCBBB'), false);
+          }
+
+          document.body.dispatchEvent(sequenceChanged);
+        });
+        
+        ebID('buttAAACCCBBB').addEventListener('click', function () {
+          sequence = 4;
+          colorSequence = [colA, colA, colA, colC, colC, colC, colB, colB, colB];
+
+
+          init_parameters(sequence);
+          sequence4 = !sequence4;
+          buttonSwitchColor(ebID('buttAAACCCBBB'), sequence4);
+
+          if(sequence4){
+            sequence1 = false;
+            sequence2 = false;
+            sequence3 = false;
 
             buttonSwitchColor(ebID('buttACBACBACB'), false);
             buttonSwitchColor(ebID('buttABCABCABC'), false);
+            buttonSwitchColor(ebID('buttAAABCBCBC'), false);
           }
 
           document.body.dispatchEvent(sequenceChanged);
