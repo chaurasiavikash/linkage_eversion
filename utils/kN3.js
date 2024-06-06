@@ -21,27 +21,31 @@ var bz_data;
 var tmax;
 
 
+
 var init_parameters = function (sequence) {
   var strData;
   if(sequence==1){
     strData = 'ACBACBACB';
+    tmax = 271;
   } 
   else if(sequence==2){
     strData = 'ABCABCABC';
+    tmax = 270;
   }
   else if(sequence==3){
     strData = 'AAABCBCBC';
+    tmax =   255;
   }
   else{
     strData = 'AAACCCBBB';
+    tmax =   254;
   }
-  
-   strData;
-  bx_data = numData[strData].bx_data;
-  by_data = numData[strData].by_data;
-  bz_data = numData[strData].bz_data;
+   
+  bx_data = numData[strData].bx_data ;
+  by_data = numData[strData].by_data ;
+  bz_data = numData[strData].bz_data ;
  
-  tmax = bx_data[1].length;
+ // tmax = bx_data[1].length;
   // creating the init_parameters
 };
 var avg = function (arr) {
@@ -345,54 +349,6 @@ function poly(N,n, v, i, cm, golfMesh , scheme) {
 
      
 }
-
-function anchor(arrow1,tip1, anchorMaterial,v1,v2,hingeLength){ 
-
- 
-  // direction for alignment 
-  var mod = Math.sqrt((v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2 );
-  var direction = new BABYLON.Vector3((v1[0]-v2[0])/mod,(v1[1]-v2[1])/mod,(v1[2]-v2[2])/mod);
-  // Compute the rotation to align the body with the given direction
-  var axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
-  var angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
-  var quater = BABYLON.Quaternion.RotationAxis(axis, angle);
-  // position and orientation 
-  var mid_position  = new BABYLON.Vector3((v1[0]+v2[0])/2.0,(v1[1]+v2[1])/2.0,(v1[2]+v2[2])/2.0);
-  arrow1.position = mid_position;
-  arrow1.rotationQuaternion = quater;
-  // Assign the height value later
-  arrow1.scaling.x =  3.1 * hingeLength;            
-  arrow1.scaling.y =  .9 * hingeLength;            
-  arrow1.scaling.z =  3.1 * hingeLength;            
-  
-   
-  var h_tip  = .4*hingeLength;
- 
-  var fac1 = h_tip/2 + hingeLength;
- 
- 
-tip1.rotationQuaternion = quater;
-tip1.position  =new BABYLON.Vector3(mid_position.x + fac1*direction.x ,mid_position.y +  fac1*direction.y
-                  ,mid_position.z +  fac1* direction.z);
-tip1.scaling.x  = h_tip*4.8;
-tip1.scaling.y  = h_tip*.8;
-tip1.scaling.z  = h_tip*4.8;
-  
-
-// tail1.rotationQuaternion = quater;
-// tail1.position  =new BABYLON.Vector3(mid_position.x - fac2*direction.x ,mid_position.y -  fac2*direction.y
-//                   ,mid_position.z -  fac2*direction.z);
-//  tail1.scaling.x  = h_tail*5;
-//  tail1.scaling.y  = h_tail;
-//  tail1.scaling.z  = h_tail*5;
-// Combine the arrow components into a single mesh
-//anchor[j] =   BABYLON.Mesh.MergeMeshes([arrow1, tip1, tail1], true, false, null, false, true);
-
-arrow1.material = anchorMaterial;
-tip1.material = anchorMaterial;
-//tail1.material = anchorMaterial;
-
-};
  
 // assigning position and orientation to arrows, connectors etc. 
 
@@ -544,13 +500,13 @@ else{
   arrowBody[i].rotationQuaternion = quater;
   // Assign the height value later
   arrowBody[i].scaling.x =  3.1 * hingeLength;            
-  arrowBody[i].scaling.y =  .9 * hingeLength;            
+  arrowBody[i].scaling.y =  .8 * hingeLength;            
   arrowBody[i].scaling.z =  3.1 * hingeLength;            
   
    
-  var h_tip  = .4*hingeLength;
+  var h_tip  = .5*hingeLength;
  
-  var fac1 = h_tip/2 + hingeLength;
+  var fac1 = h_tip/2 + .9*hingeLength;
  
  
 tip[i].rotationQuaternion = quater;

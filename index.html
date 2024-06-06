@@ -857,7 +857,7 @@ var tau = 1;
         var sequence3 = false;
         var sequence4 = false;
 
-        
+
         buttonSwitchColor(ebID('buttACBACBACB'), sequence1);
 
         ebID('buttACBACBACB').addEventListener('click', function () {
@@ -957,19 +957,14 @@ var tau = 1;
 
           document.body.dispatchEvent(sequenceChanged);
         });
- 
-
-
+  
         // show corner/midpoint paths /////////////////////////////////////////////////////
 
         var showMid = false;
 
         //#################################################################################
         //#################################################################################
-
-
-
-
+ 
 
         // document.body.addEventListener('nuiChanged', function (e) {
         //   nuSlider = new Slider('nuSlider', nu_min, nu_max, nu_opt, '&nu;    ', 0, ' ');
@@ -1124,9 +1119,9 @@ var tau = 1;
 
         // speed control //////////////////////////////////////////////////////////////////
 
-        var speedSlider = new Slider('speedSlider', 4, 100, 20, 'speed ', 0, '%');
+        var speedSlider = new Slider('speedSlider', 4, 100, 50, 'speed ', 0, '%');
         ebID('speedSlider').addEventListener('sliderChange', function () {
-          speedy = speedSlider.getValue() / 2000 / n ** .2;
+          speedy = speedSlider.getValue() / 2000 / 1;
         });
 
         // change width/length ////////////////////////////////////////////////////////////
