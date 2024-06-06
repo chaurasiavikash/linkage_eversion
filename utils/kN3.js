@@ -242,7 +242,7 @@ var paths = function (n, hl, selector,ind) {
   var v0  = [];
   var v   = [];
 
-  let len_path = Math.round(tmax/2.0)+1;
+  let len_path = Math.round(tmax/2.0)+2;
    for (var t = 1; t < len_path; t++) {
      v0 = fourierExpansion(n, t, hl)[0];
     v[1] = v0[6 * ind - 5]; 
