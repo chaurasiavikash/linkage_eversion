@@ -92,24 +92,24 @@
     <text y='-40'>sequence</text>
     <text id='infoNumOfTet' y='16'> </text>
   </g>
+  <button class='button' id="buttABCABCABC"
+  title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+  ABCABCABC</button>
+ <br>
+ <button class='button' id="buttAAACCCBBB"
+ title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+ AAACCCBBB</button>
+<br>
   <button class='button' id="buttACBACBACB"
   title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
   ACBACBACB</button>
  <br>
-    <button class='button' id="buttABCABCABC"
-      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
-      ABCABCABC</button>
-     <br>
+   
     <button class='button' id="buttAAABCBCBC"
       title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
       AAABCBCBC</button>
      <br>
-   
-    <button class='button' id="buttAAACCCBBB"
-      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
-      AAACCCBBB</button>
-     <br>
-   
+    
   
     <svg id='playSVG' width='200' height='300' viewBox='-60 -60 120 120' style='margin-top:10px'>
       <g class='touchElement glow-effect' id='buttPlayPause'>
@@ -591,7 +591,7 @@ var tau = 1;
               var v   = [];
               let N1 = Math.round(N/2);
 
-           for (var t = 100 ; t <390;  t++) {
+           for (var t = 1 ; t <Math.round(tmax/2.0);  t++) {
              //console.log(t)
               v0  = fourierExpansion(n, t, hl)[0];   // vertex at time stamp t
               v[1] = v0[6 * ind - 5]; 
@@ -762,11 +762,7 @@ var tau = 1;
 
           };
           
-          }
-          // show only a unit when swept volume is shown
-          showUnit = true;
-          buttonSwitchColor(ebID('buttShowUnit'), showUnit);
-
+          } 
           
           updateBandMesh(k, hl);
         
@@ -851,14 +847,14 @@ var tau = 1;
 
 
  
-        var sequence = 1;
-        var sequence1 = true;
-        var sequence2 = false;
+        var sequence = 2;
+        var sequence1 = false;
+        var sequence2 = true;
         var sequence3 = false;
         var sequence4 = false;
 
 
-        buttonSwitchColor(ebID('buttACBACBACB'), sequence1);
+        buttonSwitchColor(ebID('buttABCABCABC'), sequence2);
 
         ebID('buttACBACBACB').addEventListener('click', function () {
           sequence = 1;

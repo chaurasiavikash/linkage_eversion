@@ -26,26 +26,25 @@ var init_parameters = function (sequence) {
   var strData;
   if(sequence==1){
     strData = 'ACBACBACB';
-    tmax = 271;
+  //  tmax = 271;
   } 
   else if(sequence==2){
     strData = 'ABCABCABC';
-    tmax = 270;
+    //tmax = 270;
   }
   else if(sequence==3){
     strData = 'AAABCBCBC';
-    tmax =   255;
+    //tmax =   255;
   }
   else{
     strData = 'AAACCCBBB';
-    tmax =   254;
+    //tmax =   254;
   }
    
-  bx_data = numData[strData].bx_data ;
-  by_data = numData[strData].by_data ;
-  bz_data = numData[strData].bz_data ;
- 
- // tmax = bx_data[1].length;
+  bx_data = numData[strData].bx_data  ;
+  by_data = numData[strData].by_data  ;
+  bz_data = numData[strData].bz_data  ;
+   tmax = bx_data[1].length;
   // creating the init_parameters
 };
 var avg = function (arr) {
@@ -242,7 +241,9 @@ var paths = function (n, hl, selector,ind) {
   var path = [];
   var v0  = [];
   var v   = [];
-  for (var t = 100; t <260; t++) {
+
+  let len_path = Math.round(tmax/2.0)+1;
+   for (var t = 1; t < len_path; t++) {
      v0 = fourierExpansion(n, t, hl)[0];
     v[1] = v0[6 * ind - 5]; 
     v[2] = v0[6 * ind - 4]; 
