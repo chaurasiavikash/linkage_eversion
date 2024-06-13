@@ -1,6 +1,6 @@
-var nu_min  ;
-var nu_max  ;
-var nu_opt  ;
+var nu_min;
+var nu_max;
+var nu_opt;
 
 var numData;
 var parameters;
@@ -9,10 +9,10 @@ var N;
 var N1;
 
 var Pi = Math.PI;
- var n;
+var n;
 var h;
-var kappa0 = [];  // curvature of the midline at time t = 0
-var kappa = [];  // curvature of the midline at time t = 0
+var kappa0 = []; // curvature of the midline at time t = 0
+var kappa = []; // curvature of the midline at time t = 0
 
 var plotClicked;
 var bx_data;
@@ -20,65 +20,145 @@ var by_data;
 var bz_data;
 var tmax;
 
+var init_parameters = function (sequenceName) {
+   // if (sequence == 1) {
+  //   strData = "ACBACBACB";
+  //   //  tmax = 271;
+  // } else if (sequence == 2) {
+  //   strData = "ABCABCABC";
+  //   //tmax = 270;
+  // } else if (sequence == 3) {
+  //   strData = "AAABCBCBC";
+  //   //tmax =   255;
+  // } else {
+  //   strData = "AAACCCBBB";
+  //   //tmax =   254;
+  // }
 
-
-var init_parameters = function (sequence) {
-  var strData;
-  if(sequence==1){
-    strData = 'ACBACBACB';
-  //  tmax = 271;
-  } 
-  else if(sequence==2){
-    strData = 'ABCABCABC';
-    //tmax = 270;
-  }
-  else if(sequence==3){
-    strData = 'AAABCBCBC';
-    //tmax =   255;
-  }
-  else{
-    strData = 'AAACCCBBB';
-    //tmax =   254;
-  }
-   
-  bx_data = numData[strData].bx_data  ;
-  by_data = numData[strData].by_data  ;
-  bz_data = numData[strData].bz_data  ;
-   tmax = bx_data[1].length;
+  bx_data = numData[sequenceName].bx_data;
+  by_data = numData[sequenceName].by_data;
+  bz_data = numData[sequenceName].bz_data;
+  tmax = bx_data[1].length;
   // creating the init_parameters
 };
-var avg = function (arr) {
-   return arr.reduce((a, b) => a + b, 0) / arr.length;
+
+// a function to switch neighboring links
+
+var switch_initial_data = function(bx_data,by_data,bz_data,sequence_index){
+
+  for (var ind=0;ind<tmax;++ind){
+    hx = arrayColumn(bx_data, ind); //
+    hy = arrayColumn(by_data, ind); //
+    hz = arrayColumn(bz_data, ind); //
+
+  [hx, hy, hz] = sequence_switch(hx, hy, hz,sequence_index);
+
+  // Set the modified vectors back into the original arrays
+    setArrayColumn(bx_data, ind, hx);
+    setArrayColumn(by_data, ind, hy);
+    setArrayColumn(bz_data, ind, hz);
+  }
+
+}
+
+var sequence_switch = function (hx, hy, hz,t) {
+  // Augmenting the chain for terminal hinges
+ 
+  let h1 = [];
+  let h2 = [];
+  let h3 = [];
+  if (t == 0) {
+    h1 = [hx[N - 1], hy[N - 1], hz[N - 1]];
+    h2 = [hx[t], hy[t], hz[t]];
+    h3 = [hx[t + 1], hy[t + 1], hz[t + 1]];
+  } else if (t == N) {
+    h1 = [hx[t - 1], hy[t - 1], hz[t - 1]];
+    h2 = [hx[t], hy[t], hz[t]];
+    h3 = [hx[1], hy[1], hz[1]];
+  } else {
+    h1 = [hx[t - 1], hy[t - 1], hz[t - 1]];
+    h2 = [hx[t], hy[t], hz[t]];
+    h3 = [hx[t + 1], hy[t + 1], hz[t + 1]];
+  }
+
+  const h1h3 = [h3[0] - h1[0], h3[1] - h1[1], h3[2] - h1[2]];
+
+  const dot_h1h3 = 1 - (h1[0] * h3[0] + h1[1] * h3[1] + h1[2] * h3[2]);
+
+  const absDot = Math.abs(dot_h1h3);
+
+  if (absDot > Math.pow(10, -5)) {
+    // Condition that h1 and h3 are not parallel
+
+    hx[t] =
+      ((h1h3[0] * h1h3[0]) / dot_h1h3 - 1) * h2[0] +
+      ((h1h3[0] * h1h3[1]) / dot_h1h3) * h2[1] +
+      ((h1h3[0] * h1h3[2]) / dot_h1h3) * h2[2];
+    hy[t] =
+      ((h1h3[1] * h1h3[0]) / dot_h1h3) * h2[0] +
+      ((h1h3[1] * h1h3[1]) / dot_h1h3 - 1) * h2[1] +
+      ((h1h3[1] * h1h3[2]) / dot_h1h3) * h2[2];
+    hz[t] =
+      ((h1h3[2] * h1h3[0]) / dot_h1h3) * h2[0] +
+      ((h1h3[2] * h1h3[1]) / dot_h1h3) * h2[1] +
+      ((h1h3[2] * h1h3[2]) / dot_h1h3 - 1) * h2[2];
+
+    hx[t] = -hx[t];
+    hy[t] = -hy[t];
+    hz[t] = -hz[t];
+
+    
+  }
+  // hx[t] = h2_new[0];
+  // hy[t] = h2_new[1];
+  // hz[t] = h2_new[2];
+
+  // In a browser environment, you would typically use a plotting library to "hold on"
+  // For example, using Plotly or similar library to manage multiple plots
+
+  return [hx, hy, hz];
 };
-  
+
+var avg = function (arr) {
+  return arr.reduce((a, b) => a + b, 0) / arr.length;
+};
 
 var cen = [0, 0, 0];
+
+//  midline and binormal loaded from the saved file
+const arrayColumn = (arr, n) => arr.map((x) => x[n]);
+function setArrayColumn(arr, columnIndex, newColumn) {
+  if (arr.length === 0 || columnIndex < 0 || columnIndex >= arr[0].length) {
+      console.error("Invalid column index or empty array.");
+      return;
+  }
+  if (newColumn.length !== arr.length) {
+      console.error("New column length does not match the array's row count.");
+      return;
+  }
+  for (let i = 0; i < arr.length; i++) {
+      arr[i][columnIndex] = newColumn[i];
+  }
+}
+
+//the function below generates animation data
+var animationData = function (j) {
+  let ind = j % tmax; // ensuring that index is not out of bound
+
+  hx = arrayColumn(bx_data, ind); //
+  hy = arrayColumn(by_data, ind); //
+  hz = arrayColumn(bz_data, ind); //
+
  
-
-//  midline and binormal loaded from the saved file 
-const arrayColumn = (arr, n) => arr.map(x => x[n]);
-
-//the function below generates animation data 
-var animationData = function(j) {
-  let ind = j % (tmax); // ensuring that index is not out of bound
-
-  hx = arrayColumn(bx_data,ind); //
-  hy = arrayColumn(by_data,ind); //
-  hz = arrayColumn(bz_data,ind); //
-  
   let tx = [];
   let ty = [];
-  let tz = []; 
- 
+  let tz = [];
+
   let h = 1;
-     for (var i = 1; i < N + 1; i++) {
-    
-
-    tx[i] = (hy[i - 1] * hz[i] - hy[i] * hz[i - 1])/tau/h;
-    ty[i] = (hz[i - 1] * hx[i] - hz[i] * hx[i - 1])/tau/h;
-    tz[i] = (hx[i - 1] * hy[i] - hx[i] * hy[i - 1])/tau/h;
- 
-
+  for (var i = 1; i < N + 1; i++) {
+    tx[i] = (hy[i - 1] * hz[i] - hy[i] * hz[i - 1]) / tau / h;
+    ty[i] = (hz[i - 1] * hx[i] - hz[i] * hx[i - 1]) / tau / h;
+    tz[i] = (hx[i - 1] * hy[i] - hx[i] * hy[i - 1]) / tau / h;
   }
   // if (isNaN(hx  ) || isNaN(hy  ) || isNaN(hz   )) {
   //   console.log(`Found NaN at index ${i}`);
@@ -87,11 +167,9 @@ var animationData = function(j) {
   tx[0] = tx[N];
   ty[0] = ty[N];
   tz[0] = tz[N];
- 
-///////////////////////
 
+  ///////////////////////
 
- 
   // Midline
   rx[0] = 0.0;
   ry[0] = 0.0;
@@ -125,35 +203,28 @@ var animationData = function(j) {
     rx[i] /= dl;
     ry[i] /= dl;
     rz[i] /= dl;
-  } 
+  }
 
-  return [hx,hy,hz,rx,ry,rz];
-  };
+  return [hx, hy, hz, rx, ry, rz];
+};
 
- 
- 
-  //console.log(rx ); // returns true if any element is NaN
-  //console.log(rx.some(Number.isNaN)); // returns true if any element is NaN
-  
-   
+//console.log(rx ); // returns true if any element is NaN
+//console.log(rx.some(Number.isNaN)); // returns true if any element is NaN
 
-  // cen[0] = avg(rx);
-  // cen[1] = avg(ry);
-  // cen[2] = avg(rz);
-  
-  // console.log(rx[240])
-  //   console.log(rx.some(Number.isNaN));
-  // for (var i = 0; i < N + 1; i++) {
-  //   rx[i] = rx[i] - cen[0];
-  //   ry[i] = ry[i] - cen[1];
-  //   rz[i] = rz[i] - cen[2];
-  // }
+// cen[0] = avg(rx);
+// cen[1] = avg(ry);
+// cen[2] = avg(rz);
 
- 
+// console.log(rx[240])
+//   console.log(rx.some(Number.isNaN));
+// for (var i = 0; i < N + 1; i++) {
+//   rx[i] = rx[i] - cen[0];
+//   ry[i] = ry[i] - cen[1];
+//   rz[i] = rz[i] - cen[2];
+// }
+
 // matrix multiplication
 
- 
- 
 var hx = [];
 var hy = [];
 var hz = [];
@@ -163,34 +234,32 @@ var ry = [];
 var rz = [];
 var kappa = [];
 var fourierExpansion = function (n, t, hl) {
+  l = (hl * 1.7) / 2;
+  var v = [];
 
-   l = (hl * 1.7) / 2;
-   var v = [];
-  
-   const result = animationData(t);
-   hx = result[0];
-   hy = result[1];
-   hz = result[2];
-  
-   rx = result[3];
-   ry = result[4];
-   rz = result[5];
+  const result = animationData(t);
+  hx = result[0];
+  hy = result[1];
+  hz = result[2];
 
-   for(var i=0; i<N+1;i++) {
+  rx = result[3];
+  ry = result[4];
+  rz = result[5];
+
+  for (var i = 0; i < N + 1; i++) {
     //rz[i]=rz[i]-.35;
     //rz[i]=rz[i]-.35;
-   };
+  }
 
-   kappa = rx;
-  
-   cen[0] = avg(rx);
-   cen[1] = avg(ry);
-   cen[2] = avg(rz);
- 
+  kappa = rx;
+
+  cen[0] = avg(rx);
+  cen[1] = avg(ry);
+  cen[2] = avg(rz);
+
   var mid = [0, 0, 0];
- 
 
-  // calculating the length of the midline 
+  // calculating the length of the midline
   // nomrlalizing the midline
   let dl = 0;
   for (let i = 0; i < N; i++) {
@@ -199,14 +268,10 @@ var fourierExpansion = function (n, t, hl) {
     let dz = rz[i + 1] - rz[i];
     dl += Math.sqrt(dx * dx + dy * dy + dz * dz);
   }
- 
- 
+
   // creating tetrahedron vertices
-  
 
-  for (var i = 1; i < N +1; i++) {
-    
-
+  for (var i = 1; i < N + 1; i++) {
     mid[0] = rx[i];
     mid[1] = ry[i];
     mid[2] = rz[i];
@@ -216,16 +281,16 @@ var fourierExpansion = function (n, t, hl) {
     v[6 * i - 3] = mid[2] - hz[i] * l;
     v[6 * i - 2] = mid[0] + hx[i] * l;
     v[6 * i - 1] = mid[1] + hy[i] * l;
-    v[6 * i]     = mid[2] + hz[i] * l;
+    v[6 * i] = mid[2] + hz[i] * l;
   }
-  for (var i = 0; i < 2*N+1; i++) {
+  for (var i = 0; i < 2 * N + 1; i++) {
     for (var j = 1; j < 4; j++) {
-      v[3*i+j] -= cen[j-1]/n;
-      if(j==3){
-        v[3*i+j] -=.25;
+      v[3 * i + j] -= cen[j - 1] / n;
+      if (j == 3) {
+        v[3 * i + j] -= 0.25;
       }
-    };
-  };
+    }
+  }
   // tests
   // console.log(Math.abs(hx[n]*hx[1]+hy[n]*hy[1]+hz[n]*hz[1]+0.925450349781138));
   // tmp = [ hy[n]*hz[1] - hy[1]*hz[n],
@@ -233,27 +298,26 @@ var fourierExpansion = function (n, t, hl) {
   //         hx[n]*hy[1] - hx[1]*hy[n] ];
   // for (var j = 0; j < 3; j++) mid[j] -= tmp[j];
   // console.log([mid[0],mid[1],mid[2]])
-  return [v,kappa];
+  return [v, kappa];
 };
 
-var paths = function (n, hl, selector,ind) {
-   
+var paths = function (n, hl, selector, ind) {
   var path = [];
-  var v0  = [];
-  var v   = [];
+  var v0 = [];
+  var v = [];
 
-  let len_path = Math.round(tmax/2.0)+2;
-   for (var t = 1; t < len_path; t++) {
-     v0 = fourierExpansion(n, t, hl)[0];
-    v[1] = v0[6 * ind - 5]; 
-    v[2] = v0[6 * ind - 4]; 
-    v[3] = v0[6 * ind - 3]; 
-    v[4] = v0[6 * ind - 2]; 
-    v[5] = v0[6 * ind - 1]; 
-    v[6] = v0[6 * ind  ];  
-    
-     if (selector == 1) {
-     // path.push(new BABYLON.Vector3(v[1], v[3], -v[2]));
+  let len_path = Math.round(tmax / 2.0) + 2;
+  for (var t = 1; t < len_path; t++) {
+    v0 = fourierExpansion(n, t, hl)[0];
+    v[1] = v0[6 * ind - 5];
+    v[2] = v0[6 * ind - 4];
+    v[3] = v0[6 * ind - 3];
+    v[4] = v0[6 * ind - 2];
+    v[5] = v0[6 * ind - 1];
+    v[6] = v0[6 * ind];
+
+    if (selector == 1) {
+      // path.push(new BABYLON.Vector3(v[1], v[3], -v[2]));
       path.push(
         new BABYLON.Vector3(
           (v[1] + v[4]) / 2,
@@ -263,13 +327,7 @@ var paths = function (n, hl, selector,ind) {
       );
     } // corners
     if (selector == 2) {
-      path.push(
-        new BABYLON.Vector3(
-           v[1] ,
-           v[3]  ,
-          - v[2]  
-        )
-      );
+      path.push(new BABYLON.Vector3(v[1], v[3], -v[2]));
       // if (i > e / 2 - 1) {
       //   break;
       // }
@@ -278,8 +336,8 @@ var paths = function (n, hl, selector,ind) {
   return path;
 };
 
-function poly(N,n, v, i, cm, golfMesh , scheme) {
-   var v1 = [v[6 * i - 5], v[6 * i - 3], -v[6 * i - 4]];
+function poly(N, n, v, i, cm, golfMesh, scheme) {
+  var v1 = [v[6 * i - 5], v[6 * i - 3], -v[6 * i - 4]];
   var v2 = [v[6 * i - 2], v[6 * i], -v[6 * i - 1]];
   if (i < N) {
     var v3 = [v[6 * i + 1], v[6 * i + 3], -v[6 * i + 2]];
@@ -292,36 +350,31 @@ function poly(N,n, v, i, cm, golfMesh , scheme) {
   var pos = v1.concat(v1, v1, v2, v2, v2, v3, v3, v3, v4, v4, v4);
 
   var indices = [0, 6, 3, 1, 4, 9, 2, 10, 7, 5, 8, 11]; // for mid[j] += tmp[j]/abs;
- 
+
   // var indices = [ 0,3,6, 1,9,4, 2,7,10, 5,11,8 ]; // for mid[j] -= tmp[j]/abs;
 
   var c1, c2, c3, c4;
-   var colors = [];
-   if (scheme == 1) {
+  var colors = [];
+  if (scheme == 1) {
     // rainbow whole tetrahedron
-    c1 =  jet(i); 
-     
-    
-  }   else if (scheme == 2) {
+    c1 = jet(i);
+  } else if (scheme == 2) {
     // Mobius brw 3x
-     let n = 3;
-      var indx =  Math.floor(i/(Math.round(N/n))) ;
-    c1 = jet(Math.round(Math.round(N/n)*indx));
+    let n = 3;
+    var indx = Math.floor(i / Math.round(N / n));
+    c1 = jet(Math.round(Math.round(N / n) * indx));
     //  if(indx%2  ==  0){
     //   c1 = [1,0,0,1]
     //   console.log(c1);
     //  }
     //  else if (indx%2  ==  1){
     //    c1 = [0,0,1,1];}
+  }
 
-     };
-      
-      c2  = c1;
-     c3 = c1;
-     c4 = c1;
-     colors = c3.concat(c1, c2, c3, c1, c4, c3, c2, c4, c1, c2, c4);
-  
-  
+  c2 = c1;
+  c3 = c1;
+  c4 = c1;
+  colors = c3.concat(c1, c2, c3, c1, c4, c3, c2, c4, c1, c2, c4);
 
   var normals = [];
   BABYLON.VertexData.ComputeNormals(pos, indices, normals);
@@ -334,192 +387,207 @@ function poly(N,n, v, i, cm, golfMesh , scheme) {
   vertexData.normals = normals;
 
   vertexData.applyToMesh(cm);
-   var ind1 = Math.round(N / (2 * n));
+  var ind1 = Math.round(N / (2 * n));
 
-   for (var j=1;j<golfMesh.length+1;j++){
-              let l = 2 * j * ind1 - 2 * ind1 + 1;
-              var v1 = [v[6 * l - 5], v[6 * l - 3], -v[6 * l - 4]];
-              var v2 = [v[6 * l - 2], v[6 * l], -v[6 * l - 1]];
-    if(golfMesh[j]){
-      golfMesh[j].position  = new BABYLON.Vector3((v1[0] + v2[0]) / 2 ,
-      (v1[1] + v2[1]) / 2,(v1[2] + v2[2]) / 2);
-    
-    };
- 
-   };
-
-     
+  for (var j = 1; j < golfMesh.length + 1; j++) {
+    let l = 2 * j * ind1 - 2 * ind1 + 1;
+    var v1 = [v[6 * l - 5], v[6 * l - 3], -v[6 * l - 4]];
+    var v2 = [v[6 * l - 2], v[6 * l], -v[6 * l - 1]];
+    if (golfMesh[j]) {
+      golfMesh[j].position = new BABYLON.Vector3(
+        (v1[0] + v2[0]) / 2,
+        (v1[1] + v2[1]) / 2,
+        (v1[2] + v2[2]) / 2
+      );
+    }
+  }
 }
- 
-// assigning position and orientation to arrows, connectors etc. 
+
+// assigning position and orientation to arrows, connectors etc.
 
 function locationAndDirection(v1, v2) {
-  var mod = Math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2 + (v1[2] - v2[2])**2);
-  let direction = new BABYLON.Vector3((v1[0] - v2[0]) / mod, (v1[1] - v2[1]) / mod, (v1[2] - v2[2]) / mod);
-  let mid_position = new BABYLON.Vector3((v1[0] + v2[0]) / 2.0, (v1[1] + v2[1]) / 2.0, (v1[2] + v2[2]) / 2.0);
+  var mod = Math.sqrt(
+    (v1[0] - v2[0]) ** 2 + (v1[1] - v2[1]) ** 2 + (v1[2] - v2[2]) ** 2
+  );
+  let direction = new BABYLON.Vector3(
+    (v1[0] - v2[0]) / mod,
+    (v1[1] - v2[1]) / mod,
+    (v1[2] - v2[2]) / mod
+  );
+  let mid_position = new BABYLON.Vector3(
+    (v1[0] + v2[0]) / 2.0,
+    (v1[1] + v2[1]) / 2.0,
+    (v1[2] + v2[2]) / 2.0
+  );
   let lenV1V2 = mod;
- 
-  return [  mid_position, direction];
+
+  return [mid_position, direction];
 }
 
-function assignStructure(v,hingeLength,arrowBody,tip,topDisc,bottomDisc,hingeBody,connector){
-  
-  
-  for (var i = 1;i<N+1;++i){
-
+function assignStructure(
+  v,
+  hingeLength,
+  arrowBody,
+  tip,
+  topDisc,
+  bottomDisc,
+  hingeBody,
+  connector
+) {
+  for (var i = 1; i < N + 1; ++i) {
     var v1 = [v[6 * i - 5], v[6 * i - 3], -v[6 * i - 4]];
     var v2 = [v[6 * i - 2], v[6 * i], -v[6 * i - 1]];
- 
-   // assigning coordinate and direction to arrows 
-   // direction for alignment  
-  // Compute the rotation to align the body with the given direction
 
-  let lenV1V2 = Math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2 + (v1[2] - v2[2])**2);
+    // assigning coordinate and direction to arrows
+    // direction for alignment
+    // Compute the rotation to align the body with the given direction
 
-  let [  mid_position, direction] = locationAndDirection(v1, v2);
+    let lenV1V2 = Math.sqrt(
+      (v1[0] - v2[0]) ** 2 + (v1[1] - v2[1]) ** 2 + (v1[2] - v2[2]) ** 2
+    );
 
- 
-  var axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
-  var angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
-  var quater = BABYLON.Quaternion.RotationAxis(axis, angle);
-  // position and orientation 
- 
-  arrowBody[i].position = mid_position;
-  arrowBody[i].rotationQuaternion = quater;
-  // Assign the height value later
-  arrowBody[i].scaling.x =  3.1 * hingeLength;            
-  arrowBody[i].scaling.y =  .8 * hingeLength;            
-  arrowBody[i].scaling.z =  3.1 * hingeLength;            
-  
-   
-  var h_tip  = .5*hingeLength;
- 
-  var fac1 = h_tip/2 + .9*hingeLength;
- 
- 
-tip[i].rotationQuaternion = quater;
-tip[i].position  =new BABYLON.Vector3(mid_position.x + fac1*direction.x ,mid_position.y +  fac1*direction.y
-                  ,mid_position.z +  fac1* direction.z);
-tip[i].scaling.x  = h_tip*4.8;
-tip[i].scaling.y  = h_tip*.8;
-tip[i].scaling.z  = h_tip*4.8;
-  
- // assigning hinges 
+    let [mid_position, direction] = locationAndDirection(v1, v2);
 
- 
- hingeBody[i].position = mid_position;
- hingeBody[i].rotationQuaternion = quater;
- hingeBody[i].scaling.x =  4.1 * hingeLength;
- hingeBody[i].scaling.y =  .4 * hingeLength;
- hingeBody[i].scaling.z =  4.1 * hingeLength;
- 
- fac1 = hingeLength;
+    var axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
+    var angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
+    var quater = BABYLON.Quaternion.RotationAxis(axis, angle);
+    // position and orientation
 
- topDisc[i].rotationQuaternion = quater;
- topDisc[i].position  =new BABYLON.Vector3(mid_position.x + fac1*direction.x ,mid_position.y +  fac1*direction.y
-                   ,mid_position.z +  fac1* direction.z);
- topDisc[i].scaling.x  = 5.1 * hingeLength;
- topDisc[i].scaling.y  = 0;
- topDisc[i].scaling.z  = 5.1 * hingeLength;
+    arrowBody[i].position = mid_position;
+    arrowBody[i].rotationQuaternion = quater;
+    // Assign the height value later
+    arrowBody[i].scaling.x = 3.1 * hingeLength;
+    arrowBody[i].scaling.y = 0.8 * hingeLength;
+    arrowBody[i].scaling.z = 3.1 * hingeLength;
 
- fac1 = -hingeLength;
+    var h_tip = 0.5 * hingeLength;
 
- bottomDisc[i].rotationQuaternion = quater;
- bottomDisc[i].position  =new BABYLON.Vector3(mid_position.x + fac1*direction.x ,mid_position.y +  fac1*direction.y
-                   ,mid_position.z +  fac1* direction.z);
- bottomDisc[i].scaling.x  = 5.1 * hingeLength;
- bottomDisc[i].scaling.y  = 0;
- bottomDisc[i].scaling.z  = 5.1 * hingeLength;
+    var fac1 = h_tip / 2 + 0.9 * hingeLength;
 
+    tip[i].rotationQuaternion = quater;
+    tip[i].position = new BABYLON.Vector3(
+      mid_position.x + fac1 * direction.x,
+      mid_position.y + fac1 * direction.y,
+      mid_position.z + fac1 * direction.z
+    );
+    tip[i].scaling.x = h_tip * 4.8;
+    tip[i].scaling.y = h_tip * 0.8;
+    tip[i].scaling.z = h_tip * 4.8;
 
-// assigning connectors 
-var iPlus1;
-if(i<N){
-  iPlus1 = i+1;
-   var v3 = [v[6 * iPlus1 - 5], v[6 * iPlus1 - 3], -v[6 * iPlus1 - 4]];
-  var v4 = [v[6 * iPlus1 - 2], v[6 * iPlus1], -v[6 * iPlus1 - 1]];
-}
-else{
-  iPlus1 = 1;
+    // assigning hinges
 
-  var v4 = [v[6 * iPlus1 - 5], v[6 * iPlus1 - 3], -v[6 * iPlus1 - 4]];
-  var v3 = [v[6 * iPlus1 - 2], v[6 * iPlus1], -v[6 * iPlus1 - 1]];
-};
- 
-   // assigning coordinate and direction to arrows 
-   // direction for alignment  
-  // Compute the rotation to align the body with the given direction
+    hingeBody[i].position = mid_position;
+    hingeBody[i].rotationQuaternion = quater;
+    hingeBody[i].scaling.x = 4.1 * hingeLength;
+    hingeBody[i].scaling.y = 0.4 * hingeLength;
+    hingeBody[i].scaling.z = 4.1 * hingeLength;
 
-  let temp1 = [(v1[0] + v2[0]) / 2, (v1[1] + v2[1]) / 2, (v1[2] + v2[2]) / 2];
-  let temp2 = [(v3[0] + v4[0]) / 2, (v3[1] + v4[1]) / 2, (v3[2] + v4[2]) / 2];
-    
-   [mid_position, direction] = locationAndDirection(temp1,temp2);
+    fac1 = hingeLength;
 
-  axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
-  angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
-  quater = BABYLON.Quaternion.RotationAxis(axis, angle);
+    topDisc[i].rotationQuaternion = quater;
+    topDisc[i].position = new BABYLON.Vector3(
+      mid_position.x + fac1 * direction.x,
+      mid_position.y + fac1 * direction.y,
+      mid_position.z + fac1 * direction.z
+    );
+    topDisc[i].scaling.x = 5.1 * hingeLength;
+    topDisc[i].scaling.y = 0;
+    topDisc[i].scaling.z = 5.1 * hingeLength;
 
+    fac1 = -hingeLength;
 
-  connector[i].position = mid_position;
-  connector[i].rotationQuaternion = quater;
-   
-  x1 = (v1[0]+v2[0])/2;
-  y1 = (v1[1]+v2[1])/2;
-  z1 = (v1[2]+v2[2])/2;
+    bottomDisc[i].rotationQuaternion = quater;
+    bottomDisc[i].position = new BABYLON.Vector3(
+      mid_position.x + fac1 * direction.x,
+      mid_position.y + fac1 * direction.y,
+      mid_position.z + fac1 * direction.z
+    );
+    bottomDisc[i].scaling.x = 5.1 * hingeLength;
+    bottomDisc[i].scaling.y = 0;
+    bottomDisc[i].scaling.z = 5.1 * hingeLength;
 
-  x2 = (v3[0]+v4[0])/2;
-  y2 = (v3[1]+v4[1])/2;
-  z2 = (v3[2]+v4[2])/2;
+    // assigning connectors
+    var iPlus1;
+    if (i < N) {
+      iPlus1 = i + 1;
+      var v3 = [v[6 * iPlus1 - 5], v[6 * iPlus1 - 3], -v[6 * iPlus1 - 4]];
+      var v4 = [v[6 * iPlus1 - 2], v[6 * iPlus1], -v[6 * iPlus1 - 1]];
+    } else {
+      iPlus1 = 1;
 
-   lenV1V2 = 0.5*Math.sqrt((x1 - x2)**2 + (y1 - y2)**2 + (z1 - z2)**2);
+      var v4 = [v[6 * iPlus1 - 5], v[6 * iPlus1 - 3], -v[6 * iPlus1 - 4]];
+      var v3 = [v[6 * iPlus1 - 2], v[6 * iPlus1], -v[6 * iPlus1 - 1]];
+    }
 
-   connector[i].scaling.x =  .2;            
-   connector[i].scaling.y =  1*lenV1V2;;            
-   connector[i].scaling.z =  .2;            
-   
+    // assigning coordinate and direction to arrows
+    // direction for alignment
+    // Compute the rotation to align the body with the given direction
 
-  };
+    let temp1 = [(v1[0] + v2[0]) / 2, (v1[1] + v2[1]) / 2, (v1[2] + v2[2]) / 2];
+    let temp2 = [(v3[0] + v4[0]) / 2, (v3[1] + v4[1]) / 2, (v3[2] + v4[2]) / 2];
 
-  /// assigning coordinates to the N+1th arrow 
+    [mid_position, direction] = locationAndDirection(temp1, temp2);
+
+    axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
+    angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
+    quater = BABYLON.Quaternion.RotationAxis(axis, angle);
+
+    connector[i].position = mid_position;
+    connector[i].rotationQuaternion = quater;
+
+    x1 = (v1[0] + v2[0]) / 2;
+    y1 = (v1[1] + v2[1]) / 2;
+    z1 = (v1[2] + v2[2]) / 2;
+
+    x2 = (v3[0] + v4[0]) / 2;
+    y2 = (v3[1] + v4[1]) / 2;
+    z2 = (v3[2] + v4[2]) / 2;
+
+    lenV1V2 = 0.5 * Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2);
+
+    connector[i].scaling.x = 0.2;
+    connector[i].scaling.y = 1 * lenV1V2;
+    connector[i].scaling.z = 0.2;
+  }
+
+  /// assigning coordinates to the N+1th arrow
   i = 1;
   var v2 = [v[6 * i - 5], v[6 * i - 3], -v[6 * i - 4]];
-    var v1 = [v[6 * i - 2], v[6 * i], -v[6 * i - 1]];
- 
-    i = N+1;
-   // assigning coordinate and direction to arrows 
-   // direction for alignment  
+  var v1 = [v[6 * i - 2], v[6 * i], -v[6 * i - 1]];
+
+  i = N + 1;
+  // assigning coordinate and direction to arrows
+  // direction for alignment
   // Compute the rotation to align the body with the given direction
 
-  let [mid_position,direction] = locationAndDirection(v1,v2) ;
- 
+  let [mid_position, direction] = locationAndDirection(v1, v2);
+
   var axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
   var angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
   var quater = BABYLON.Quaternion.RotationAxis(axis, angle);
-  // position and orientation 
- 
+  // position and orientation
+
   arrowBody[i].position = mid_position;
   arrowBody[i].rotationQuaternion = quater;
   // Assign the height value later
-  arrowBody[i].scaling.x =  3.1 * hingeLength;            
-  arrowBody[i].scaling.y =  .8 * hingeLength;            
-  arrowBody[i].scaling.z =  3.1 * hingeLength;            
-  
-   
-  var h_tip  = .5*hingeLength;
- 
-  var fac1 = h_tip/2 + .9*hingeLength;
- 
- 
-tip[i].rotationQuaternion = quater;
-tip[i].position  =new BABYLON.Vector3(mid_position.x + fac1*direction.x ,mid_position.y +  fac1*direction.y
-                  ,mid_position.z +  fac1* direction.z);
-tip[i].scaling.x  = h_tip*4.8;
-tip[i].scaling.y  = h_tip*.8;
-tip[i].scaling.z  = h_tip*4.8;
+  arrowBody[i].scaling.x = 3.1 * hingeLength;
+  arrowBody[i].scaling.y = 0.8 * hingeLength;
+  arrowBody[i].scaling.z = 3.1 * hingeLength;
 
-};
- 
+  var h_tip = 0.5 * hingeLength;
 
+  var fac1 = h_tip / 2 + 0.9 * hingeLength;
+
+  tip[i].rotationQuaternion = quater;
+  tip[i].position = new BABYLON.Vector3(
+    mid_position.x + fac1 * direction.x,
+    mid_position.y + fac1 * direction.y,
+    mid_position.z + fac1 * direction.z
+  );
+  tip[i].scaling.x = h_tip * 4.8;
+  tip[i].scaling.y = h_tip * 0.8;
+  tip[i].scaling.z = h_tip * 4.8;
+}
 
 var col = [];
 col[1] = [1, 0, 0, 1];
@@ -581,12 +649,17 @@ var rainbowStepScheme = function (z) {
     return [1, 0, 1, alpha];
   }
 };
-var brwScheme = function(z) { // black - red - white
-  var s = 1/3;
-       if (             z <   s ) { return [0,0,0,1]; }
-  else if ( z >=   s && z < 2*s ) { return [1,0,0,1]; }
-  else                            { return [1,1,1,1]; }
-}
+var brwScheme = function (z) {
+  // black - red - white
+  var s = 1 / 3;
+  if (z < s) {
+    return [0, 0, 0, 1];
+  } else if (z >= s && z < 2 * s) {
+    return [1, 0, 0, 1];
+  } else {
+    return [1, 1, 1, 1];
+  }
+};
 
 var symmetryAxis = function (scene) {
   var d = 0.01;
@@ -607,10 +680,9 @@ var symmetryAxis = function (scene) {
   return symAxis;
 };
 var meshDispose;
-var planeAxis = function (arrowBody ,tip) {
-
+var planeAxis = function (arrowBody, tip) {
   meshDispose(arrowBody);
-   meshDispose(tip);;
+  meshDispose(tip);
 
   // var l = 1.8;
   // var d = 0.01;
@@ -642,45 +714,42 @@ var planeAxis = function (arrowBody ,tip) {
 };
 
 function midlineInit() {
-          // Update the path
-          var initialPath = [];
-          for (var i = 0; i < N + 1; i++) {
-            initialPath.push(new BABYLON.Vector3(0, 0, 0));
-          }
+  // Update the path
+  var initialPath = [];
+  for (var i = 0; i < N + 1; i++) {
+    initialPath.push(new BABYLON.Vector3(0, 0, 0));
+  }
 
-          optionsMidline = {
-            path: initialPath, //vec3 array,
-            radius: 0.004, // set the radius of the tube
-            updatable: true
-          };
-          // Update the tube mesh with the new data
-          midline = BABYLON.MeshBuilder.CreateTube("midline", optionsMidline, scene);
-          midline.material = midlineMaterial;
+  optionsMidline = {
+    path: initialPath, //vec3 array,
+    radius: 0.004, // set the radius of the tube
+    updatable: true,
+  };
+  // Update the tube mesh with the new data
+  midline = BABYLON.MeshBuilder.CreateTube("midline", optionsMidline, scene);
+  midline.material = midlineMaterial;
 
-          // initialize rulings 
+  // initialize rulings
 
+  for (var i = 1; i < n + 1; i++) {
+    let temp = [];
+    temp.push(new BABYLON.Vector3(0, 0, 0));
+    temp.push(new BABYLON.Vector3(0, 0, 0));
 
-          for (var i = 1; i < n + 1; i++) {
-            let temp = [];
-            temp.push(new BABYLON.Vector3(0, 0, 0));
-            temp.push(new BABYLON.Vector3(0, 0, 0));
+    optionsRulings = {
+      path: temp, //vec3 array,
+      radius: 0.01, // set the radius of the tube
+      updatable: true,
+    };
 
-            optionsRulings = {
-              path: temp, //vec3 array,
-              radius: 0.01, // set the radius of the tube
-              updatable: true
-            };
-
-            rulings[i] = BABYLON.MeshBuilder.CreateTube("rulings", optionsRulings, scene);
-            rulings[i].material = rulingsMaterial;
-
-
-          };
-
-        };
-
-
-
+    rulings[i] = BABYLON.MeshBuilder.CreateTube(
+      "rulings",
+      optionsRulings,
+      scene
+    );
+    rulings[i].material = rulingsMaterial;
+  }
+}
 
 // Define a color map based on the index of each point using the jet function
 function getJetColor(index, numPoints) {
@@ -720,83 +789,74 @@ function getVibgyorColor(index, numPoints) {
   return new BABYLON.Color4(r / 255, g / 255, b / 255, 1);
 }
 
-
-var jet = function(i) {
-    
+var jet = function (i) {
   let r, g, b;
 
-  let N3 = Math.round(N );
+  let N3 = Math.round(N);
   if (i < N3 / 4) {
     r = 0;
-    g = Math.floor(4 * i / N3 * 255);
+    g = Math.floor(((4 * i) / N3) * 255);
     b = 255;
   } else if (i < N3 / 2) {
     r = 0;
     g = 255;
-    b = Math.floor(255 - 4 * (i - N3 / 4) / N3 * 255);
-  } else if (i < 3 * N3 / 4) {
-    r = Math.floor(4 * (i - N3 / 2) / N3 * 255);
+    b = Math.floor(255 - ((4 * (i - N3 / 4)) / N3) * 255);
+  } else if (i < (3 * N3) / 4) {
+    r = Math.floor(((4 * (i - N3 / 2)) / N3) * 255);
     g = 255;
     b = 0;
   } else {
     r = 255;
-    g = Math.floor(255 - 4 * (i - 3 * N3 / 4) / N3 * 255);
+    g = Math.floor(255 - ((4 * (i - (3 * N3) / 4)) / N3) * 255);
     b = 0;
   }
 
+  return [r / 255, g / 255, b / 255, 1];
+};
 
-return [  r / 255, g / 255, b / 255, 1]; 
-}
-
-var jetK = function(i) {
-    
+var jetK = function (i) {
   let r, g, b;
 
   let N3 = N;
   if (i < N3 / 4) {
     r = 0;
-    g = Math.floor(4 * i / N3 * 255);
+    g = Math.floor(((4 * i) / N3) * 255);
     b = 255;
   } else if (i < N3 / 2) {
     r = 0;
     g = 255;
-    b = Math.floor(255 - 4 * (i - N3 / 4) / N3 * 255);
-  } else if (i < 3 * N3 / 4) {
-    r = Math.floor(4 * (i - N3 / 2) / N3 * 255);
+    b = Math.floor(255 - ((4 * (i - N3 / 4)) / N3) * 255);
+  } else if (i < (3 * N3) / 4) {
+    r = Math.floor(((4 * (i - N3 / 2)) / N3) * 255);
     g = 255;
     b = 0;
   } else {
     r = 255;
-    g = Math.floor(255 - 4 * (i - 3 * N3 / 4) / N3 * 255);
+    g = Math.floor(255 - ((4 * (i - (3 * N3) / 4)) / N3) * 255);
     b = 0;
   }
 
-
-return `rgba(${r},${g},${b},1)`; 
-}
-
-
+  return `rgba(${r},${g},${b},1)`;
+};
 
 ////////////////////////////////
 ////////// charts /////////////
 
-var renderCanvasK  ;
-var contentE ;
-var content  ;
-var contentK  ;
-var contentPath  ;
+var renderCanvasK;
+var contentE;
+var content;
+var contentK;
+var contentPath;
 var contentEWidth;
-
 
 var x_legend = [];
 
 var legendCount = 13;
-var legendSpacing = 40*contentEWidth / (legendCount + 1);
+var legendSpacing = (40 * contentEWidth) / (legendCount + 1);
 
 for (var i = 1; i <= legendCount; i++) {
   x_legend.push(i * legendSpacing);
-};
-
+}
 
 var linspace = function (start, end, num) {
   var step = (end - start) / (num - 1);
@@ -808,8 +868,7 @@ var linspace = function (start, end, num) {
   }
 
   return result;
-}
-
+};
 
 var getIndexFromLinspace = function (x) {
   let start = xData[0];
@@ -851,4 +910,35 @@ var nui_to_n = function (nu_i) {
 
   return n; // Will be null if no matching row is found
 };
- 
+
+///  interaction with buttons and sliders start here
+// Define the colors
+const colA = new BABYLON.Color3(1, 0.294, 0); // Color A
+const colB = new BABYLON.Color3(0, 1, 0.902); // Color B
+const colC = new BABYLON.Color3(0.961, 0.396, 0.847); // Color C
+  // Map to hold the colors associated with each type of link
+  const colorMap = {
+    A: colA,
+    B: colB,
+    C: colC,
+  };
+// generating color sequence for linkages
+var generateColorSequence = function (sequence) {
+  const colorSequence = [];
+
+
+
+  // Generate the color sequence based on the input sequence
+  for (let i = 0; i < sequence.length; i++) {
+    const link = sequence[i];
+    if (colorMap[link]) {
+      colorSequence.push(colorMap[link]);
+    } else {
+      // Handle unexpected characters gracefully
+      console.error("Invalid link type found in the sequence:", link);
+      return []; // Return an empty array or handle as appropriate
+    }
+  }
+
+  return colorSequence;
+};
