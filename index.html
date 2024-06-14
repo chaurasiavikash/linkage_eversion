@@ -818,16 +818,17 @@ of the band  during the everting motion'> swept volume </button>
 
         // Common click handler for all buttons
         function handleButtonClick(event) {
+          sequence_index = 0;
           const buttonId = event.target.id;
           sequenceName = buttons[buttonId];
           base_sequence = sequenceName;
           console.log(sequenceName)
-          if (sequenceName) {
+          
             colorSequence = generateColorSequence(sequenceName);
             init_parameters(sequenceName);
             updateButtonColors(buttonId); // Update all button colors based on the active button
             document.body.dispatchEvent( sequenceChanged);
-          }
+          
         }
 
        
@@ -931,8 +932,7 @@ function enableUI() {
         var base_sequence = sequenceName;
         //  button for base sequences
         for (const buttonId of Object.keys(buttons)) {
-          ebID(buttonId).addEventListener('click', handleButtonClick);
-          sequence_index = 0;
+                   ebID(buttonId).addEventListener('click', handleButtonClick);
         }
 
 
