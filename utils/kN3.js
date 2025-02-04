@@ -942,3 +942,169 @@ var generateColorSequence = function (sequence) {
 
   return colorSequence;
 };
+
+var  maxPistonLength = [0,0,0];
+
+var getPistonLength  = function(){
+
+
+  let dl ;
+
+
+  var ind0 = Math.round(N / (1* n));
+
+ 
+  for (var i = 1; i < n + 1; i++) {
+    var ind =  (i-1)*ind0+1;//  2 * i * ind0 - 1 * ind0 + 1;
+
+  for (var t=0;t<tmax;++t){
+
+    let temp = animationData(t);
+    rx0 = temp[3];
+    ry0 = temp[4];
+    rz0 = temp[5]; 
+
+    dl =  Math.sqrt(rx0[ind] * rx0[ind] + ry0[ind] * ry0[ind] + rz0[ind] * rz0[ind]);
+    
+    if(dl>maxPistonLength[i-1]){
+      maxPistonLength[i-1] = dl;
+    }
+
+  };}
+}
+
+
+
+function assignPumpStructure(v,hingeLength,piston1,piston2){
+  
+ 
+
+  //pistonLength = Math.sqrt(rx[0] * rx[0] + ry[0] * ry[0] + rz[0] * rz[0]);
+  //console.log(pistonLength)
+
+  var ind0 = Math.round(N / (1 * n));
+
+  let pistonLength;
+  for (var i = 1; i < n + 1; i++) {
+
+    pistonLength = 0.65*maxPistonLength[i-1];
+       
+    var ind =  (i-1)*ind0+1;//  2 * i * ind0 - 1 * ind0 + 1;
+ 
+
+    var v1 = [v[6 * ind - 5], v[6 * ind - 3], -v[6 * ind - 4]];
+    var v2 = [v[6 * ind - 2], v[6 * ind], -v[6 * ind - 1]];
+
+    var vmidline = [(v1[0]+v2[0])/2.0, (v1[1]+v2[1])/2.0, (v1[2]+v2[2])/2.0];
+
+    let [  mid_position, direction] = locationAndDirection(vmidline, [0,0,0]);
+
+ 
+    
+    var vmid_piston1 = new BABYLON.Vector3( pistonLength*.79  /2*direction.x,  pistonLength*.79 /2*direction.y,  pistonLength*.79  /2*direction.z);
+    var vmid_piston2 = new BABYLON.Vector3(vmidline[0]-pistonLength*.75/2*direction.x,  vmidline[1]-pistonLength*.75/2*direction.y,  vmidline[2]-pistonLength*.75/2*direction.z);
+
+   // assigning coordinate and direction to arrows 
+   // direction for alignment  
+  // Compute the rotation to align the body with the given direction
+
+  let lenVmid  = Math.sqrt((vmidline[0])**2 + (vmidline[1])**2 + (vmidline[2])**2);
+
+
+ 
+  var axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
+  var angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
+  var quater = BABYLON.Quaternion.RotationAxis(axis, angle);
+  // position and orientation 
+ 
+  piston1[i].position = vmid_piston1;
+  piston1[i].rotationQuaternion = quater;
+  // Assign the height value later
+  piston1[i].scaling.x =  .2*lenVmid ;            
+  piston1[i].scaling.y = .95/2*pistonLength;             
+  piston1[i].scaling.z =   .2*lenVmid ;            
+  
+   
+
+ 
+ piston2[i].position = vmid_piston2;
+ piston2[i].rotationQuaternion = quater;
+ piston2[i].scaling.x =   .2*lenVmid;
+ piston2[i].scaling.y =  .75/2*pistonLength;  
+ piston2[i].scaling.z =   .2*lenVmid;
+ 
+   
+
+  };
+
+   
+
+};
+ 
+
+
+
+
+// function assignPumpStructure(v,hingeLength,piston1,piston2){
+  
+ 
+
+//   //maxPistonLength = Math.sqrt(rx[0] * rx[0] + ry[0] * ry[0] + rz[0] * rz[0]);
+//   //console.log(maxPistonLength)
+
+//   var ind0 = Math.round(N / (2 * n));
+
+ 
+//   for (var i = 1; i < n + 1; i++) {
+//     var ind = 2 * i * ind0 - 2 * ind0 + 1;
+ 
+
+//     var v1 = [v[6 * ind - 5], v[6 * ind - 3], -v[6 * ind - 4]];
+//     var v2 = [v[6 * ind - 2], v[6 * ind], -v[6 * ind - 1]];
+
+//     var vmidline = [(v1[0]+v2[0])/2.0, (v1[1]+v2[1])/2.0, (v1[2]+v2[2])/2.0];
+
+//     let [  mid_position, direction] = locationAndDirection(vmidline, [0,0,0]);
+
+ 
+    
+//     var vmid_piston1 = new BABYLON.Vector3( maxPistonLength*.75/2*direction.x,  maxPistonLength*.75/2*direction.y,  maxPistonLength*.75/2*direction.z);
+//     var vmid_piston2 = new BABYLON.Vector3(vmidline[0]-maxPistonLength*.75/2*direction.x,  vmidline[1]-maxPistonLength*.75/2*direction.y,  vmidline[2]-maxPistonLength*.75/2*direction.z);
+
+//    // assigning coordinate and direction to arrows 
+//    // direction for alignment  
+//   // Compute the rotation to align the body with the given direction
+
+//   let lenVmid  = Math.sqrt((vmidline[0])**2 + (vmidline[1])**2 + (vmidline[2])**2);
+
+
+ 
+//   var axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
+//   var angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
+//   var quater = BABYLON.Quaternion.RotationAxis(axis, angle);
+//   // position and orientation 
+ 
+//   piston1[i].position = vmid_piston1;
+//   piston1[i].rotationQuaternion = quater;
+//   // Assign the height value later
+//   piston1[i].scaling.x =  .2*lenVmid ;            
+//   piston1[i].scaling.y = .75/2*maxPistonLength;             
+//   piston1[i].scaling.z =   .2*lenVmid ;            
+  
+   
+
+ 
+//  piston2[i].position = vmid_piston2;
+//  piston2[i].rotationQuaternion = quater;
+//  piston2[i].scaling.x =   .2*lenVmid;
+//  piston2[i].scaling.y =  .75/2*maxPistonLength;  
+//  piston2[i].scaling.z =   .2*lenVmid;
+ 
+   
+
+//   };
+
+   
+
+// };
+ 
