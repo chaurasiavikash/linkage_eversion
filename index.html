@@ -5,27 +5,28 @@
   <meta http-equiv='Content-Type' content='text/html' charset='utf-8' />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="style.css?v=1.0.0">
-  <script src="script.js?v=1.0.0"></script>
-  
-  <title>M&ouml;bius bands</title>
-  <link href='utils/3M_favicon.png' rel='icon'>
-  <link rel='stylesheet' type='text/css' href='utils/kN.css'>
-  <link rel="stylesheet" href='utils/shepherd.css'>
-  <script src='utils/babylon.custom.js'></script>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 
-  <script src='utils/util.js'></script>
-  <script src='utils/tetToggler.js'></script>
-  <script src='utils/global_variable.js'></script>
-  <script src='utils/kN3.js'></script>
-  <script src='utils/data_bennett.js'></script>
-  <!-- <script src='utils/animated-cursor.js' defer></script> -->
+  <title>M&ouml;bius bands</title>
+  <link href='utils_linkage/3M_favicon.png' rel='icon'>
+  <link rel='stylesheet' type='text/css' href='utils_linkage/kN.css'>
+  <link rel="stylesheet" href='utils_linkage/shepherd.css'>
+  <script src='utils_linkage/babylon.custom.js'></script>
+
+  <script src='utils_linkage/util.js'></script>
+  <script src='utils_linkage/tetToggler.js'></script>
+  <script src='utils_linkage/global_variable.js'></script>
+  <script src='utils_linkage/kN3.js'></script>
+  <script src='utils_linkage/data_bennett.js'></script>
+  <!-- <script src='utils_linkage/animated-cursor.js' defer></script> -->
 
   <script src="https://unpkg.com/animated-cursor@1.1.1/dist/index.umd.js"></script>
 
   <!-- Shepherd.js JavaScript -->
-  <script src='utils/shepherd.js'></script>
-  <script src='utils/tour.js'></script>
+  <script src='utils_linkage/shepherd.js'></script>
+  <script src='utils_linkage/tour.js'></script>
 
   <style>
     .small-button {
@@ -174,8 +175,8 @@
   <div class='rightbar'>
     <button class='button' id='buttFullScreen' title='enable full screen'> full screen </button>
     <br>
-   
- 
+
+
     <!-- eversion path of the edge  -->
     <button class='button' id='buttShowMidVol' title='volume swept by the midline
 of the band  during the everting motion'> swept volume </button>
@@ -187,6 +188,11 @@ of the band  during the everting motion'> swept volume </button>
     of the band  during the everting motion'> eversion path </button>
     <!-- <button class='button' id='buttShowAxis'> show axis </button> -->
     <br>
+    <br>
+    <!-- eversion path of the midline -->
+    <button class='button' id='buttShowPump' title='path traced by a point on the midline
+    of the band  during the everting motion'> pump </button>
+    <!-- <button class='button' id='buttShowAxis'> show axis </button> -->
     <br>
     <!-- <g class="textElement">
 
@@ -226,8 +232,8 @@ of the band  during the everting motion'> swept volume </button>
   <div class="container">
     <div class="content">
       <canvas id='renderCanvas' touch-action='none'></canvas>
-      <img src='utils/dragon_oist.svg' style='height:40px;position:absolute;left:0;bottom:0;margin:10px'>
-      <img src='utils/3M_white.svg' style='height:40px;position:absolute;right:0;bottom:0;margin:10px'>
+      <img src='utils_linkage/dragon_oist.svg' style='height:40px;position:absolute;left:0;bottom:0;margin:10px'>
+      <img src='utils_linkage/3M_white.svg' style='height:40px;position:absolute;right:0;bottom:0;margin:10px'>
     </div>
   </div>
   <div class="contentE">
@@ -309,7 +315,7 @@ of the band  during the everting motion'> swept volume </button>
         var scene = new BABYLON.Scene(engine);
 
         scene.useRightHandedSystem = true;
-        scene.clearColor = new BABYLON.Color3(0.3254901960784314, 0.396078431372549, 0.3686274509803922);
+        scene.clearColor = new BABYLON.Color3(109/255, 170/255, 216/255);
         // camera Math.PI
         var camera = new BABYLON.ArcRotateCamera('ArcRotateCamera', Math.PI, 0, 1.2, new BABYLON.Vector3.Zero(), scene);
         camera.lowerRadiusLimit = .1;
@@ -335,7 +341,7 @@ of the band  during the everting motion'> swept volume </button>
         // Assuming 'scene' is your Babylon.js scene
 
         //   // Load an HDR environment texture
-        //   var hdrTexture = new BABYLON.HDRCubeTexture("./utils/sunset.hdr", scene, 512);
+        //   var hdrTexture = new BABYLON.HDRCubeTexture("./utils_linkage/sunset.hdr", scene, 512);
         // scene.environmentTexture = hdrTexture;
 
 
@@ -344,6 +350,7 @@ of the band  during the everting motion'> swept volume </button>
         var cyan = new BABYLON.StandardMaterial('texture1', scene);
         var yellow = new BABYLON.StandardMaterial('texture1', scene);
         var brightGreen = new BABYLON.StandardMaterial('texture1', scene);
+        var black = new BABYLON.StandardMaterial('texture1', scene);
 
         var sweptEdgeColor = new BABYLON.StandardMaterial('texture1', scene);
         var sweptMidColor = new BABYLON.StandardMaterial('texture1', scene);
@@ -351,14 +358,20 @@ of the band  during the everting motion'> swept volume </button>
         var red = new BABYLON.StandardMaterial('texture1', scene);
         var blue = new BABYLON.StandardMaterial('texture1', scene);
         var trans = new BABYLON.StandardMaterial('texture1', scene);
+        var piston1Color = new BABYLON.StandardMaterial('texture1', scene);
         white.diffuseColor = new BABYLON.Color3(1, 1, 1);
         cyan.diffuseColor = new BABYLON.Color3(0, 1, 1);
         blue.diffuseColor = new BABYLON.Color3(0, 0, 1);
         yellow.diffuseColor = new BABYLON.Color3(1, 1, 0);
         brightGreen.diffuseColor = new BABYLON.Color3(1, 0, .5);
         red.diffuseColor = new BABYLON.Color3(1, 0, 0);
+        black.diffuseColor = new BABYLON.Color3(0, 0, 0);
+
+        piston1Color.diffuseColor = new BABYLON.Color3(1, 0, 0);
         //cyan.wireframe = true;
         trans.alpha = 0.7;
+        white.alpha = 1;
+        piston1Color.alpha = 0.5;
 
         var bandMat = new BABYLON.StandardMaterial('texture1', scene);
 
@@ -410,10 +423,13 @@ of the band  during the everting motion'> swept volume </button>
         // Define the color sequence based on the given sequence
         var sequenceName = "ABCABCABC";
         var colorSequence = generateColorSequence(sequenceName);
+        var colorSequencePiston = generateColorSequence(sequenceName);
+
         init_parameters(sequenceName);
         animationData(1);
 
-
+        var maxPistonLength;
+        maxPistonLength = getPistonLength();
 
 
 
@@ -491,6 +507,42 @@ of the band  during the everting motion'> swept volume </button>
 
         structureInit();
 
+
+
+        // pump 
+
+        var piston1 = [];
+        var piston2 = [];
+        var centerSphere = [];
+
+        function structurePumpInit() {
+          for (var i = 1; i < n + 1; ++i) {
+
+            piston1[i] = BABYLON.MeshBuilder.CreateCylinder("piston1" + i, { diameterTop: .4, diameterBottom: .4 }, scene);
+
+            // connectors connecting the hinges
+            piston2[i] = BABYLON.MeshBuilder.CreateCylinder("piston2" + i, { diameterTop: .25, diameterBottom: 0.25 }, scene);
+            // Create a material for the arrow body
+            const connectorMaterial = new BABYLON.StandardMaterial("connectorMaterial" + i, scene);
+
+            // Assign the color from the color sequence
+            connectorMaterial.diffuseColor = colorSequencePiston[1 % colorSequence.length];
+
+            // Assign the material to the arrow body
+            piston1[i].material = piston1Color;//connectorMaterial;
+            piston2[i].material = white;
+
+          };
+
+
+          centerSphere = BABYLON.MeshBuilder.CreateIcoSphere(
+            'ico', { radius: 0.08, subdivisions: 18, flat: false, updatable: false }, scene);
+          centerSphere.material = white;
+
+        }
+
+
+
         function k_to_t(k) {
           return Math.round(k * tmax / (2 * Math.PI));
         };
@@ -512,6 +564,13 @@ of the band  during the everting motion'> swept volume </button>
           var v = temp[0];
 
           assignStructure(v, hingeLength, arrowBody, tip, topDisc, bottomDisc, hingeBody, connector);
+
+
+          if (showPump) {
+
+            assignPumpStructure(v, hingeLength, piston1, piston2);
+          }
+
           // updating curvature 
           document.body.dispatchEvent(eversionPlay);
 
@@ -826,65 +885,65 @@ of the band  during the everting motion'> swept volume </button>
           sequenceName = buttons[buttonId];
           base_sequence = sequenceName;
           console.log("base sequence is " + sequenceName)
-          
-            colorSequence = generateColorSequence(sequenceName);
-            init_parameters(sequenceName);
-            updateButtonColors(buttonId); // Update all button colors based on the active button
-            document.body.dispatchEvent( sequenceChanged);
-          
+
+          colorSequence = generateColorSequence(sequenceName);
+          init_parameters(sequenceName);
+          updateButtonColors(buttonId); // Update all button colors based on the active button
+          document.body.dispatchEvent(sequenceChanged);
+
         }
 
-       
+
 
 
         function swapAdjacentCharacters(sequence, index) {
-   
-    // Get the characters at the index and the next index
-    const charAtI = sequence[index];
-    const charAtIPlusOne = sequence[index + 1];
 
-    // If the characters are the same, return the original sequence
-    if (charAtI === charAtIPlusOne) {
-        return sequence;
-    }
+          // Get the characters at the index and the next index
+          const charAtI = sequence[index];
+          const charAtIPlusOne = sequence[index + 1];
 
-    // If the characters are different, swap them
-    // Construct the new sequence with the swapped characters
-    let swappedSequence = sequence.substring(0, index) + charAtIPlusOne + charAtI + sequence.substring(index + 2);
-    
-    colorSequence = generateColorSequence(swappedSequence);
-    
+          // If the characters are the same, return the original sequence
+          if (charAtI === charAtIPlusOne) {
+            return sequence;
+          }
 
-    return swappedSequence;
-}
- 
-function disableUI() {
-    // Example: Disabling all buttons
-    document.querySelectorAll("button").forEach(button => button.disabled = true);
+          // If the characters are different, swap them
+          // Construct the new sequence with the swapped characters
+          let swappedSequence = sequence.substring(0, index) + charAtIPlusOne + charAtI + sequence.substring(index + 2);
 
-    // Optionally, add a loading overlay
-    let overlay = document.createElement("div");
-    overlay.id = "loadingOverlay";
-    overlay.style.position = "fixed";
-    overlay.style.top = 0;
-    overlay.style.left = 0;
-    overlay.style.width = "100%";
-    overlay.style.height = "100%";
-    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)"; // Semi-transparent overlay
-    overlay.style.zIndex = "1000"; // Make sure it's on top
-    document.body.appendChild(overlay);
-}
+          colorSequence = generateColorSequence(swappedSequence);
 
-function enableUI() {
-    // Example: Enabling all buttons
-    document.querySelectorAll("button").forEach(button => button.disabled = false);
 
-    // Remove the overlay
-    let overlay = document.getElementById("loadingOverlay");
-    if (overlay) {
-        document.body.removeChild(overlay);
-    }
-}
+          return swappedSequence;
+        }
+
+        function disableUI() {
+          // Example: Disabling all buttons
+          document.querySelectorAll("button").forEach(button => button.disabled = true);
+
+          // Optionally, add a loading overlay
+          let overlay = document.createElement("div");
+          overlay.id = "loadingOverlay";
+          overlay.style.position = "fixed";
+          overlay.style.top = 0;
+          overlay.style.left = 0;
+          overlay.style.width = "100%";
+          overlay.style.height = "100%";
+          overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)"; // Semi-transparent overlay
+          overlay.style.zIndex = "1000"; // Make sure it's on top
+          document.body.appendChild(overlay);
+        }
+
+        function enableUI() {
+          // Example: Enabling all buttons
+          document.querySelectorAll("button").forEach(button => button.disabled = false);
+
+          // Remove the overlay
+          let overlay = document.getElementById("loadingOverlay");
+          if (overlay) {
+            document.body.removeChild(overlay);
+          }
+        }
 
         //#################################################################################
         //###########################################################################
@@ -926,56 +985,56 @@ function enableUI() {
         });
 
 
- 
+
 
         buttonSwitchColor(ebID('buttABCABCABC'), true);
 
- // button for generating switched sequences.
- var sequence_index = 0;
+        // button for generating switched sequences.
+        var sequence_index = 0;
         var base_sequence = sequenceName;
         //  button for base sequences
         for (const buttonId of Object.keys(buttons)) {
-                   ebID(buttonId).addEventListener('click', handleButtonClick);
+          ebID(buttonId).addEventListener('click', handleButtonClick);
         }
 
 
-   // Assuming disableUI and enableUI are defined as explained previously
+        // Assuming disableUI and enableUI are defined as explained previously
 
-ebID('buttSwitch').addEventListener('click', async function () {
-    // Disable UI to prevent further clicks and show processing is in progress
-    disableUI();
-    
-    try {
-        // Logging the sequence before the switch for debugging
-        console.log("sequence before switch is: " + base_sequence);
-        
-        sequence_index = sequence_index % (N-1); // Ensure sequence_index is within bounds
-        base_sequence = swapAdjacentCharacters(base_sequence, sequence_index);
-        
-        // Logging the sequence after the switch for debugging
-        console.log("sequence after switch is: " + base_sequence);
-        
-        sequence_index += 1;
+        ebID('buttSwitch').addEventListener('click', async function () {
+          // Disable UI to prevent further clicks and show processing is in progress
+          disableUI();
 
-        if (sequence_index != 0) {
-            await switch_initial_data(bx_data, by_data, bz_data, sequence_index);
-        }
-        
-        document.body.dispatchEvent(sequenceChanged);
+          try {
+            // Logging the sequence before the switch for debugging
+            console.log("sequence before switch is: " + base_sequence);
 
-        buttonSwitchColor(ebID('buttSwitch'), true);
+            sequence_index = sequence_index % (N - 1); // Ensure sequence_index is within bounds
+            base_sequence = swapAdjacentCharacters(base_sequence, sequence_index);
 
-        if (sequence_index == 0) {
-            buttonSwitchColor(ebID('buttSwitch'), false);
-        }
-    } catch (error) {
-        console.error("An error occurred during processing:", error);
-        // Optionally, handle specific actions on error, like alerting the user
-    } finally {
-        // Re-enable UI once processing is complete or if an error occurs
-        enableUI();
-    }
-});
+            // Logging the sequence after the switch for debugging
+            console.log("sequence after switch is: " + base_sequence);
+
+            sequence_index += 1;
+
+            if (sequence_index != 0) {
+              await switch_initial_data(bx_data, by_data, bz_data, sequence_index);
+            }
+
+            document.body.dispatchEvent(sequenceChanged);
+
+            buttonSwitchColor(ebID('buttSwitch'), true);
+
+            if (sequence_index == 0) {
+              buttonSwitchColor(ebID('buttSwitch'), false);
+            }
+          } catch (error) {
+            console.error("An error occurred during processing:", error);
+            // Optionally, handle specific actions on error, like alerting the user
+          } finally {
+            // Re-enable UI once processing is complete or if an error occurs
+            enableUI();
+          }
+        });
 
 
 
@@ -1011,7 +1070,11 @@ ebID('buttSwitch').addEventListener('click', async function () {
             //  createTube(tubeMid, 1, 0.5 * 3, yellow);
           };
 
-
+          if (showPump) {
+            meshDispose(piston1);
+            meshDispose(piston2);
+            meshDispose(centerSphere);
+          }
 
 
           if (showMidVol) {
@@ -1048,12 +1111,17 @@ ebID('buttSwitch').addEventListener('click', async function () {
         }
 
 
-        
+
 
         document.body.addEventListener('sequenceChanged', function (e) {
 
           disposeAllMesh();
           structureInit();
+
+          if (showPump) {
+            structurePumpInit();
+            maxPistonLength = getPistonLength();
+          };
 
           // modifying the slider and its limits when n is changed 
 
@@ -1307,6 +1375,25 @@ ebID('buttSwitch').addEventListener('click', async function () {
           }
           refresh = true;
         });
+
+        // show pump 
+        var showPump = false;
+        ebID('buttShowPump').addEventListener('click', function () {
+          showPump = !showPump;
+          buttonSwitchColor(ebID('buttShowPump'), showPump);
+          if (showPump) {
+            structurePumpInit();
+            updateBandMesh(k, hl);
+          }
+          else {
+            meshDispose(piston1);
+            meshDispose(piston2);
+            meshDispose(centerSphere);
+          }
+          refresh = true;
+        });
+
+
 
 
         var tubeMidVol = [];
