@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv='Content-Type' content='text/html' charset='utf-8' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="style.css?v=1.0.0">
+  <script src="script.js?v=1.0.0"></script>
+  
+  <title>M&ouml;bius bands</title>
+  <link href='utils/3M_favicon.png' rel='icon'>
+  <link rel='stylesheet' type='text/css' href='utils/kN.css'>
+  <link rel="stylesheet" href='utils/shepherd.css'>
+  <script src='utils/babylon.custom.js'></script>
+
+  <script src='utils/util.js'></script>
+  <script src='utils/tetToggler.js'></script>
+  <script src='utils/global_variable.js'></script>
+  <script src='utils/kN3.js'></script>
+  <script src='utils/data_bennett.js'></script>
+  <!-- <script src='utils/animated-cursor.js' defer></script> -->
+
+  <script src="https://unpkg.com/animated-cursor@1.1.1/dist/index.umd.js"></script>
+
+  <!-- Shepherd.js JavaScript -->
+  <script src='utils/shepherd.js'></script>
+  <script src='utils/tour.js'></script>
+
+  <style>
+    .small-button {
+      width: 40%;
+      /* Override width to be 40% of the main button */
+      flex-shrink: 0;
+
+    }
+  </style>
+</head>
+
+<body>
+  <!-- <div id="chartLegend" class="chart-legend"></div> -->
+
+  <div class="cursor"></div>
+  <script>
+    const cursor = document.querySelector('.cursor');
+
+    document.addEventListener('mousemove', e => {
+      cursor.setAttribute("style", "top: " + (e.pageY - 10) + "px; left: " + (e.pageX - 10) + "px;")
+    })
+
+    document.addEventListener('click', () => {
+      cursor.classList.add("expand");
+
+      setTimeout(() => {
+        cursor.classList.remove("expand");
+      }, 500)
+    })
+
+  </script>
+
+  <div class='leftbar'>
+
+    <!-- <svg width='200' height='110' viewBox='-100 -55 200 110' style='margin-top:10px'>
+      <g class='touchElement glow-effect' id='buttNumOfTetMinus'>
+        <title>decrease the number n of half twists of the optimal band with n fold rotational symmetry</title>
+        <circle cx='-62' cy='10' r='34' />   Modified cy here -->
+    <!-- <polygon points='-80 7 -80 13 -44 13 -44 7' fill='#fff' /> Adjusted y values in points -->
+    <!-- </g>
+      <g class='touchElement glow-effect' id='buttNumOfTetPlus'>
+        <title>increase the number n of half twists of the optimal band with n fold rotational symmetry</title>
+        <circle cx='62' cy='10' r='34' />   Modified cy here -->
+    <!-- <polygon points='80 7 80 13 65 13 65 28 59 28 59 13 44 13 44 7 59 7 59 -8 65 -8 65 7' fill='#fff' />
+         Adjusted y values in points -->
+    <!-- </g>
+      <g class="textElement" id='infoTet'>
+        <text y='-40'>symmetric bands</text>
+        <text id='infoNumOfTet' y='16'>3</text>
+      </g>
+    </svg> -->
+
+    <g class="textElement" id="infoTet">
+      <text y="-40">chirality</text>
+      <text id="infoNumOfTet" y="16"> </text>
+    </g>
+    <button class="button " id="leftButton" title="Left button tooltip">left-handed</button>
+    <button class="button  " id="rightButton" title="Right button tooltip">right-handed</button>
+
+
+
+
+    <g class="textElement" id='infoTet'>
+      <text y='-40'>base sequence</text>
+      <text id='infoNumOfTet' y='16'> </text>
+    </g>
+    <button class='button' id="buttABCABCABC"
+      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+      ABCABCABC</button>
+    <br>
+    <button class='button' id="buttAAACCCBBB"
+      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+      AAACCCBBB</button>
+    <br>
+    <button class='button' id="buttACBACBACB"
+      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+      ACBACBACB</button>
+    <br>
+
+    <button class='button' id="buttAAABCBCBC"
+      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+      AAABCBCBC</button>
+    <br>
+
+    <g class="textElement" id='infoTet'>
+      <text y='-40'>switching</text>
+      <text id='infoNumOfTet' y='16'> </text>
+    </g>
+    <button class='button' id="buttSwitch"
+      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
+      switch sequence</button>
+    <br>
+    <svg id='playSVG' width='200' height='300' viewBox='-60 -60 120 120' style='margin-top:10px'>
+      <g class='touchElement glow-effect' id='buttPlayPause'>
+        <title> click to play the everting motion</title>
+        <circle cx='0' cy='0' r='20' />
+        <polygon id='playPausePoly' points='-7 -10 -7 10 13 0' fill='#fff' />
+      </g>
+
+      <g class='touchElement  ' id='clockRing'>
+        <title> drag to evert the band</title>
+        <circle cx='0' cy='0' r='40' fill='none' stroke='#555' stroke-width='26' />
+        <circle id='clockHand' r='10' fill='#fff' />
+      </g>
+      <g class="textElement" id='infoTet'>
+        <text y='-65'> play/pause</text>
+        <text> </text>
+      </g>
+    </svg>
+
+
+
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="height:0; width:0; position:absolute;">
+      <defs>
+        <filter id="colorful-glow">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+          <feOffset in="blur" dx="0" dy="0" result="offsetBlur" />
+          <feFlood flood-color="#FF7300" result="flood" />
+          <feComposite in="flood" in2="offsetBlur" operator="in" result="colorBlur" />
+          <feMerge>
+            <feMergeNode in="colorBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+    </svg>
+
+
+
+    <svg id='speedSlider' class='slider glow-effect' width='200' height='100' viewBox='-100 -25 200 50'>
+      <title> slide to change the speed of eversion</title>
+      <polygon fill='#555' points='-100 -20 -100 20 100 20 100 -20' />
+      <rect width='38' height='38' x='-19' y='-19' />
+      <text x='-100' y='-25'></text>
+    </svg>
+
+    <!-- <svg id='hingeLengthSlider' class='slider glow-effect' width='200' height='100' viewBox='-100 -25 200 50'>
+      <title> slide to change the width of the band</title>
+      <polygon fill='#555' points='-100 -20 -100 20 100 20 100 -20' />
+      <rect width='38' height='38' x='-19' y='-19' />
+      <text x='-100' y='-25'></text>
+    </svg> -->
+
+  </div>
+
+  <div class='rightbar'>
+    <button class='button' id='buttFullScreen' title='enable full screen'> full screen </button>
+    <br>
+   
+ 
+    <!-- eversion path of the edge  -->
+    <button class='button' id='buttShowMidVol' title='volume swept by the midline
+of the band  during the everting motion'> swept volume </button>
+    <br>
+
+
+    <!-- eversion path of the midline -->
+    <button class='button' id='buttShowMid' title='path traced by a point on the midline
+    of the band  during the everting motion'> eversion path </button>
+    <!-- <button class='button' id='buttShowAxis'> show axis </button> -->
+    <br>
+    <br>
+    <!-- <g class="textElement">
+
+      <text> physics </text>
+    </g> -->
+
+    <!-- <button class='button' id="buttShowKappa"
+      title='curvature of the midline. the rainbow color corresponds to the arclength. the n red dots are evenly spaced points on the band with n half twists'>
+      midline curvature</button> -->
+
+    <br>
+    <br>
+    <g class="textElement">
+
+      <text> colors </text>
+    </g>
+    <!-- <button class='button' id='buttColor3'> M&ouml;bius rainbow 3 </button>
+    <button class='button' id='buttColor4'> digital </button>
+    <button class='button' id='buttColor5'> M&ouml;bius BRW 3 </button> -->
+
+
+    <button class='button' id="backgroundButton"
+      title='change the background color for the best visibility using picker on the left-top'>background Color</button>
+    <input type="color" id="colorPicker" style="display: none;">
+
+    <!-- <input class="jscolor" value="ab2567" data-jscolor="{format:'rgba', position:'right', width:181, height:101}"> -->
+    <br>
+    <br>
+    <g class="textElement">
+      <text> view angle </text>
+    </g>
+    <button class='button' id='buttAlignAxis' title='align the view with the axis of symmetry'> align axis </button>
+    <button class='button' id='buttAlignPlane' title='align the view with the best fit plane'> align plane </button>
+
+  </div>
+
+  <div class="container">
+    <div class="content">
+      <canvas id='renderCanvas' touch-action='none'></canvas>
+      <img src='utils/dragon_oist.svg' style='height:40px;position:absolute;left:0;bottom:0;margin:10px'>
+      <img src='utils/3M_white.svg' style='height:40px;position:absolute;right:0;bottom:0;margin:10px'>
+    </div>
+  </div>
+  <div class="contentE">
+    <canvas id='renderCanvasE' touch-action='none'></canvas>
+    <!-- <canvas id="magnifier"></canvas> -->
+  </div>
+  <div class="contentK">
+    <canvas id='renderCanvasK' touch-action='none'></canvas>
+  </div>
+
+
+  </div>
+
+  <div id="animatedCursor"></div>
+
+  <!-- 
+  <div id="tourModal" class="modal-backdrop">
+    <div class="modal-content">
+      <h2>Welcome!</h2>
+      <p>Would you like a guided tour of the application?</p>
+      <button id="startTourBtn" class="modal-button">Start Tour</button>
+      <button id="dismissTourBtn" class="modal-button">No Thanks</button>
+       <p> Press c on the keyboard to interrupt the tour.</p> -->
+  <!-- </div> -->
+  <!-- </div> -->
+
+
+
+  <script>
+
+    var tau = 1;
+    var contentE = document.querySelector('.contentE');
+    var content = document.querySelector('.content');
+    var contentK = document.querySelector('.contentK');
+    var contentEWidth = contentE.clientWidth;
+    var sequenceChanged = new Event('sequenceChanged'); // triggered by plus/minus buttons
+    var energyChanged = new Event('energyChanged'); // triggered by plus/minus buttons
+    // var N = 240
+    var nu_i;
+    var plotClicked;
+
+
+
+
+    'use strict';
+
+
+    if (document.documentMode || /Edge/.test(navigator.userAgent)) {
+      alert('MICROSOFT ALARM: You are using strange software which may lead to unexpected behavior of the website. Please use a reasonable 21st century browser, like, for example: Chrome, Firefox, Opera, Safari,...');
+    }
+
+
+    // adding default-visible class to the left and right bar so that they are visible when the page is loaded
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+
+      const elements = document.querySelectorAll('.leftbar .touchElement, .leftbar .slider, .rightbar .touchElement, .rightbar .slider, .leftbar .button, .rightbar .button, .leftbar .textElement, .rightbar .textElement');
+      elements.forEach(el => el.classList.add('default-visible'));
+
+      setTimeout(() => {
+        elements.forEach(el => el.classList.remove('default-visible'));
+      }, 15000);
+    });
+
+
+
+    window.addEventListener('DOMContentLoaded', function () {
+
+      // get the canvas DOM element
+      var canvas = ebID('renderCanvas');
+
+      // load the 3D engine
+      var engine = new BABYLON.Engine(canvas, true);
+
+      // createScene function that creates and return the scene
+      var createScene = function () {
+        // create a basic BJS Scene object
+        var scene = new BABYLON.Scene(engine);
+
+        scene.useRightHandedSystem = true;
+        scene.clearColor = new BABYLON.Color3(0.3254901960784314, 0.396078431372549, 0.3686274509803922);
+        // camera Math.PI
+        var camera = new BABYLON.ArcRotateCamera('ArcRotateCamera', Math.PI, 0, 1.2, new BABYLON.Vector3.Zero(), scene);
+        camera.lowerRadiusLimit = .1;
+        camera.upperRadiusLimit = 100;
+        camera.wheelPrecision = 100;
+        camera.pinchPrecision = 200;
+        scene.activeCamera.panningSensibility = 0;
+        camera.alpha = 6.185710546084945;
+        camera.beta = 1.0989063024750556;
+        camera.radius = 3;
+        ///////////////////////////////////////////////////////////////////////////////////
+
+        var light = new BABYLON.SpotLight('spotLight', new BABYLON.Vector3(-.0, 1.5, 0), new BABYLON.Vector3(1, 1, 1), Math.PI / 2, .1, scene);
+        // var light =  new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, -1, 0), scene);
+        light.shadowIntensity = 1.0;
+        light.shadowBlur = 4;
+
+        // Set the target of the light to be the camera position
+        light.setDirectionToTarget(camera.position);
+        // light.parent = camera;
+
+        // environment light 
+        // Assuming 'scene' is your Babylon.js scene
+
+        //   // Load an HDR environment texture
+        //   var hdrTexture = new BABYLON.HDRCubeTexture("./utils/sunset.hdr", scene, 512);
+        // scene.environmentTexture = hdrTexture;
+
+
+
+        var white = new BABYLON.StandardMaterial('texture1', scene);
+        var cyan = new BABYLON.StandardMaterial('texture1', scene);
+        var yellow = new BABYLON.StandardMaterial('texture1', scene);
+        var brightGreen = new BABYLON.StandardMaterial('texture1', scene);
+
+        var sweptEdgeColor = new BABYLON.StandardMaterial('texture1', scene);
+        var sweptMidColor = new BABYLON.StandardMaterial('texture1', scene);
+
+        var red = new BABYLON.StandardMaterial('texture1', scene);
+        var blue = new BABYLON.StandardMaterial('texture1', scene);
+        var trans = new BABYLON.StandardMaterial('texture1', scene);
+        white.diffuseColor = new BABYLON.Color3(1, 1, 1);
+        cyan.diffuseColor = new BABYLON.Color3(0, 1, 1);
+        blue.diffuseColor = new BABYLON.Color3(0, 0, 1);
+        yellow.diffuseColor = new BABYLON.Color3(1, 1, 0);
+        brightGreen.diffuseColor = new BABYLON.Color3(1, 0, .5);
+        red.diffuseColor = new BABYLON.Color3(1, 0, 0);
+        //cyan.wireframe = true;
+        trans.alpha = 0.7;
+
+        var bandMat = new BABYLON.StandardMaterial('texture1', scene);
+
+        bandMat.diffuseColor = new BABYLON.Color3(1, 1, 0);
+
+
+        // var ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 4, height: 4 }, scene);
+        // var groundMaterial = new BABYLON.StandardMaterial('groundMaterial', scene);
+        // groundMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2); // Set a dark color for the ground
+
+        // groundMaterial.specularColor = new BABYLON.Color3(1, 1, 1);; // Disable specular highlights
+
+        // ground.position = new BABYLON.Vector3(0, -.7, 0);
+
+        // ground.material = groundMaterial;
+
+
+        // Create a new standard material 'glass' 
+        var glass = new BABYLON.StandardMaterial("glass", scene);
+
+        // Make it transparent
+        glass.alpha = 0.045;
+        // Give it a high specular power for glossiness
+        glass.specularPower = 100;
+        // Give it a low diffusivity so it doesn't scatter light
+        glass.diffuseColor = new BABYLON.Color3(1, 1, 1, .1);
+        // Set its index of refraction to something like glass
+        glass.indexOfRefraction = 1.52;
+
+        //scene.clearColor = new BABYLON.Color3(0, 0, 0);
+        //scene.createDefaultSkybox(backgroundTexture, true);
+
+
+
+        ///////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+        // Set the material of the arrow
+
+
+
+        var golf = [];
+        var golfEdge = [];
+
+
+        // Define the color sequence based on the given sequence
+        var sequenceName = "ABCABCABC";
+        var colorSequence = generateColorSequence(sequenceName);
+        init_parameters(sequenceName);
+        animationData(1);
+
+
+
+
+
+
+
+        // creating a function to initialize hinges and connectors 
+
+        // Create a material for the arrow body
+        const arrowBodyMaterial = new BABYLON.StandardMaterial("arrowBodyMaterial", scene);
+
+        // Assign the color from the color sequence
+        arrowBodyMaterial.diffuseColor = new BABYLON.Color4(0, 0, 0, 1);
+
+        // Assign the material to the arrow body
+        var arrowBody = [];
+        var tip = [];
+        var topDisc = [];
+        var bottomDisc = [];
+        var hingeBody = [];
+        var connector = [];
+
+
+        function structureInit() {
+          for (var i = 1; i < N + 1; ++i) {
+            // arrow and tip
+            arrowBody[i] = BABYLON.MeshBuilder.CreateCylinder("arrowBody" + i, { diameterTop: .05, diameterBottom: 0.05 }, scene);
+
+            arrowBody[i].material = arrowBodyMaterial;
+            // Create a cone for the tip of the arrow
+            tip[i] = BABYLON.MeshBuilder.CreateCylinder("arrowTip" + i, { diameterTop: 0, diameterBottom: .15 }, scene);
+
+            tip[i].material = arrowBodyMaterial;
+            // Create a box for the tail of the arrow
+            // Create the top disc
+
+            // hinges and disc to cover it up--
+
+            hingeBody[i] = BABYLON.MeshBuilder.CreateCylinder("hingeBody" + i, { diameterTop: .1, diameterBottom: 0.1 }, scene);
+            topDisc[i] = BABYLON.MeshBuilder.CreateDisc("topDisc" + i, { radius: 0.05 }, scene);
+            topDisc[i].position.y = 0.5; // Adjust the position to place it at the top of the cylinder
+
+            // Create the bottom disc
+            bottomDisc[i] = BABYLON.MeshBuilder.CreateDisc("bottomDisc" + i, { radius: 0.05 }, scene);
+            bottomDisc[i].position.y = -0.5; // Adjust the position to place it at the bottom of the cylinder
+            bottomDisc[i].rotation.x = Math.PI; // Flip the disc to cover the bottom end
+
+            // Optionally, you can parent the discs to the cylinder so they move together
+            topDisc[i].parent = hingeBody[i];
+            bottomDisc[i].parent = hingeBody[i];
+
+            // connectors connecting the hinges
+            connector[i] = BABYLON.MeshBuilder.CreateCylinder("connector" + i, { diameterTop: .25, diameterBottom: 0.25 }, scene);
+            // Create a material for the arrow body
+            const connectorMaterial = new BABYLON.StandardMaterial("connectorMaterial" + i, scene);
+
+            // Assign the color from the color sequence
+            connectorMaterial.diffuseColor = colorSequence[i % colorSequence.length];
+
+            // Assign the material to the arrow body
+            connector[i].material = connectorMaterial;
+            hingeBody[i].material = white;//connectorMaterial;
+            topDisc[i].material = white;//connectorMaterial;
+            bottomDisc[i].material = white;//connectorMaterial;
+
+          };
+          i = N + 1;
+          arrowBody[N + 1] = BABYLON.MeshBuilder.CreateCylinder("arrowBody" + i, { diameterTop: .05, diameterBottom: 0.05 }, scene);
+          // Create a cone for the tip of the arrow
+          tip[N + 1] = BABYLON.MeshBuilder.CreateCylinder("arrowTip" + i, { diameterTop: 0, diameterBottom: .15 }, scene);
+          arrowBody[i].material = arrowBodyMaterial;
+          tip[i].material = brightGreen;//arrowBodyMaterial;
+
+        }
+
+
+        structureInit();
+
+        function k_to_t(k) {
+          return Math.round(k * tmax / (2 * Math.PI));
+        };
+        var t;
+
+
+
+        var eversionPlay = new Event('eversionPlay'); // triggered by plus/minus buttons
+
+        var vertexData = [];
+        var vertexDataBack = [];
+        var band = new BABYLON.Mesh('custom', scene);
+        var bandBack = new BABYLON.Mesh('custom', scene);
+
+
+        function updateBandMesh(k, hingeLength) {
+          t = k_to_t(k);
+          let temp = fourierExpansion(N, t, hingeLength);
+          var v = temp[0];
+
+          assignStructure(v, hingeLength, arrowBody, tip, topDisc, bottomDisc, hingeBody, connector);
+          // updating curvature 
+          document.body.dispatchEvent(eversionPlay);
+
+
+
+
+          var ind1 = Math.round(N / (2 * n));
+
+
+          for (var j = 1; j < golf.length + 1; j++) {
+            let l = 2 * j * ind1 - 2 * ind1 + 1;
+            var v1 = [v[6 * l - 5], v[6 * l - 3], -v[6 * l - 4]];
+            var v2 = [v[6 * l - 2], v[6 * l], -v[6 * l - 1]];
+            if (golf[j]) {
+              golf[j].position = new BABYLON.Vector3((v1[0] + v2[0]) / 2,
+                (v1[1] + v2[1]) / 2, (v1[2] + v2[2]) / 2);
+
+            };
+
+          };
+
+          var j = 1;
+          let l = 2 * (j + 2) * ind1 - 2 * ind1 + 1;
+          var v1 = [v[6 * l - 5], v[6 * l - 3], -v[6 * l - 4]];
+          var v2 = [v[6 * l - 2], v[6 * l], -v[6 * l - 1]];
+
+          if (golfEdge[j]) {
+            golfEdge[j].position = new BABYLON.Vector3(v1[0], v1[1], v1[2]);
+            golfEdge[j + 1].position = new BABYLON.Vector3(v2[0], v2[1], v2[2]);   // golf ball on the other side
+
+          };
+
+
+
+
+
+
+
+
+
+          // meshDispose(golf) 
+
+        };
+
+
+
+
+        // tube paths /////////////////////////////////////////////////////////////////////
+
+        function createTube(tube, type, hingeLength, color) {
+
+
+          var ind0 = Math.round(N / (2 * n));
+
+          if (type == 1) {
+            for (var i = 1; i < N + 1; i++) {
+              var ind = i;//2 * i * ind0 - 2 * ind0 + 1;
+
+              var curve = paths(n, hl, type, ind);
+              tube[i] = BABYLON.Mesh.CreateTube('tube', curve, 0.007, 8, null, null, scene);
+              tube[i].material = color;
+
+
+              golf[i] = BABYLON.MeshBuilder.CreateIcoSphere(
+                'ico', { radius: 0.04, subdivisions: 8, flat: false, updatable: false }, scene);
+              golf[i].material = red;
+
+
+
+            };
+          };
+
+          if (type == 2) {
+
+            for (var i = 1; i < 2; ++i) {
+              var ind = 2 * (i + 2) * ind0 - 2 * ind0 + 1;
+              var path = [];
+              var path2 = [];
+              var v0 = [];
+              var v = [];
+              let N1 = Math.round(N / 2);
+
+              for (var t = 1; t < Math.round(tmax / 2.0); t++) {
+                //console.log(t)
+                v0 = fourierExpansion(n, t, hl)[0];   // vertex at time stamp t
+                v[1] = v0[6 * ind - 5];
+                v[2] = v0[6 * ind - 4];
+                v[3] = v0[6 * ind - 3];
+                v[4] = v0[6 * ind - 2];
+                v[5] = v0[6 * ind - 1];
+                v[6] = v0[6 * ind];
+
+
+                path.splice(t - 100, 0, new BABYLON.Vector3(v[1], v[3], -v[2]));
+                //  path.splice(N+t-1 , 0, new BABYLON.Vector3(v[4], v[6], -v[5]));
+              };
+
+              // t =1;
+              // v0  = fourierExpansion(n, t, hl)[0];
+              // v[1] = v0[6 * ind - 5]; 
+              // v[2] = v0[6 * ind - 4]; 
+              // v[3] = v0[6 * ind - 3]; 
+
+
+              //   path.push(new BABYLON.Vector3(v[1], v[3], -v[2]));
+              // creating path 
+              tube[i] = BABYLON.Mesh.CreateTube('tube', path, 0.01, 8, null, null, scene);
+              tube[i].material = color;
+
+              // creating golf balls 
+              golfEdge[i] = BABYLON.MeshBuilder.CreateIcoSphere(
+                'ico', { radius: 0.04, subdivisions: 8, flat: false, updatable: false }, scene);
+              golfEdge[i].material = blue;
+
+              golfEdge[i + 1] = BABYLON.MeshBuilder.CreateIcoSphere(
+                'ico', { radius: 0.04, subdivisions: 8, flat: false, updatable: false }, scene);
+              golfEdge[i + 1].material = blue;
+
+            };
+
+          };
+
+          updateBandMesh(k, hl);
+        };
+        // for (var i = 1; i < 2; i++) {
+        //   var ind = 2 * (i+2) * ind0 - 2 * ind0 + 1;
+
+        //   var curve = paths(n, hl, type, ind);
+        //   tube[i] = BABYLON.Mesh.CreateTube('tube', curve, 0.01, 8, null, null, scene);
+        //   tube[i].material = color;
+
+
+        //   golfEdge[i] = BABYLON.MeshBuilder.CreateIcoSphere(
+        //     'ico', { radius: 0.04, subdivisions: 8, flat: false, updatable: false }, scene);
+        //   golfEdge[i].material = blue;
+
+
+
+        //  };
+
+
+
+
+
+
+
+
+
+
+
+
+        function createSweptVolume(tube, type, hingeLength, color) {
+
+          if (type == 2) {
+
+            for (var t = 1; t < 100; ++t) {
+              var path = [];
+              var v0 = [];
+              var v = [];
+
+              v0 = fourierExpansion(n, 2 * t, hl)[0];   // vertex at time stamp t
+
+              for (var i = 1; i < N + 1; ++i) {
+
+                v[1] = v0[6 * i - 5];
+                v[2] = v0[6 * i - 4];
+                v[3] = v0[6 * i - 3];
+                v[4] = v0[6 * i - 2];
+                v[5] = v0[6 * i - 1];
+                v[6] = v0[6 * i];
+
+
+                path.splice(i - 1, 0, new BABYLON.Vector3(v[1], v[3], -v[2]));
+                path.splice(N + i - 1, 0, new BABYLON.Vector3(v[4], v[6], -v[5]));
+              }
+              i = 1;
+              v[1] = v0[6 * i - 5];
+              v[2] = v0[6 * i - 4];
+              v[3] = v0[6 * i - 3];
+              v[4] = v0[6 * i - 2];
+              v[5] = v0[6 * i - 1];
+              v[6] = v0[6 * i];
+
+              path.push(new BABYLON.Vector3(v[1], v[3], -v[2]));
+
+
+              tube[t] = BABYLON.Mesh.CreateTube('tube', path, 0.0010, 8, null, null, scene);
+
+              //var color = generateShadeOfCyan(t, N)
+
+
+              //edgeColo.diffuseColor = new BABYLON.Color3(color.r,color.g,color.b);
+              sweptEdgeColor.diffuseColor = new BABYLON.Color3(1, 1, 1);
+              tube[t].material = sweptEdgeColor;
+
+            };
+            // show the edge path if edge volume is shown 
+            meshDispose(tubeEdge)
+            meshDispose(golfEdge)
+            showEdge = true;
+            buttonSwitchColor(ebID('buttShowEdge'), showEdge);
+
+            createTube(tubeEdge, 2, 0.5 * 3, brightGreen);
+          }
+
+
+          if (type == 3) {
+
+            for (var t = 1; t < 100; ++t) {
+              var path = [];
+              var v0 = [];
+              var v = [];
+
+              v0 = fourierExpansion(n, 3 * t, hl)[0];   // vertex at time stamp t
+
+              for (var i = 1; i < N + 1; ++i) {
+
+                v[1] = v0[6 * i - 5];
+                v[2] = v0[6 * i - 4];
+                v[3] = v0[6 * i - 3];
+                v[4] = v0[6 * i - 2];
+                v[5] = v0[6 * i - 1];
+                v[6] = v0[6 * i];
+
+                path.push(new BABYLON.Vector3((v[1] + v[4]) / 2,
+                  (v[3] + v[6]) / 2,
+                  -(v[2] + v[5]) / 2));
+              }
+
+              i = 1
+              v[1] = v0[6 * i - 5];
+              v[2] = v0[6 * i - 4];
+              v[3] = v0[6 * i - 3];
+              v[4] = v0[6 * i - 2];
+              v[5] = v0[6 * i - 1];
+              v[6] = v0[6 * i];
+
+              path.push(new BABYLON.Vector3((v[1] + v[4]) / 2,
+                (v[3] + v[6]) / 2,
+                -(v[2] + v[5]) / 2));
+
+
+              tube[t] = BABYLON.Mesh.CreateTube('tube', path, 0.0015, 8, null, null, scene);
+
+              //var color = generateShadeOfCyan(t, N)
+
+
+              //edgeColo.diffuseColor = new BABYLON.Color3(color.r,color.g,color.b);
+              sweptMidColor.diffuseColor = new BABYLON.Color3(173 / 255, 1, 47 / 255);
+              tube[t].material = sweptMidColor;
+
+            };
+
+          }
+
+          updateBandMesh(k, hl);
+
+        }
+
+
+        // if (type == 2) { // midpoints get golf
+        //   for (var i = 1; i < n + 1; ++i) {
+        //     golf[i] = BABYLON.MeshBuilder.CreateIcoSphere(
+        //       'ico', { radius: 0.03, subdivisions: 8, flat: false, updatable: false }, scene);
+        //     golf[i].material = color;
+        //   }
+        // updateBandMesh(k, hl);
+        // }
+
+
+
+        // plane //////////////////////////////////////////////////////////////////////////
+
+        function enablePlane(bool) {
+
+
+        }
+
+
+        // dispose mesh ///////////////////////////////////////////////////////////////////
+
+        function meshDispose(me) {
+          var i = 1;
+          while (me[i]) {
+            me[i].dispose();
+            i += 1;
+          }
+        }
+
+
+
+        // List of all sequence buttons and their respective sequence names
+        const buttons = {
+          'buttACBACBACB': 'ACBACBACB',
+          'buttABCABCABC': 'ABCABCABC',
+          'buttAAABCBCBC': 'AAABCBCBC',
+          'buttAAACCCBBB': 'AAACCCBBB'
+        };
+
+        // Function to update button colors
+        function updateButtonColors(activeButtonId) {
+          for (const [buttonId, sequenceName] of Object.entries(buttons)) {
+            const isActive = buttonId === activeButtonId;
+            buttonSwitchColor(ebID(buttonId), isActive);
+          }
+        }
+
+        // Common click handler for all buttons
+        function handleButtonClick(event) {
+          sequence_index = 0;
+          const buttonId = event.target.id;
+          sequenceName = buttons[buttonId];
+          base_sequence = sequenceName;
+          console.log("base sequence is " + sequenceName)
+          
+            colorSequence = generateColorSequence(sequenceName);
+            init_parameters(sequenceName);
+            updateButtonColors(buttonId); // Update all button colors based on the active button
+            document.body.dispatchEvent( sequenceChanged);
+          
+        }
+
+       
+
+
+        function swapAdjacentCharacters(sequence, index) {
+   
+    // Get the characters at the index and the next index
+    const charAtI = sequence[index];
+    const charAtIPlusOne = sequence[index + 1];
+
+    // If the characters are the same, return the original sequence
+    if (charAtI === charAtIPlusOne) {
+        return sequence;
+    }
+
+    // If the characters are different, swap them
+    // Construct the new sequence with the swapped characters
+    let swappedSequence = sequence.substring(0, index) + charAtIPlusOne + charAtI + sequence.substring(index + 2);
+    
+    colorSequence = generateColorSequence(swappedSequence);
+    
+
+    return swappedSequence;
+}
+ 
+function disableUI() {
+    // Example: Disabling all buttons
+    document.querySelectorAll("button").forEach(button => button.disabled = true);
+
+    // Optionally, add a loading overlay
+    let overlay = document.createElement("div");
+    overlay.id = "loadingOverlay";
+    overlay.style.position = "fixed";
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)"; // Semi-transparent overlay
+    overlay.style.zIndex = "1000"; // Make sure it's on top
+    document.body.appendChild(overlay);
+}
+
+function enableUI() {
+    // Example: Enabling all buttons
+    document.querySelectorAll("button").forEach(button => button.disabled = false);
+
+    // Remove the overlay
+    let overlay = document.getElementById("loadingOverlay");
+    if (overlay) {
+        document.body.removeChild(overlay);
+    }
+}
+
+        //#################################################################################
+        //###########################################################################
+        //chirality
+        var chiral_L = true;
+        ebID('leftButton').addEventListener('click', function () {
+          tau = -1;
+          init_parameters(sequenceName);
+
+          if (tau == -1) {
+            buttonSwitchColor(ebID('leftButton'), true);
+            buttonSwitchColor(ebID('rightButton'), false);
+          }
+          else {
+            buttonSwitchColor(ebID('leftButton'), false);
+            buttonSwitchColor(ebID('rightButton'), true);
+          }
+          document.body.dispatchEvent(sequenceChanged);
+        });
+        buttonSwitchColor(ebID('rightButton'), true);
+
+        ebID('rightButton').addEventListener('click', function () {
+          tau = 1;
+
+
+          if (tau == -1) {
+            buttonSwitchColor(ebID('leftButton'), true);
+            buttonSwitchColor(ebID('rightButton'), false);
+          }
+          else {
+            buttonSwitchColor(ebID('leftButton'), false);
+            buttonSwitchColor(ebID('rightButton'), true);
+          }
+
+
+          init_parameters(sequenceName);
+
+          document.body.dispatchEvent(sequenceChanged);
+        });
+
+
+ 
+
+        buttonSwitchColor(ebID('buttABCABCABC'), true);
+
+ // button for generating switched sequences.
+ var sequence_index = 0;
+        var base_sequence = sequenceName;
+        //  button for base sequences
+        for (const buttonId of Object.keys(buttons)) {
+                   ebID(buttonId).addEventListener('click', handleButtonClick);
+        }
+
+
+   // Assuming disableUI and enableUI are defined as explained previously
+
+ebID('buttSwitch').addEventListener('click', async function () {
+    // Disable UI to prevent further clicks and show processing is in progress
+    disableUI();
+    
+    try {
+        // Logging the sequence before the switch for debugging
+        console.log("sequence before switch is: " + base_sequence);
+        
+        sequence_index = sequence_index % (N-1); // Ensure sequence_index is within bounds
+        base_sequence = swapAdjacentCharacters(base_sequence, sequence_index);
+        
+        // Logging the sequence after the switch for debugging
+        console.log("sequence after switch is: " + base_sequence);
+        
+        sequence_index += 1;
+
+        if (sequence_index != 0) {
+            await switch_initial_data(bx_data, by_data, bz_data, sequence_index);
+        }
+        
+        document.body.dispatchEvent(sequenceChanged);
+
+        buttonSwitchColor(ebID('buttSwitch'), true);
+
+        if (sequence_index == 0) {
+            buttonSwitchColor(ebID('buttSwitch'), false);
+        }
+    } catch (error) {
+        console.error("An error occurred during processing:", error);
+        // Optionally, handle specific actions on error, like alerting the user
+    } finally {
+        // Re-enable UI once processing is complete or if an error occurs
+        enableUI();
+    }
+});
+
+
+
+
+
+        // show corner/midpoint paths /////////////////////////////////////////////////////
+
+        var showMid = false;
+
+        //#################################################################################
+        //#################################################################################
+
+
+        // document.body.addEventListener('nuiChanged', function (e) {
+        //   nuSlider = new Slider('nuSlider', nu_min, nu_max, nu_opt, '&nu;    ', 0, ' ');
+        //   ebID('nuSlider').addEventListener('sliderChange', function (e) {
+        //     nu_i = parseInt(nuSlider.getValue());
+        //      document.body.dispatchEvent(sequenceChanged);
+        //     refresh = true;
+        //   });
+
+        // }, false);
+
+        /////////////////////////nui changed////////////////////////////
+
+        /////////////////////////n  changed////////////////////////////
+        var disposeAllMesh = function () {
+
+
+          if (showMid) {
+            meshDispose(tubeMid);
+            meshDispose(golf);
+            //  createTube(tubeMid, 1, 0.5 * 3, yellow);
+          };
+
+
+
+
+          if (showMidVol) {
+            meshDispose(tubeMidVol);
+            meshDispose(golf);
+            //createSweptVolume(tubeMidVol, 3, 0.5 * 3, cyan);
+          }
+
+          meshDispose(arrowBody);
+          meshDispose(tip);
+          meshDispose(topDisc);
+          meshDispose(bottomDisc);
+          meshDispose(hingeBody);
+          meshDispose(connector);
+          //createSweptVolume(tubeMidVol, 3, 0.5 * 3, cyan);
+
+
+
+        }
+
+        var createUpdatedMesh = function () {
+
+          if (showMid) {
+            createTube(tubeMid, 1, 0.5 * 3, yellow);
+          };
+
+
+
+          if (showMidVol) {
+            createSweptVolume(tubeMidVol, 3, 0.5 * 3, cyan);
+          };
+
+
+        }
+
+
+        
+
+        document.body.addEventListener('sequenceChanged', function (e) {
+
+          disposeAllMesh();
+          structureInit();
+
+          // modifying the slider and its limits when n is changed 
+
+
+          animationData(1);
+
+          createUpdatedMesh();
+
+
+          updateBandMesh(k, hl);
+
+          refresh = true;
+        }, false);
+
+
+
+        // toggle tetrahedra //////////////////////////////////////////////////////////////
+
+        var tetToggled = new Event('tetToggled'); // triggered by tetTogStar
+        document.body.addEventListener('tetToggled', function (e) { refresh = true; }, false);
+
+        var tetTogStar = new TetTogStar('tetTogStar', nMax, tetToggled);
+
+        // play controller ////////////////////////////////////////////////////////////////
+
+        var svg = ebID('playSVG');
+        var pt = svg.createSVGPoint();
+        var dragging = false;
+        var clockRing = ebID('clockRing');
+        clockRing.addEventListener('mousedown', startDragMouse, false);
+        clockRing.addEventListener('touchstart', startDragTouch, false);
+        window.addEventListener('mousemove', dragMouse, false);
+        window.addEventListener('touchmove', dragTouch, false);
+        window.addEventListener('mouseup', stopDrag, false);
+        window.addEventListener('touchend', stopDrag, false);
+        function startDragMouse(ev) {
+          dragging = true;
+          if (play) { playIt() };
+          dragMouse(ev);
+          clockRing.style.opacity = 1;
+        }
+        function startDragTouch(ev) {
+          dragging = true;
+          if (play) { playIt() };
+          dragTouch(ev);
+          clockRing.style.opacity = 1;
+        }
+        function dragMouse(ev) {
+          if (dragging) {
+            pt.x = ev.clientX;
+            pt.y = ev.clientY;
+            var loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+            var angle = Math.atan2(loc.x, -loc.y) % (2 * Math.PI);
+            var dot = ebID('clockHand');
+            dot.setAttribute('cx', 40 * Math.sin(angle));
+            dot.setAttribute('cy', -40 * Math.cos(angle));
+            k = angle;
+            updateBandMesh(k, hl);
+            refresh = true;
+          }
+        }
+        function dragTouch(ev) {
+          if (dragging) {
+            pt.x = ev.touches[0].clientX;
+            pt.y = ev.touches[0].clientY;
+            var loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+            var angle = Math.atan2(loc.x, -loc.y) % (2 * Math.PI);
+            var dot = ebID('clockHand');
+            dot.setAttribute('cx', 40 * Math.sin(angle));
+            dot.setAttribute('cy', -40 * Math.cos(angle));
+            k = angle;
+            updateBandMesh(k, hl);
+            refresh = true;
+          }
+        }
+        function stopDrag() {
+          dragging = false;
+          clockRing.style.opacity = '';
+        }
+        function playIt() {
+          play = !play;
+          if (!play) {
+            ebID('playPausePoly').setAttribute('points', '-7 -10 -7 10 13 0');
+          }
+          else {
+            ebID('playPausePoly').setAttribute('points', '-7 -10 -7 10 -2 10 -2 -10 2 -10 2 10 7 10 7 -10 -7 -10');
+          }
+        };
+        ebID('buttPlayPause').addEventListener('click', playIt, false);
+        document.addEventListener('keydown', function (e) { if (e.keyCode == '32') playIt(); }); // space key play
+
+        // speed control //////////////////////////////////////////////////////////////////
+
+        var speedSlider = new Slider('speedSlider', 4, 100, 50, 'speed ', 0, '%');
+        ebID('speedSlider').addEventListener('sliderChange', function () {
+          speedy = speedSlider.getValue() / 2000 / 1;
+        });
+
+        // change width/length ////////////////////////////////////////////////////////////
+
+        // var hingeLengthSlider = new Slider('hingeLengthSlider', 0, 100, 20, 'width', 0, '%');
+        // ebID('hingeLengthSlider').addEventListener('sliderChange', function () {
+        //   hl = hingeLengthSlider.getValue() / 100.0;
+        //   if (!play) updateBandMesh(k, hl);
+
+        //   if (showEdgeVol) {
+        //     meshDispose(tubeEdgeVol);
+        //     //meshDispose(golf);
+        //     createSweptVolume(tubeEdgeVol, 2, 0.5 * 3, cyan);
+        //   }
+        //   if (showEdge) {
+        //     meshDispose(tubeEdge);
+        //     meshDispose(golfEdge);
+        //     createTube(tubeEdge, 2, 0.5 * 3, brightGreen);
+        //   }
+
+
+        //   // if (showCorn) {
+        //   //   meshDispose(tubeCorn);
+        //   //   createTube(tubeCorn,1,hl,white);
+        //   // }
+        //   refresh = true;
+        // })
+
+
+        ///  modifying sliders during the guiding tour 
+        ebID('speedSlider').addEventListener('tourSpeed', function () {
+          speedSlider = new Slider('speedSlider', 4, 100, 40, 'speed ', 0, '%');
+          speedy = 40 / 2000 / n ** .2;
+        });
+
+        ebID('speedSlider').addEventListener('tourSpeedBack', function () {
+          speedSlider = new Slider('speedSlider', 4, 100, 20, 'speed ', 0, '%');
+          speedy = 20 / 2000 / n ** .2;
+        });
+
+
+        // ebID('hingeLengthSlider').addEventListener('tourWidth', function () {
+        //   hl = 0.4;
+        //   hingeLengthSlider = new Slider('hingeLengthSlider', 0, 100, 40, 'width', 0, '%');
+
+        //   if (!play) updateBandMesh(k, hl);
+        //   // if (showCorn) {
+        //   //   meshDispose(tubeCorn);
+        //   //   createTube(tubeCorn,1,hl,white);
+        //   // }
+        //   refresh = true;
+        // })
+        // ebID('hingeLengthSlider').addEventListener('tourWidthBack', function () {
+        //   hl = 0.2;
+        //   hingeLengthSlider = new Slider('hingeLengthSlider', 0, 100, 20, 'width', 0, '%');
+
+        //   if (!play) updateBandMesh(k, hl);
+        //   // if (showCorn) {
+        //   //   meshDispose(tubeCorn);
+        //   //   createTube(tubeCorn,1,hl,white);
+        //   // }
+        //   refresh = true;
+        // })
+
+        ////////////////////////////////////////////////////////////////
+
+        // toggle full screen /////////////////////////////////////////////////////////////
+
+        // var ortho = false;
+
+        var fullScreen = false;
+        ebID('buttFullScreen').addEventListener('click', function () {
+          fullScreen = !fullScreen;
+          buttonSwitchColor(ebID('buttFullScreen'), fullScreen);
+          toggleFullScreen();
+          // ortho = !ortho;
+          // if ( ortho ) camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+          // else camera.mode = BABYLON.Camera.PERSPECTIVE_CAMERA;
+        });
+
+
+        // show axis/plane ////////////////////////////////////////////////////////////////
+
+
+
+
+
+        // align to plane/axis ////////////////////////////////////////////////////////////
+        var alignPlane = false;
+        ebID('buttAlignPlane').addEventListener('click', function () {
+          alignPlane = !alignPlane;
+          //  buttonSwitchColor(ebID('buttAlignPlane' ), alignPlane);
+          camera.alpha = Math.PI;
+          camera.beta = Math.PI / 2;
+          if (!play) k = 0;
+          refresh = true;
+        });
+        var alignAxis = false;
+        ebID('buttAlignAxis').addEventListener('click', function () {
+          alignAxis = !alignAxis;
+          // buttonSwitchColor(ebID('buttAlignAxis' ), alignAxis);
+          camera.alpha = Math.PI;
+          camera.beta = 0;
+          if (!play) k = 0;
+          refresh = true;
+        });
+
+        // changing the camera angle during the tour 
+        ebID('renderCanvas').addEventListener('tourCamera', function (event) {
+          console.log("enetered rotate camera")
+          // buttonSwitchColor(ebID('buttAlignAxis' ), alignAxis);
+          camera.alpha = event.detail.alpha;
+          camera.beta = event.detail.beta;
+          if (!play) k = 0;
+          refresh = true;
+        });
+
+        // change surface colors //////////////////////////////////////////////////////////
+
+        // var previousColorScheme = colorScheme;
+        // buttonSwitchColor(ebID('buttColor' + colorScheme), true);
+
+        // for (var i = 1; i < maxColor + 1; i++) {
+        //   (function (i) {
+        //     ebID('buttColor' + i).addEventListener('click', function () {
+        //       previousColorScheme = colorScheme;
+        //       colorScheme = i;
+        //       document.body.dispatchEvent(colorChanged);
+        //     });
+        //   }(i));
+        // }
+
+        // var colorChanged = new Event('colorChanged'); // triggered by plus/minus buttons
+
+        // document.body.addEventListener('colorChanged', function (e) {
+        //   buttonSwitchColor(ebID('buttColor' + previousColorScheme), false);
+        //   buttonSwitchColor(ebID('buttColor' + colorScheme), true);
+        //   if (!play) updateBandMesh(k, hl);
+        //   refresh = true;
+        // }, false);
+
+        // eversion path by midline and edge
+        var tubeMid = [];
+        ebID('buttShowMid').addEventListener('click', function () {
+          showMid = !showMid;
+          buttonSwitchColor(ebID('buttShowMid'), showMid);
+          if (showMid) {
+            meshDispose(tubeMid);
+            meshDispose(golf);
+            createTube(tubeMid, 1, 0.5 * 3, yellow)
+          }
+          else {
+            meshDispose(tubeMid);
+            meshDispose(golf);
+          }
+          refresh = true;
+        });
+
+
+        var tubeMidVol = [];
+        var showMidVol = false;
+
+        ebID('buttShowMidVol').addEventListener('click', function () {
+          showMidVol = !showMidVol;
+          buttonSwitchColor(ebID('buttShowMidVol'), showMidVol);
+          if (showMidVol) createSweptVolume(tubeMidVol, 3, 0.5 * 3, cyan);
+          else {
+            meshDispose(tubeMidVol);
+            // meshDispose(golf);
+          }
+          refresh = true;
+        });
+
+
+        function generateShadeOfCyan(i, N) {
+          // Ensure i is within the range [0, N]
+          i = Math.max(0, Math.min(i, N));
+
+          // Calculate the fraction representing the position of i within the total N steps
+          let fraction = i / N;
+
+          // Start color is white
+          let startColor = { r: 1, g: 1, b: 1 };
+          // End color is cyan
+          let endColor = { r: 0, g: 0, b: 1 };
+
+          // Interpolate between start and end colors
+          let r = startColor.r + (endColor.r - startColor.r) * fraction;
+          let g = startColor.g + (endColor.g - startColor.g) * fraction;
+          let b = startColor.b + (endColor.b - startColor.b) * fraction;
+
+          // Round the results to get whole numbers for RGB values
+          r = Math.round(r);
+          g = Math.round(g);
+          b = Math.round(b);
+
+          return { r, g, b };
+        }
+        ///////////////////////////////////////////////////////////////////////////////////
+
+        camera.attachControl(canvas, false);
+
+        function refreshScene() { refresh = true; } // to prevent freezing of the render window after long inactivity
+        setInterval(refreshScene, 1000);
+
+
+
+
+
+        //#############################################################
+        //#############################################################
+        scene.registerBeforeRender(function () {
+          if (play || k == 0) {
+            updateBandMesh(k, hl);
+            // move clock hand
+            var dot = ebID('clockHand');
+            dot.setAttribute('cx', 40 * Math.sin(k));
+            dot.setAttribute('cy', -40 * Math.cos(k));
+            if (play) k += speedy;
+          }
+        });
+        //#############################################################
+        //#############################################################
+
+
+        // the canvas/window resize event handler
+        window.addEventListener('resize', function () { engine.resize(); refresh = true; });
+
+        function rend() {
+          scene.render();
+        }
+
+        var customRender = function () {
+          if (refresh || play ||
+            Math.abs(camera.inertialRadiusOffset) > 0 ||
+            Math.abs(camera.inertialAlphaOffset) > 0 ||
+            Math.abs(camera.inertialBetaOffset) > 0) {
+            scene.render();
+          }
+          if (refresh) refresh = false;
+        }
+        engine.stopRenderLoop(); // Stop the automatic PG rendering
+        rend(); // Render the first frame.
+        engine.runRenderLoop(customRender); //start main render loop
+
+        //document.body.addEventListener('nuiChanged', function () { console.log("updated value of nu index is " +  parseInt(nuSlider.getValue()))});
+
+
+
+
+        // energy changed during the tour
+
+
+        ////////////////////////////////////////////////////////////////
+        // create the chart for curvature 
+        ////////////////////////////////////////////////////////////////
+
+
+
+
+        // creating the plot for paths
+        //var curve = paths(n, hingeLength, type, ind);
+
+
+
+
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////
+
+
+        return scene;
+      }
+
+      var scene = createScene(); // call the createScene function
+
+      // Create a custom event
+      var openColorPickerEvent = new Event('openColorPicker');
+
+
+      ebID('backgroundButton').addEventListener('openColorPicker', function () {
+        // Trigger the color picker
+        ebID('colorPicker').click();
+      });
+
+      // Keep the existing 'click' event listener as well
+      ebID('backgroundButton').addEventListener('click', function () {
+        ebID('colorPicker').click();
+      });
+
+
+      ebID('colorPicker').addEventListener('input', function () {
+        // Get the color value from the color picker
+        var colorVal = this.value;
+
+        // Convert hex color to RGB
+        var r = parseInt(colorVal.substr(1, 2), 16) / 255;
+        var g = parseInt(colorVal.substr(3, 2), 16) / 255;
+        var b = parseInt(colorVal.substr(5, 2), 16) / 255;
+
+        // Update the scene's background color
+        scene.clearColor = new BABYLON.Color3(r, g, b);
+      });
+
+
+    });
+
+
+
+    // Start the tour
+
+    // ...add more steps for other buttons...
+
+    //     // Start the tour
+    //     var showTour = true;
+    //     document.addEventListener('DOMContentLoaded', function () {
+    //     // Show the modal
+    //     ebID('tourModal').style.display = 'block';
+    // });
+
+    // Initialize your tour
+    var tour = new Shepherd.Tour({
+      // your tour options and steps
+    });
+
+    window.startTour = function () {
+      tour.start();
+    };
+
+    // Function to toggle pause and resume
+    // Function to toggle pause and resume
+    var isTourPaused = false;
+
+    // Function to toggle pause and resume
+    function toggleTourPause() {
+      if (tour.isActive() && !isTourPaused) {
+        tour.cancel();
+        isTourPaused = true;
+      } else if (isTourPaused) {
+        tour.start();
+        isTourPaused = false;
+      }
+    }
+
+
+
+    // Listen for keydown event
+    document.addEventListener('keydown', function (event) {
+      if (event.code === 'KeyC') { // Check if space bar is pressed
+        console.log("event cancelled")
+        event.preventDefault(); // Prevent the default space bar action
+        toggleTourPause(); // Toggle the tour pause/resume
+      }
+    });
+
+    // // Start tour when "Start Tour" button is clicked
+    // ebID('startTourBtn').addEventListener('click', function () {
+    //     window.startTour();
+    //     ebID('tourModal').style.display = 'none'; // Hide modal
+    // });
+
+    // // Close modal when "No Thanks" button is clicked
+    // ebID('dismissTourBtn').addEventListener('click', function () {
+    //     ebID('tourModal').style.display = 'none'; // Hide modal
+    // });
+
+
+    // document.addEventListener('keydown', function(event) {
+    //   if (event.key === 'c' || event.key === 'C') {
+    //     // Stop the tour
+    //     if (tour.isActive()) {
+    //       tour.cancel(); // or tour.complete();
+    //     }
+
+    //     // Hide the cursor
+    //     const cursor = document.querySelector('.cursor');
+    //     if (cursor) {
+    //       cursor.style.display = 'none';
+    //     }
+    //   }
+    // });
+
+
+
+
+  </script>
+
+</body>
+
+</html>
