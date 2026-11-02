@@ -20,7 +20,7 @@ var by_data;
 var bz_data;
 var tmax;
 
-var init_parameters = function (sequenceName) {
+var init_parameters = function (sequenceName, motion = numData[sequenceName]) {
    // if (sequence == 1) {
   //   strData = "ACBACBACB";
   //   //  tmax = 271;
@@ -35,9 +35,10 @@ var init_parameters = function (sequenceName) {
   //   //tmax =   254;
   // }
 
-  bx_data = numData[sequenceName].bx_data;
-  by_data = numData[sequenceName].by_data;
-  bz_data = numData[sequenceName].bz_data;
+  // Working arrays must not mutate saved references during sequence switching.
+  bx_data = motion.bx_data.map(row => row.slice());
+  by_data = motion.by_data.map(row => row.slice());
+  bz_data = motion.bz_data.map(row => row.slice());
   tmax = bx_data[1].length;
   // creating the init_parameters
 };

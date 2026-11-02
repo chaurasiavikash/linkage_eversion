@@ -19,6 +19,7 @@
   <script src='utils/global_variable.js'></script>
   <script src='utils/kN3.js'></script>
   <script src='utils/data_bennett.js'></script>
+  <script src='utils/sequence_generation.js'></script>
   <!-- <script src='utils/animated-cursor.js' defer></script> -->
 
   <script src="https://unpkg.com/animated-cursor@1.1.1/dist/index.umd.js"></script>
@@ -78,12 +79,24 @@
       </g>
     </svg> -->
 
+    <!-- Chirality controls retained for future use.
     <g class="textElement" id="infoTet">
       <text y="-40">chirality</text>
       <text id="infoNumOfTet" y="16"> </text>
     </g>
     <button class="button " id="leftButton" title="Left button tooltip">left-handed</button>
     <button class="button  " id="rightButton" title="Right button tooltip">right-handed</button>
+    -->
+
+    <form id="sequenceForm" class="sequence-form" novalidate>
+      <label for="sequenceInput">your sequence</label>
+      <input id="sequenceInput" name="sequence" type="text" placeholder="ABCABCABC"
+        autocomplete="off" autocapitalize="characters" spellcheck="false" disabled
+        aria-describedby="sequenceHint sequenceStatus">
+      <small id="sequenceHint">Exactly 3 A, 3 B, and 3 C.</small>
+      <button class="button" id="generateMotion" type="submit" disabled>generate motion</button>
+      <p id="sequenceStatus" role="status" aria-live="polite"></p>
+    </form>
 
 
 
@@ -821,6 +834,7 @@ of the band  during the everting motion'> swept volume </button>
 
         // Common click handler for all buttons
         function handleButtonClick(event) {
+          ebID('sequenceStatus').textContent = '';
           sequence_index = 0;
           const buttonId = event.target.id;
           sequenceName = buttons[buttonId];
@@ -889,6 +903,7 @@ function enableUI() {
         //#################################################################################
         //###########################################################################
         //chirality
+        /* Controls commented together with their sidebar markup.
         var chiral_L = true;
         ebID('leftButton').addEventListener('click', function () {
           tau = -1;
@@ -928,6 +943,7 @@ function enableUI() {
 
  
 
+        */
         buttonSwitchColor(ebID('buttABCABCABC'), true);
 
  // button for generating switched sequences.
@@ -938,10 +954,55 @@ function enableUI() {
                    ebID(buttonId).addEventListener('click', handleButtonClick);
         }
 
+        ebID('sequenceForm').addEventListener('submit', async function (event) {
+          event.preventDefault();
+          const input = ebID('sequenceInput');
+          const status = ebID('sequenceStatus');
+          try {
+            input.value = validateSequence(input.value);
+            input.removeAttribute('aria-invalid');
+          } catch (error) {
+            input.setAttribute('aria-invalid', 'true');
+            status.textContent = error.message;
+            input.focus();
+            return;
+          }
+          disableUI();
+          input.disabled = true;
+          status.textContent = 'Generating motion...';
+          ebID('sequenceForm').setAttribute('aria-busy', 'true');
+          try {
+            // Let the browser paint the busy state before synchronous generation.
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            const result = generateSequenceMotion(input.value, numData);
+            init_parameters(result.sequence, result.motion);
+            sequenceName = result.sequence;
+            base_sequence = result.sequence;
+            sequence_index = 0;
+            colorSequence = generateColorSequence(sequenceName);
+            k = 0;
+            updateButtonColors('butt' + sequenceName);
+            buttonSwitchColor(ebID('buttSwitch'), false);
+            document.body.dispatchEvent(sequenceChanged);
+            status.textContent = 'Motion ready: ' + sequenceName + '.';
+          } catch (error) {
+            console.error('Motion generation failed:', error);
+            status.textContent = 'Could not generate motion. Please try again.';
+          } finally {
+            enableUI();
+            input.disabled = false;
+            ebID('sequenceForm').removeAttribute('aria-busy');
+          }
+        });
+
+
+        ebID('sequenceInput').disabled = false;
+        ebID('generateMotion').disabled = false;
 
    // Assuming disableUI and enableUI are defined as explained previously
 
 ebID('buttSwitch').addEventListener('click', async function () {
+    ebID('sequenceStatus').textContent = '';
     // Disable UI to prevent further clicks and show processing is in progress
     disableUI();
     
@@ -1143,7 +1204,10 @@ ebID('buttSwitch').addEventListener('click', async function () {
           }
         };
         ebID('buttPlayPause').addEventListener('click', playIt, false);
-        document.addEventListener('keydown', function (e) { if (e.keyCode == '32') playIt(); }); // space key play
+        document.addEventListener('keydown', function (e) {
+          if (e.target.closest('input, textarea, button')) return;
+          if (e.keyCode == '32') playIt();
+        }); // space key play
 
         // speed control //////////////////////////////////////////////////////////////////
 
@@ -1497,9 +1561,9 @@ ebID('buttSwitch').addEventListener('click', async function () {
 
     // Listen for keydown event
     document.addEventListener('keydown', function (event) {
-      if (event.code === 'KeyC') { // Check if space bar is pressed
-        console.log("event cancelled")
-        event.preventDefault(); // Prevent the default space bar action
+      if (event.target.closest('input, textarea, select, [contenteditable]')) return;
+      if (event.code === 'KeyC') {
+        event.preventDefault();
         toggleTourPause(); // Toggle the tour pause/resume
       }
     });
