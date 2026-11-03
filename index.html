@@ -79,32 +79,8 @@
       </g>
     </svg> -->
 
-    <!-- Chirality controls retained for future use.
-    <g class="textElement" id="infoTet">
-      <text y="-40">chirality</text>
-      <text id="infoNumOfTet" y="16"> </text>
-    </g>
-    <button class="button " id="leftButton" title="Left button tooltip">left-handed</button>
-    <button class="button  " id="rightButton" title="Right button tooltip">right-handed</button>
-    -->
 
-    <form id="sequenceForm" class="sequence-form" novalidate>
-      <label for="sequenceInput">your sequence</label>
-      <input id="sequenceInput" name="sequence" type="text" placeholder="ABCABCABC"
-        autocomplete="off" autocapitalize="characters" spellcheck="false" disabled
-        aria-describedby="sequenceHint sequenceStatus">
-      <small id="sequenceHint">Exactly 3 A, 3 B, and 3 C.</small>
-      <button class="button" id="generateMotion" type="submit" disabled>generate motion</button>
-      <p id="sequenceStatus" role="status" aria-live="polite"></p>
-    </form>
-
-
-
-
-    <g class="textElement" id='infoTet'>
-      <text y='-40'>base sequence</text>
-      <text id='infoNumOfTet' y='16'> </text>
-    </g>
+    <h2 class="sidebar-heading">Preset sequences</h2>
     <button class='button' id="buttABCABCABC"
       title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
       ABCABCABC</button>
@@ -123,15 +99,25 @@
       ABACBCABC</button>
     <br>
 
-    <g class="textElement" id='infoTet'>
-      <text y='-40'>switching</text>
-      <text id='infoNumOfTet' y='16'> </text>
-    </g>
+    <form id="sequenceForm" class="sequence-form" novalidate>
+      <label for="sequenceInput">Custom sequence</label>
+      <input id="sequenceInput" name="sequence" type="text" placeholder="e.g. ABCABCABC"
+        title="Use exactly 3 A, 3 B, and 3 C."
+        autocomplete="off" autocapitalize="characters" spellcheck="false" disabled
+        aria-describedby="sequenceHint sequenceStatus">
+      <span id="sequenceHint" hidden>Use exactly 3 A, 3 B, and 3 C.</span>
+      <button class="button" id="generateMotion" type="submit" disabled>Generate motion</button>
+      <p id="sequenceStatus" role="status" aria-live="polite"></p>
+    </form>
+
+    <h2 class="sidebar-heading">Modify current sequence</h2>
+    <output id="currentSequence" aria-label="Current sequence" aria-live="polite">ABCABCABC</output>
     <button class='button' id="buttSwitch"
-      title='dimensionless torsion of the midline versus dimensionless bending energy of the stable bands. click on the plot to change the torsion'>
-      switch sequence</button>
+      title='Each click swaps the next neighboring pair.'>
+      Swap adjacent links</button>
     <br>
-    <svg id='playSVG' width='200' height='300' viewBox='-60 -60 120 120' style='margin-top:10px'>
+    <h2 class="sidebar-heading">Play</h2>
+    <svg id='playSVG' width='180' height='180' viewBox='-60 -60 120 120'>
       <g class='touchElement glow-effect' id='buttPlayPause'>
         <title> click to play the everting motion</title>
         <circle cx='0' cy='0' r='20' />
@@ -142,10 +128,6 @@
         <title> drag to evert the band</title>
         <circle cx='0' cy='0' r='40' fill='none' stroke='#555' stroke-width='26' />
         <circle id='clockHand' r='10' fill='#fff' />
-      </g>
-      <g class="textElement" id='infoTet'>
-        <text y='-65'> play/pause</text>
-        <text> </text>
       </g>
     </svg>
 
@@ -168,7 +150,7 @@
 
 
 
-    <svg id='speedSlider' class='slider glow-effect' width='200' height='100' viewBox='-100 -25 200 50'>
+    <svg id='speedSlider' class='slider glow-effect' width='180' height='72' viewBox='-110 -45 220 80'>
       <title> slide to change the speed of eversion</title>
       <polygon fill='#555' points='-100 -20 -100 20 100 20 100 -20' />
       <rect width='38' height='38' x='-19' y='-19' />
@@ -198,6 +180,9 @@ of the band  during the everting motion'> swept volume </button>
     <!-- eversion path of the midline -->
     <button class='button' id='buttShowMid' title='path traced by a point on the midline
     of the band  during the everting motion'> eversion path </button>
+    <h2 class="sidebar-heading">Chirality</h2>
+    <button class="button" id="leftButton" title="Show left-handed motion">left-handed</button>
+    <button class="button" id="rightButton" title="Show right-handed motion">right-handed</button>
     <!-- <button class='button' id='buttShowAxis'> show axis </button> -->
     <br>
     <br>
@@ -212,34 +197,29 @@ of the band  during the everting motion'> swept volume </button>
 
     <br>
     <br>
-    <g class="textElement">
-
-      <text> colors </text>
-    </g>
     <!-- <button class='button' id='buttColor3'> M&ouml;bius rainbow 3 </button>
     <button class='button' id='buttColor4'> digital </button>
     <button class='button' id='buttColor5'> M&ouml;bius BRW 3 </button> -->
 
 
-    <button class='button' id="backgroundButton"
-      title='change the background color for the best visibility using picker on the left-top'>background Color</button>
-    <input type="color" id="colorPicker" style="display: none;">
 
     <!-- <input class="jscolor" value="ab2567" data-jscolor="{format:'rgba', position:'right', width:181, height:101}"> -->
     <br>
     <br>
-    <g class="textElement">
-      <text> view angle </text>
-    </g>
+    <h2 class="sidebar-heading">View angle</h2>
     <button class='button' id='buttAlignAxis' title='align the view with the axis of symmetry'> align axis </button>
     <button class='button' id='buttAlignPlane' title='align the view with the best fit plane'> align plane </button>
+
+    <h2 class="sidebar-heading">Colors</h2>
+    <button class="button" id="backgroundButton" title="Change background color">background color</button>
+    <input type="color" id="colorPicker" style="display: none;">
 
   </div>
 
   <div class="container">
     <div class="content">
       <canvas id='renderCanvas' touch-action='none'></canvas>
-      <img src='utils/dragon_oist.svg' style='height:40px;position:absolute;left:0;bottom:0;margin:10px'>
+      <img class="oist-logo" src="utils/dragon_oist.svg" alt="OIST">
       <img src='utils/3M_white.svg' style='height:40px;position:absolute;right:0;bottom:0;margin:10px'>
     </div>
   </div>
@@ -903,47 +883,16 @@ function enableUI() {
         //#################################################################################
         //###########################################################################
         //chirality
-        /* Controls commented together with their sidebar markup.
-        var chiral_L = true;
-        ebID('leftButton').addEventListener('click', function () {
-          tau = -1;
-          init_parameters(sequenceName);
-
-          if (tau == -1) {
-            buttonSwitchColor(ebID('leftButton'), true);
-            buttonSwitchColor(ebID('rightButton'), false);
-          }
-          else {
-            buttonSwitchColor(ebID('leftButton'), false);
-            buttonSwitchColor(ebID('rightButton'), true);
-          }
+        function setChirality(value) {
+          tau = value;
+          buttonSwitchColor(ebID('leftButton'), tau === -1);
+          buttonSwitchColor(ebID('rightButton'), tau === 1);
+          // Rebuild from current working motion, including custom/manual switches.
           document.body.dispatchEvent(sequenceChanged);
-        });
+        }
+        ebID('leftButton').addEventListener('click', () => setChirality(-1));
+        ebID('rightButton').addEventListener('click', () => setChirality(1));
         buttonSwitchColor(ebID('rightButton'), true);
-
-        ebID('rightButton').addEventListener('click', function () {
-          tau = 1;
-
-
-          if (tau == -1) {
-            buttonSwitchColor(ebID('leftButton'), true);
-            buttonSwitchColor(ebID('rightButton'), false);
-          }
-          else {
-            buttonSwitchColor(ebID('leftButton'), false);
-            buttonSwitchColor(ebID('rightButton'), true);
-          }
-
-
-          init_parameters(sequenceName);
-
-          document.body.dispatchEvent(sequenceChanged);
-        });
-
-
- 
-
-        */
         buttonSwitchColor(ebID('buttABCABCABC'), true);
 
  // button for generating switched sequences.
@@ -984,7 +933,7 @@ function enableUI() {
             updateButtonColors('butt' + sequenceName);
             buttonSwitchColor(ebID('buttSwitch'), false);
             document.body.dispatchEvent(sequenceChanged);
-            status.textContent = 'Motion ready: ' + sequenceName + '.';
+            status.textContent = '';
           } catch (error) {
             console.error('Motion generation failed:', error);
             status.textContent = 'Could not generate motion. Please try again.';
@@ -1113,6 +1062,8 @@ ebID('buttSwitch').addEventListener('click', async function () {
 
         document.body.addEventListener('sequenceChanged', function (e) {
 
+          ebID('currentSequence').textContent = base_sequence;
+
           disposeAllMesh();
           structureInit();
 
@@ -1211,9 +1162,10 @@ ebID('buttSwitch').addEventListener('click', async function () {
 
         // speed control //////////////////////////////////////////////////////////////////
 
-        var speedSlider = new Slider('speedSlider', 4, 100, 50, 'speed ', 0, '%');
+        const minimumSpeed = speedy; // Preserve actual startup speed (0.01).
+        var speedSlider = new Slider('speedSlider', 100, 200, 100, 'speed ', 0, '%');
         ebID('speedSlider').addEventListener('sliderChange', function () {
-          speedy = speedSlider.getValue() / 2000 / 1;
+          speedy = minimumSpeed * speedSlider.getValue() / 100;
         });
 
         // change width/length ////////////////////////////////////////////////////////////
@@ -1245,13 +1197,13 @@ ebID('buttSwitch').addEventListener('click', async function () {
 
         ///  modifying sliders during the guiding tour 
         ebID('speedSlider').addEventListener('tourSpeed', function () {
-          speedSlider = new Slider('speedSlider', 4, 100, 40, 'speed ', 0, '%');
-          speedy = 40 / 2000 / n ** .2;
+          speedSlider.setValue(100);
+          speedy = minimumSpeed;
         });
 
         ebID('speedSlider').addEventListener('tourSpeedBack', function () {
-          speedSlider = new Slider('speedSlider', 4, 100, 20, 'speed ', 0, '%');
-          speedy = 20 / 2000 / n ** .2;
+          speedSlider.setValue(100);
+          speedy = minimumSpeed;
         });
 
 

@@ -150,7 +150,9 @@ function Slider ( id, min, max, init, prefix, digits, suffix ) {
   }
   update((init-min)/(maxi-min)*160-80); // initial
   this.getValue = function() { return val; }
-  this.setValue = function(va) { val = va; }
+  this.setValue = function(va) {
+    update((Math.min(maxi, Math.max(min, va))-min)/(maxi-min)*160-80);
+  }
   this.setMax = function(max) { maxi = max; }
 }
 ///////////////////////////////////////////////////////////////////////////////

@@ -29,9 +29,41 @@ body {
 }
 .sequence-form input:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .sequence-form input[aria-invalid="true"] { border-color: #ff9b87; }
-.sequence-form small, #sequenceStatus { font-size: 12px; line-height: 1.4; }
+#sequenceStatus { font-size: 12px; line-height: 1.4; }
 #sequenceStatus { overflow-wrap: anywhere; }
 .sequence-form .button { width: 100%; margin: 0; min-height: 44px; }
+.leftbar > * { flex-shrink: 0; }
+.leftbar > br { display: none; }
+.leftbar { padding-bottom: 16px; }
+.sidebar-heading, .sequence-form label {
+  font: 14px monospace;
+  color: #ff7474;
+}
+#sequenceStatus, #currentSequence {
+  color: #ff7474;
+}
+.leftbar #speedSlider text { fill: #ff7474; }
+.sidebar-heading { margin: 14px 8px 6px; }
+.leftbar > .button { margin: 4px auto; min-height: 40px; }
+.leftbar > .sidebar-heading { margin: 8px 6px 4px; }
+.leftbar > .button { margin: 3px auto; height: 36px; min-height: 36px; }
+.leftbar .sequence-form { padding: 8px 10px 6px; gap: 6px; }
+#currentSequence { font: 18px monospace; letter-spacing: 1px; padding: 6px 0; }
+#buttSwitch { font-size: 14px; }
+#sequenceStatus:empty { display: none; }
+.leftbar #playSVG { width: 150px; height: 150px; margin: 0 auto; }
+.leftbar #speedSlider { width: 180px; height: 72px; margin: 4px auto 8px; overflow: visible; }
+.oist-logo { height: 40px; position: absolute; left: 210px; bottom: 10px; }
+.rightbar { display: flex; padding-bottom: 16px; }
+.rightbar > * { flex-shrink: 0; }
+.rightbar > br { display: none; }
+.rightbar > .button { margin: 8px auto; min-height: 40px; }
+.rightbar > .sidebar-heading { margin: 28px 8px 12px; }
+.leftbar .textElement text, .rightbar .textElement text {
+  color: #ff7474;
+  fill: #ff7474;
+  font-size: 14px;
+}
 
   * {
   margin:0;
@@ -87,7 +119,7 @@ body {
     background: none;
     transition: width .9s;
      flex-direction: column;
-    justify-content: center; /* Centers items vertically */
+    justify-content: flex-start;
     align-items: center; /* Centers items horizontally */
     overflow-y: auto; /* Enable vertical scrolling */
     overflow-x: hidden;
@@ -97,13 +129,23 @@ body {
 }
 
   
-  ::-webkit-scrollbar {
-    width:  15px;
+  .leftbar, .rightbar {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
   }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #fff;
-    border-radius: 10px;
+  .leftbar:hover, .leftbar:focus-within,
+  .rightbar:hover, .rightbar:focus-within {
+    scrollbar-color: rgba(255, 116, 116, .45) transparent;
+  }
+  .leftbar::-webkit-scrollbar, .rightbar::-webkit-scrollbar { width: 5px; }
+  .leftbar::-webkit-scrollbar-track, .rightbar::-webkit-scrollbar-track { background: transparent; }
+  .leftbar::-webkit-scrollbar-thumb, .rightbar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 4px;
+  }
+  .leftbar:hover::-webkit-scrollbar-thumb, .leftbar:focus-within::-webkit-scrollbar-thumb,
+  .rightbar:hover::-webkit-scrollbar-thumb, .rightbar:focus-within::-webkit-scrollbar-thumb {
+    background: rgba(255, 116, 116, .45);
   }
   
   .leftbar {
@@ -675,4 +717,13 @@ svg {
     top: 5px !important;
     opacity: 1 !important;
   }
+}
+
+/* Keep both sidebars visible independently of pointer position. */
+.leftbar .button, .rightbar .button,
+.leftbar .touchElement, .rightbar .touchElement,
+.leftbar .slider, .rightbar .slider,
+.leftbar .textElement, .rightbar .textElement,
+.leftbar .textElement text, .rightbar .textElement text {
+  opacity: 1;
 }
