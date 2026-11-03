@@ -59,6 +59,8 @@ body {
 .rightbar > br { display: none; }
 .rightbar > .button { margin: 8px auto; min-height: 40px; }
 .rightbar > .sidebar-heading { margin: 28px 8px 12px; }
+.export-status { color: #ff7474; font: 12px/1.4 monospace; margin: 0 8px; }
+.export-status:empty { display: none; }
 .leftbar .textElement text, .rightbar .textElement text {
   color: #ff7474;
   fill: #ff7474;

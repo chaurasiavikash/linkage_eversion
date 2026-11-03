@@ -17,9 +17,11 @@
   <script src='utils/util.js'></script>
   <script src='utils/tetToggler.js'></script>
   <script src='utils/global_variable.js'></script>
-  <script src='utils/kN3.js'></script>
+  <script src='utils/kN3.js?v=export-1'></script>
   <script src='utils/data_bennett.js'></script>
   <script src='utils/sequence_generation.js'></script>
+  <script src='utils/vendor/fflate-0.8.2.js'></script>
+  <script src='utils/motion_export.js'></script>
   <!-- <script src='utils/animated-cursor.js' defer></script> -->
 
   <script src="https://unpkg.com/animated-cursor@1.1.1/dist/index.umd.js"></script>
@@ -213,6 +215,9 @@ of the band  during the everting motion'> swept volume </button>
     <h2 class="sidebar-heading">Colors</h2>
     <button class="button" id="backgroundButton" title="Change background color">background color</button>
     <input type="color" id="colorPicker" style="display: none;">
+    <button class="button" id="exportData" disabled
+      title="Pause and export current configuration and full-cycle motion">Export data</button>
+    <p id="exportStatus" class="export-status" role="status" aria-live="polite"></p>
 
   </div>
 
@@ -499,12 +504,14 @@ of the band  during the everting motion'> swept volume </button>
         var bandBack = new BABYLON.Mesh('custom', scene);
 
 
+        var displayedMotion = null;
         function updateBandMesh(k, hingeLength) {
-          t = k_to_t(k);
+          t = normalizedFrame(k_to_t(k), tmax);
           let temp = fourierExpansion(N, t, hingeLength);
           var v = temp[0];
 
           assignStructure(v, hingeLength, arrowBody, tip, topDisc, bottomDisc, hingeBody, connector);
+          displayedMotion = {frame: t, displayedPhase: k, hingeLength};
           // updating curvature 
           document.body.dispatchEvent(eversionPlay);
 
@@ -1155,6 +1162,34 @@ ebID('buttSwitch').addEventListener('click', async function () {
           }
         };
         ebID('buttPlayPause').addEventListener('click', playIt, false);
+        let exporting = false;
+        ebID('exportData').disabled = false;
+        ebID('exportData').addEventListener('click', async function () {
+          if (exporting || !displayedMotion) return;
+          if (play) playIt();
+          // k is already incremented by the render loop; freeze the displayed phase.
+          k = displayedMotion.displayedPhase;
+          const snapshot = {...displayedMotion, sequence: base_sequence, chirality: tau,
+            motion: {bx_data: bx_data.map(row => row.slice()),
+              by_data: by_data.map(row => row.slice()), bz_data: bz_data.map(row => row.slice())}};
+          exporting = true;
+          const button = ebID('exportData');
+          const status = ebID('exportStatus');
+          button.disabled = true;
+          button.setAttribute('aria-busy', 'true');
+          status.textContent = 'Preparing export...';
+          try {
+            await saveMotionExport(snapshot);
+            status.textContent = '';
+          } catch (error) {
+            console.error('Motion export failed:', error);
+            status.textContent = 'Could not save export. Please try again.';
+          } finally {
+            exporting = false;
+            button.disabled = false;
+            button.removeAttribute('aria-busy');
+          }
+        });
         document.addEventListener('keydown', function (e) {
           if (e.target.closest('input, textarea, button')) return;
           if (e.keyCode == '32') playIt();

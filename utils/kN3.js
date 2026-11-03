@@ -143,12 +143,17 @@ function setArrayColumn(arr, columnIndex, newColumn) {
 }
 
 //the function below generates animation data
-var animationData = function (j) {
-  let ind = j % tmax; // ensuring that index is not out of bound
+function evaluateAnimationData(motion, j, chirality) {
+  const N = motion.bx_data.length - 1;
+  const tmax = motion.bx_data[0].length;
+  const ind = ((j % tmax) + tmax) % tmax;
+  const tau = chirality;
+  const bx_data = motion.bx_data, by_data = motion.by_data, bz_data = motion.bz_data;
+  const rx = [], ry = [], rz = [], cen = [];
 
-  hx = arrayColumn(bx_data, ind); //
-  hy = arrayColumn(by_data, ind); //
-  hz = arrayColumn(bz_data, ind); //
+  const hx = arrayColumn(bx_data, ind);
+  const hy = arrayColumn(by_data, ind);
+  const hz = arrayColumn(bz_data, ind);
 
  
   let tx = [];
@@ -207,6 +212,12 @@ var animationData = function (j) {
   }
 
   return [hx, hy, hz, rx, ry, rz];
+}
+
+var animationData = function (j) {
+  const result = evaluateAnimationData({bx_data, by_data, bz_data}, j, tau);
+  [hx, hy, hz, rx, ry, rz] = result;
+  return result;
 };
 
 //console.log(rx ); // returns true if any element is NaN
@@ -234,25 +245,18 @@ var rx = [];
 var ry = [];
 var rz = [];
 var kappa = [];
-var fourierExpansion = function (n, t, hl) {
-  l = (hl * 1.7) / 2;
+function geometryVertices(result, N, n, hl) {
+  const l = (hl * 1.7) / 2;
   var v = [];
 
-  const result = animationData(t);
-  hx = result[0];
-  hy = result[1];
-  hz = result[2];
-
-  rx = result[3];
-  ry = result[4];
-  rz = result[5];
+  const [hx, hy, hz, rx, ry, rz] = result;
+  const cen = [];
 
   for (var i = 0; i < N + 1; i++) {
     //rz[i]=rz[i]-.35;
     //rz[i]=rz[i]-.35;
   }
 
-  kappa = rx;
 
   cen[0] = avg(rx);
   cen[1] = avg(ry);
@@ -299,8 +303,27 @@ var fourierExpansion = function (n, t, hl) {
   //         hx[n]*hy[1] - hx[1]*hy[n] ];
   // for (var j = 0; j < 3; j++) mid[j] -= tmp[j];
   // console.log([mid[0],mid[1],mid[2]])
-  return [v, kappa];
+  return [v, rx];
+}
+
+var fourierExpansion = function (n, t, hl) {
+  const result = animationData(t);
+  kappa = result[3];
+  return geometryVertices(result, N, n, hl);
 };
+
+function evaluateFrameGeometry(motion, frame, chirality, hingeLength) {
+  const count = motion.bx_data.length - 1;
+  const vectors = evaluateAnimationData(motion, frame, chirality);
+  const vertices = geometryVertices(vectors, count, count, hingeLength)[0];
+  const hinges = [];
+  for (let i = 1; i <= count; i++) {
+    const a = [vertices[6*i-5], vertices[6*i-3], -vertices[6*i-4]];
+    const b = [vertices[6*i-2], vertices[6*i], -vertices[6*i-1]];
+    hinges.push({center: a.map((x, axis) => (x + b[axis])/2), a, b});
+  }
+  return hinges;
+}
 
 var paths = function (n, hl, selector, ind) {
   var path = [];
