@@ -209,8 +209,7 @@ of the band  during the everting motion'> swept volume </button>
     <br>
     <br>
     <h2 class="sidebar-heading">View angle</h2>
-    <button class='button' id='buttAlignAxis' title='align the view with the axis of symmetry'> align axis </button>
-    <button class='button' id='buttAlignPlane' title='align the view with the best fit plane'> align plane </button>
+    <button class="button" id="buttToggleView" title="Align the view with the axis of symmetry">View along axis</button>
 
     <h2 class="sidebar-heading">Colors</h2>
     <button class="button" id="backgroundButton" title="Change background color">background color</button>
@@ -1289,24 +1288,22 @@ ebID('buttSwitch').addEventListener('click', async function () {
 
 
         // align to plane/axis ////////////////////////////////////////////////////////////
-        var alignPlane = false;
-        ebID('buttAlignPlane').addEventListener('click', function () {
-          alignPlane = !alignPlane;
-          //  buttonSwitchColor(ebID('buttAlignPlane' ), alignPlane);
+        var nextView = 'axis';
+        function alignView(view) {
           camera.alpha = Math.PI;
-          camera.beta = Math.PI / 2;
+          camera.beta = view === 'axis' ? 0 : Math.PI / 2;
+          nextView = view === 'axis' ? 'plane' : 'axis';
+          ebID('buttToggleView').textContent = nextView === 'axis'
+            ? 'View along axis' : 'View normal to plane';
+          ebID('buttToggleView').title = nextView === 'axis'
+            ? 'Align the view with the axis of symmetry'
+            : 'Align the view normal to the best fit plane';
           if (!play) k = 0;
           refresh = true;
-        });
-        var alignAxis = false;
-        ebID('buttAlignAxis').addEventListener('click', function () {
-          alignAxis = !alignAxis;
-          // buttonSwitchColor(ebID('buttAlignAxis' ), alignAxis);
-          camera.alpha = Math.PI;
-          camera.beta = 0;
-          if (!play) k = 0;
-          refresh = true;
-        });
+        }
+        ebID('buttToggleView').addEventListener('click', () => alignView(nextView));
+        // Tour steps select an explicit view independently of previous clicks.
+        ebID('buttToggleView').addEventListener('alignView', event => alignView(event.detail));
 
         // changing the camera angle during the tour 
         ebID('renderCanvas').addEventListener('tourCamera', function (event) {

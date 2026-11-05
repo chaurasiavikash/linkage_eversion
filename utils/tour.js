@@ -596,13 +596,13 @@
      title: 'view axis',
      text: `view along the best fit plane of the midline of a band`,
      attachTo: {
-       element: '#buttAlignAxis',
+       element: '#buttToggleView',
        on: 'bottom'
      },
      when: {
        show: function () {
-         moveCursorToElement('buttAlignAxis', () => {
-           simulateClick('buttAlignAxis');
+         moveCursorToElement('buttToggleView', () => {
+           document.getElementById('buttToggleView').dispatchEvent(new CustomEvent('alignView', {detail: 'axis'}));
            setTimeout(() => tour.next(), 2000); // Proceed to next step after the action
          });
         }
@@ -612,13 +612,13 @@
      title: 'view axis',
      text: `view perpendicular the best fit plane of the midline of a band`,
      attachTo: {
-       element: '#buttAlignPlane',
+       element: '#buttToggleView',
        on: 'bottom'
      },
      when: {
        show: function () {
-         moveCursorToElement('buttAlignPlane', () => {
-           simulateClick('buttAlignPlane');
+         moveCursorToElement('buttToggleView', () => {
+           document.getElementById('buttToggleView').dispatchEvent(new CustomEvent('alignView', {detail: 'plane'}));
            setTimeout(() => tour.next(), 2000); // Proceed to next step after the action
          });
         }
@@ -705,8 +705,6 @@
  });
  
  // Assuming 'tour' is your Shepherd tour instance
- 
- 
+
+
     });
- 
-    

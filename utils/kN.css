@@ -44,9 +44,9 @@ body {
 }
 .leftbar #speedSlider text { fill: #ff7474; }
 .sidebar-heading { margin: 14px 8px 6px; }
-.leftbar > .button { margin: 4px auto; min-height: 40px; }
+.leftbar > .button, .rightbar > .button { margin: 6px auto; }
 .leftbar > .sidebar-heading { margin: 8px 6px 4px; }
-.leftbar > .button { margin: 3px auto; height: 36px; min-height: 36px; }
+.leftbar > .button { height: 36px; min-height: 36px; }
 .leftbar .sequence-form { padding: 8px 10px 6px; gap: 6px; }
 #currentSequence { font: 18px monospace; letter-spacing: 1px; padding: 6px 0; }
 #buttSwitch { font-size: 14px; }
@@ -57,7 +57,7 @@ body {
 .rightbar { display: flex; padding-bottom: 16px; }
 .rightbar > * { flex-shrink: 0; }
 .rightbar > br { display: none; }
-.rightbar > .button { margin: 8px auto; min-height: 40px; }
+.rightbar > .button { min-height: 40px; }
 .rightbar > .sidebar-heading { margin: 28px 8px 12px; }
 .export-status { color: #ff7474; font: 12px/1.4 monospace; margin: 0 8px; }
 .export-status:empty { display: none; }
