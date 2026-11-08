@@ -913,9 +913,9 @@ var nui_to_n = function (nu_i) {
 
 ///  interaction with buttons and sliders start here
 // Define the colors
-const colA = new BABYLON.Color3(1, 0.294, 0); // Color A
-const colB = new BABYLON.Color3(0, 1, 0.902); // Color B
-const colC = new BABYLON.Color3(0.961, 0.396, 0.847); // Color C
+const colA = new BABYLON.Color3(226 / 255, 92 / 255, 92 / 255); // A: #E25C5C
+const colB = new BABYLON.Color3(74 / 255, 107 / 255, 130 / 255); // B: #4A6B82
+const colC = new BABYLON.Color3(212 / 255, 163 / 255, 55 / 255); // C: #D4A337
   // Map to hold the colors associated with each type of link
   const colorMap = {
     A: colA,
