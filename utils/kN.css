@@ -56,8 +56,8 @@ body {
 .oist-logo { height: 40px; position: absolute; left: 210px; bottom: 10px; }
 .link-legend {
   position: fixed;
-  bottom: 24px;
-  left: 320px;
+  top: 20px;
+  left: 220px;
   right: calc(12.3% + 24px);
   z-index: 3;
   display: flex;
@@ -72,6 +72,7 @@ body {
   pointer-events: none;
 }
 .link-legend li { display: flex; align-items: center; gap: 8px; max-width: 100%; }
+.link-legend li[hidden] { display: none; }
 .link-legend-swatch { display: block; width: 32px; height: 7.5px; border-radius: 4px; }
 .link-legend-swatch, .link-legend-icon { flex-shrink: 0; }
 .link-legend-icon { display: block; width: 32px; height: 24px; }
@@ -79,7 +80,7 @@ body {
 .link-legend-b { background-color: #4A6B82; }
 .link-legend-c { background-color: #D4A337; }
 @media (max-width: 1100px) {
-  .link-legend { left: 212px; bottom: 64px; right: calc(12.3% + 12px); }
+  .link-legend { left: 212px; right: calc(12.3% + 12px); }
 }
 @media (max-width: 600px) {
   .link-legend { flex-direction: column; align-items: flex-start; gap: 8px; }

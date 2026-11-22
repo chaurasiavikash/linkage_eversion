@@ -2,8 +2,8 @@
 
 Explore cyclic linkages with three links each of types A, B, and C. Choose a
 preset or enter a custom sequence, generate its motion, and use the playback
-controls to inspect it. The bottom legend identifies links, hinges, hinge axes,
-and hinge trajectories.
+controls to inspect it. The top legend identifies links, hinges, and hinge axes.
+Its hinge-trajectory entry appears only while the trajectory overlay is enabled.
 
 ## Guided tutorial
 

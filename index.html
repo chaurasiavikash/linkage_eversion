@@ -10,7 +10,7 @@
   
   <title>M&ouml;bius bands</title>
   <link href='utils/3M_favicon.png' rel='icon'>
-  <link rel='stylesheet' type='text/css' href='utils/kN.css?v=linkage-tutorial-4'>
+  <link rel='stylesheet' type='text/css' href='utils/kN.css?v=top-legend-1'>
   <link rel="stylesheet" href='utils/shepherd.css'>
   <script src='utils/babylon.custom.js'></script>
 
@@ -243,7 +243,7 @@ of the band  during the everting motion'>Swept volume</button>
           </svg>
           <span>Hinge axis</span>
         </li>
-        <li>
+        <li id="trajectoryLegend" hidden>
           <svg class="link-legend-icon" viewBox="0 0 32 24" aria-hidden="true" focusable="false">
             <ellipse cx="16" cy="12" rx="14" ry="8" transform="rotate(-28 16 12)" fill="none" stroke="#ff0" stroke-width="2" />
           </svg>
@@ -1020,6 +1020,11 @@ ebID('buttSwitch').addEventListener('click', async function () {
         // show corner/midpoint paths /////////////////////////////////////////////////////
 
         var showMid = false;
+        function updateTrajectoryLegend() {
+          ebID('trajectoryLegend').hidden = !showMid;
+          ebID('buttShowMid').setAttribute('aria-pressed', String(showMid));
+        }
+        updateTrajectoryLegend();
 
         //#################################################################################
         //#################################################################################
@@ -1363,6 +1368,7 @@ ebID('buttSwitch').addEventListener('click', async function () {
         var tubeMid = [];
         ebID('buttShowMid').addEventListener('click', function () {
           showMid = !showMid;
+          updateTrajectoryLegend();
           buttonSwitchColor(ebID('buttShowMid'), showMid);
           if (showMid) {
             meshDispose(tubeMid);
@@ -1534,6 +1540,7 @@ ebID('buttSwitch').addEventListener('click', async function () {
             k = saved.phase;
             colorSequence = generateColorSequence(base_sequence);
             showMid = saved.showMid;
+            updateTrajectoryLegend();
             showMidVol = saved.showMidVol;
             nextView = saved.nextView;
             this.setSpeed(saved.speed);
