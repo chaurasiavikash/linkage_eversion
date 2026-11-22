@@ -17,7 +17,7 @@
   <script src='utils/util.js'></script>
   <script src='utils/tetToggler.js'></script>
   <script src='utils/global_variable.js'></script>
-  <script src='utils/kN3.js?v=export-1'></script>
+  <script src='utils/kN3.js?v=unique-hinge-axes-1'></script>
   <script src='utils/data_bennett.js'></script>
   <script src='utils/sequence_generation.js'></script>
   <script src='utils/vendor/fflate-0.8.2.js'></script>
@@ -169,22 +169,26 @@
   </div>
 
   <div class='rightbar'>
-    <button class='button' id='buttFullScreen' title='enable full screen'> full screen </button>
+    <button class='button' id='buttFullScreen' title='Enable full screen'>Full screen</button>
     <br>
    
  
     <!-- eversion path of the edge  -->
     <button class='button' id='buttShowMidVol' title='volume swept by the midline
-of the band  during the everting motion'> swept volume </button>
+of the band  during the everting motion'>Swept volume</button>
     <br>
 
 
-    <!-- eversion path of the midline -->
-    <button class='button' id='buttShowMid' title='path traced by a point on the midline
-    of the band  during the everting motion'> eversion path </button>
+    <!-- Hinge-center trajectories over the everting motion. -->
+    <button class='button' id='buttShowMid' title='Show paths traced by hinge centers during the everting motion'>Hinge trajectory</button>
+    <h2 class="sidebar-heading">Data</h2>
+    <button class="button" id="exportData" disabled
+      title="Pause and export current configuration and full-cycle motion">Export data</button>
+    <p id="exportStatus" class="export-status" role="status" aria-live="polite"></p>
+
     <h2 class="sidebar-heading">Chirality</h2>
-    <button class="button" id="leftButton" title="Show left-handed motion">left-handed</button>
-    <button class="button" id="rightButton" title="Show right-handed motion">right-handed</button>
+    <button class="button" id="leftButton" title="Show left-handed motion">Left-handed</button>
+    <button class="button" id="rightButton" title="Show right-handed motion">Right-handed</button>
     <!-- <button class='button' id='buttShowAxis'> show axis </button> -->
     <br>
     <br>
@@ -211,18 +215,39 @@ of the band  during the everting motion'> swept volume </button>
     <h2 class="sidebar-heading">View angle</h2>
     <button class="button" id="buttToggleView" title="Align the view with the axis of symmetry">View along axis</button>
 
-    <h2 class="sidebar-heading">Colors</h2>
-    <button class="button" id="backgroundButton" title="Change background color">background color</button>
+    <h2 class="sidebar-heading">Appearance</h2>
+    <button class="button" id="backgroundButton" title="Change background color">Background color</button>
     <input type="color" id="colorPicker" style="display: none;">
-    <button class="button" id="exportData" disabled
-      title="Pause and export current configuration and full-cycle motion">Export data</button>
-    <p id="exportStatus" class="export-status" role="status" aria-live="polite"></p>
 
   </div>
 
   <div class="container">
     <div class="content">
       <canvas id='renderCanvas' touch-action='none'></canvas>
+      <ul class="link-legend" aria-label="Linkage legend">
+        <li aria-label="Type A"><span class="link-legend-swatch link-legend-a" aria-hidden="true"></span>A</li>
+        <li aria-label="Type B"><span class="link-legend-swatch link-legend-b" aria-hidden="true"></span>B</li>
+        <li aria-label="Type C"><span class="link-legend-swatch link-legend-c" aria-hidden="true"></span>C</li>
+        <li>
+          <svg class="link-legend-icon" viewBox="0 0 32 24" aria-hidden="true" focusable="false">
+            <rect x="3" y="5" width="26" height="14" rx="4" fill="#fff" stroke="#222" stroke-width="1.5" />
+          </svg>
+          <span>Hinge</span>
+        </li>
+        <li>
+          <svg class="link-legend-icon" viewBox="0 0 32 24" aria-hidden="true" focusable="false">
+            <path d="M1 12H23" stroke="#000" stroke-width="3" />
+            <path d="M21 7L32 12L21 17Z" fill="#000" />
+          </svg>
+          <span>Hinge axis</span>
+        </li>
+        <li>
+          <svg class="link-legend-icon" viewBox="0 0 32 24" aria-hidden="true" focusable="false">
+            <ellipse cx="16" cy="12" rx="14" ry="8" transform="rotate(-28 16 12)" fill="none" stroke="#ff0" stroke-width="2" />
+          </svg>
+          <span>Hinge trajectory</span>
+        </li>
+      </ul>
       <img class="oist-logo" src="utils/dragon_oist.svg" alt="OIST">
       <img src='utils/3M_white.svg' style='height:40px;position:absolute;right:0;bottom:0;margin:10px'>
     </div>
@@ -476,13 +501,6 @@ of the band  during the everting motion'> swept volume </button>
             bottomDisc[i].material = white;//connectorMaterial;
 
           };
-          i = N + 1;
-          arrowBody[N + 1] = BABYLON.MeshBuilder.CreateCylinder("arrowBody" + i, { diameterTop: .05, diameterBottom: 0.05 }, scene);
-          // Create a cone for the tip of the arrow
-          tip[N + 1] = BABYLON.MeshBuilder.CreateCylinder("arrowTip" + i, { diameterTop: 0, diameterBottom: .15 }, scene);
-          arrowBody[i].material = arrowBodyMaterial;
-          tip[i].material = brightGreen;//arrowBodyMaterial;
-
         }
 
 

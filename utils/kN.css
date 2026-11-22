@@ -54,6 +54,39 @@ body {
 .leftbar #playSVG { width: 150px; height: 150px; margin: 0 auto; }
 .leftbar #speedSlider { width: 180px; height: 72px; margin: 4px auto 8px; overflow: visible; }
 .oist-logo { height: 40px; position: absolute; left: 210px; bottom: 10px; }
+.link-legend {
+  position: fixed;
+  bottom: 24px;
+  left: 320px;
+  right: calc(12.3% + 24px);
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #fff;
+  font: 16px/1.4 monospace;
+  pointer-events: none;
+}
+.link-legend li { display: flex; align-items: center; gap: 8px; max-width: 100%; }
+.link-legend-swatch { display: block; width: 32px; height: 7.5px; border-radius: 4px; }
+.link-legend-swatch, .link-legend-icon { flex-shrink: 0; }
+.link-legend-icon { display: block; width: 32px; height: 24px; }
+.link-legend-a { background-color: #E25C5C; }
+.link-legend-b { background-color: #4A6B82; }
+.link-legend-c { background-color: #D4A337; }
+@media (max-width: 1100px) {
+  .link-legend { left: 212px; bottom: 64px; right: calc(12.3% + 12px); }
+}
+@media (max-width: 600px) {
+  .link-legend { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .link-legend li { gap: 6px; }
+  .link-legend li span:last-child { min-width: 0; }
+  .link-legend-swatch, .link-legend-icon { width: 22px; }
+}
 .rightbar { display: flex; padding-bottom: 16px; }
 .rightbar > * { flex-shrink: 0; }
 .rightbar > br { display: none; }
@@ -648,14 +681,14 @@ body {
     }
     /* Adjust font size for medium screens */
 @media (max-width: 768px) {
-  .button {
+  .button, .link-legend {
     font-size: 0.9em; /* Slightly smaller font size */
   }
 }
 
 /* Adjust font size for small screens */
 @media (max-width: 480px) {
-  .button {
+  .button, .link-legend {
     font-size: 0.8em; /* Even smaller font size for very small screens */
   }
 }

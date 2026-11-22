@@ -574,43 +574,7 @@ function assignStructure(
     connector[i].scaling.z = 0.2;
   }
 
-  /// assigning coordinates to the N+1th arrow
-  i = 1;
-  var v2 = [v[6 * i - 5], v[6 * i - 3], -v[6 * i - 4]];
-  var v1 = [v[6 * i - 2], v[6 * i], -v[6 * i - 1]];
 
-  i = N + 1;
-  // assigning coordinate and direction to arrows
-  // direction for alignment
-  // Compute the rotation to align the body with the given direction
-
-  let [mid_position, direction] = locationAndDirection(v1, v2);
-
-  var axis = BABYLON.Vector3.Cross(BABYLON.Axis.Y, direction);
-  var angle = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Y, direction));
-  var quater = BABYLON.Quaternion.RotationAxis(axis, angle);
-  // position and orientation
-
-  arrowBody[i].position = mid_position;
-  arrowBody[i].rotationQuaternion = quater;
-  // Assign the height value later
-  arrowBody[i].scaling.x = 3.1 * hingeLength;
-  arrowBody[i].scaling.y = 0.8 * hingeLength;
-  arrowBody[i].scaling.z = 3.1 * hingeLength;
-
-  var h_tip = 0.5 * hingeLength;
-
-  var fac1 = h_tip / 2 + 0.9 * hingeLength;
-
-  tip[i].rotationQuaternion = quater;
-  tip[i].position = new BABYLON.Vector3(
-    mid_position.x + fac1 * direction.x,
-    mid_position.y + fac1 * direction.y,
-    mid_position.z + fac1 * direction.z
-  );
-  tip[i].scaling.x = h_tip * 4.8;
-  tip[i].scaling.y = h_tip * 0.8;
-  tip[i].scaling.z = h_tip * 4.8;
 }
 
 var col = [];

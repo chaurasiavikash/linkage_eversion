@@ -333,8 +333,8 @@
  
    // eversion path 
    tour.addStep({
-     title: 'view eversion path',
-     text: `path followed by a point on the midline of a band during eversion`,
+     title: 'view hinge trajectory',
+     text: `paths traced by hinge centers during the everting motion`,
      attachTo: {
        element: '#buttShowMid',
        on: 'bottom'
