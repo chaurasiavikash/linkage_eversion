@@ -10,7 +10,7 @@
   
   <title>M&ouml;bius bands</title>
   <link href='utils/3M_favicon.png' rel='icon'>
-  <link rel='stylesheet' type='text/css' href='utils/kN.css'>
+  <link rel='stylesheet' type='text/css' href='utils/kN.css?v=linkage-tutorial-2'>
   <link rel="stylesheet" href='utils/shepherd.css'>
   <script src='utils/babylon.custom.js'></script>
 
@@ -28,7 +28,7 @@
 
   <!-- Shepherd.js JavaScript -->
   <script src='utils/shepherd.js'></script>
-  <script src='utils/tour.js'></script>
+  <script src='utils/tour.js?v=linkage-tutorial-2'></script>
 
   <style>
     .small-button {
@@ -48,6 +48,7 @@
     const cursor = document.querySelector('.cursor');
 
     document.addEventListener('mousemove', e => {
+      if (document.body.classList.contains('tutorial-running')) return;
       cursor.setAttribute("style", "top: " + (e.pageY - 10) + "px; left: " + (e.pageX - 10) + "px;")
     })
 
@@ -169,6 +170,7 @@
   </div>
 
   <div class='rightbar'>
+    <button class="button" id="tutorialButton" disabled title="Watch the guided demonstration" aria-pressed="false">Tutorial</button>
     <button class='button' id='buttFullScreen' title='Enable full screen'>Full screen</button>
     <br>
    
@@ -1486,6 +1488,84 @@ ebID('buttSwitch').addEventListener('click', async function () {
         ////////////////////////////////////////////////////////////////
 
 
+        // The tutorial drives existing controls and restores the working motion on exit.
+        window.linkageTutorial = {
+          capture() {
+            return {
+              motion: {bx_data: bx_data.map(row => row.slice()),
+                by_data: by_data.map(row => row.slice()), bz_data: bz_data.map(row => row.slice())},
+              sequenceName, base_sequence, sequence_index, tau, hl,
+              phase: displayedMotion ? displayedMotion.displayedPhase : k,
+              play, speed: speedSlider.getValue(), showMid, showMidVol, nextView,
+              camera: {alpha: camera.alpha, beta: camera.beta, radius: camera.radius,
+                target: camera.target.clone()},
+              input: ebID('sequenceInput').value,
+              status: ebID('sequenceStatus').textContent,
+              invalid: ebID('sequenceInput').getAttribute('aria-invalid'),
+            };
+          },
+          async whenIdle() {
+            while (ebID('sequenceForm').hasAttribute('aria-busy')) {
+              await new Promise(resolve => requestAnimationFrame(resolve));
+            }
+          },
+          setPlaying(value) { if (play !== value) playIt(); },
+          setSpeed(value) {
+            speedSlider.setValue(value);
+            speedy = minimumSpeed * speedSlider.getValue() / 100;
+          },
+          setTrajectories(value) { if (showMid !== value) ebID('buttShowMid').click(); },
+          setSweptVolume(value) { if (showMidVol !== value) ebID('buttShowMidVol').click(); },
+          orbit() {
+            camera.alpha = 5.6;
+            camera.beta = 1.05;
+            refresh = true;
+          },
+          async restore(saved) {
+            await this.whenIdle();
+            this.setPlaying(false);
+            disposeAllMesh();
+            init_parameters(saved.sequenceName, saved.motion);
+            sequenceName = saved.sequenceName;
+            base_sequence = saved.base_sequence;
+            sequence_index = saved.sequence_index;
+            tau = saved.tau;
+            hl = saved.hl;
+            k = saved.phase;
+            colorSequence = generateColorSequence(base_sequence);
+            showMid = saved.showMid;
+            showMidVol = saved.showMidVol;
+            nextView = saved.nextView;
+            this.setSpeed(saved.speed);
+            updateButtonColors('butt' + sequenceName);
+            buttonSwitchColor(ebID('buttSwitch'), sequence_index !== 0);
+            buttonSwitchColor(ebID('leftButton'), tau === -1);
+            buttonSwitchColor(ebID('rightButton'), tau === 1);
+            buttonSwitchColor(ebID('buttShowMid'), showMid);
+            buttonSwitchColor(ebID('buttShowMidVol'), showMidVol);
+            ebID('buttToggleView').textContent = nextView === 'axis'
+              ? 'View along axis' : 'View normal to plane';
+            ebID('buttToggleView').title = nextView === 'axis'
+              ? 'Align the view with the axis of symmetry'
+              : 'Align the view normal to the best fit plane';
+            camera.alpha = saved.camera.alpha;
+            camera.beta = saved.camera.beta;
+            camera.radius = saved.camera.radius;
+            camera.setTarget(saved.camera.target);
+            camera.inertialAlphaOffset = camera.inertialBetaOffset = camera.inertialRadiusOffset = 0;
+            ebID('sequenceInput').value = saved.input;
+            ebID('sequenceStatus').textContent = saved.status;
+            if (saved.invalid === null) ebID('sequenceInput').removeAttribute('aria-invalid');
+            else ebID('sequenceInput').setAttribute('aria-invalid', saved.invalid);
+            document.body.dispatchEvent(sequenceChanged);
+            ebID('clockHand').setAttribute('cx', 40*Math.sin(k));
+            ebID('clockHand').setAttribute('cy', -40*Math.cos(k));
+            this.setPlaying(saved.play);
+            refresh = true;
+          },
+        };
+        document.dispatchEvent(new Event('linkageTutorialReady'));
+
         return scene;
       }
 
@@ -1524,43 +1604,6 @@ ebID('buttSwitch').addEventListener('click', async function () {
 
 
 
-    // Start the tour
-
-    // ...add more steps for other buttons...
-
-    //     // Start the tour
-    //     var showTour = true;
-    //     document.addEventListener('DOMContentLoaded', function () {
-    //     // Show the modal
-    //     ebID('tourModal').style.display = 'block';
-    // });
-
-    // Initialize your tour
-    var tour = new Shepherd.Tour({
-      // your tour options and steps
-    });
-
-    window.startTour = function () {
-      tour.start();
-    };
-
-    // Function to toggle pause and resume
-    // Function to toggle pause and resume
-    var isTourPaused = false;
-
-    // Function to toggle pause and resume
-    function toggleTourPause() {
-      if (tour.isActive() && !isTourPaused) {
-        tour.cancel();
-        isTourPaused = true;
-      } else if (isTourPaused) {
-        tour.start();
-        isTourPaused = false;
-      }
-    }
-
-
-
     // Listen for keydown event
     document.addEventListener('keydown', function (event) {
       if (event.target.closest('input, textarea, select, [contenteditable]')) return;
@@ -1569,35 +1612,6 @@ ebID('buttSwitch').addEventListener('click', async function () {
         toggleTourPause(); // Toggle the tour pause/resume
       }
     });
-
-    // // Start tour when "Start Tour" button is clicked
-    // ebID('startTourBtn').addEventListener('click', function () {
-    //     window.startTour();
-    //     ebID('tourModal').style.display = 'none'; // Hide modal
-    // });
-
-    // // Close modal when "No Thanks" button is clicked
-    // ebID('dismissTourBtn').addEventListener('click', function () {
-    //     ebID('tourModal').style.display = 'none'; // Hide modal
-    // });
-
-
-    // document.addEventListener('keydown', function(event) {
-    //   if (event.key === 'c' || event.key === 'C') {
-    //     // Stop the tour
-    //     if (tour.isActive()) {
-    //       tour.cancel(); // or tour.complete();
-    //     }
-
-    //     // Hide the cursor
-    //     const cursor = document.querySelector('.cursor');
-    //     if (cursor) {
-    //       cursor.style.display = 'none';
-    //     }
-    //   }
-    // });
-
-
 
 
   </script>

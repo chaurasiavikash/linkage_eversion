@@ -762,3 +762,25 @@ svg {
 .leftbar .textElement text, .rightbar .textElement text {
   opacity: 1;
 }
+
+/* Automated demo cursor stays independent of the user's pointer. */
+.tutorial-running .cursor {
+  position: fixed;
+  z-index: 10001;
+  transform: translate(-50%, -50%);
+  transition: left .65s ease, top .65s ease;
+  animation: none;
+  display: block;
+}
+.tutorial-target { outline: 2px solid #ff7474; outline-offset: 3px; }
+.shepherd-element.linkage-tutorial { max-width: 320px; background: #262c29; font: 14px/1.5 monospace; }
+.linkage-tutorial .shepherd-header { background: #262c29 !important; }
+.linkage-tutorial .shepherd-title { color: #ff7474; font: 16px monospace; }
+.linkage-tutorial .shepherd-text { color: #fff; font: 14px/1.5 monospace; }
+.linkage-tutorial .shepherd-arrow::before { background: #262c29 !important; }
+.linkage-tutorial .shepherd-cancel-icon { color: #ddd; }
+.linkage-tutorial .shepherd-button { padding: 8px 12px; background: #fff; color: #222; font: 14px monospace; }
+.linkage-tutorial .shepherd-button.shepherd-button-secondary { background: #555; color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-running .cursor { transition: none; }
+}

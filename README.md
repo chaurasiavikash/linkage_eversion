@@ -5,6 +5,21 @@ preset or enter a custom sequence, generate its motion, and use the playback
 controls to inspect it. The bottom legend identifies links, hinges, hinge axes,
 and hinge trajectories.
 
+## Guided tutorial
+
+Click **Tutorial** at the top of the right sidebar to watch an automated guide.
+The on-screen cursor first moves down the left controls, demonstrating the four
+base sequences, a custom sequence, adjacent swaps, playback, and speed. It then
+follows the right sidebar from top to bottom: fullscreen, swept volume, hinge
+trajectories, export, chirality, camera views, and background color. Export, background color, and fullscreen controls
+are explained without opening native dialogs.
+
+Steps advance automatically. Use **Pause/Resume**, **Next**, or **Stop** in the
+tutorial card. **C** also pauses/resumes outside text inputs; **Esc** closes the
+tour. Completing or stopping restores your starting motion, custom input, phase,
+chirality, overlays, playback speed, playback state, and camera view. The tutorial
+can be run again at any time after it closes.
+
 ## Export and plot the motion
 
 Click **Export data** under **Data** in the right sidebar. Playback pauses and
