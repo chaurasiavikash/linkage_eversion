@@ -8,6 +8,8 @@ and hinge trajectories.
 ## Guided tutorial
 
 Click **Tutorial** at the top of the right sidebar to watch an automated guide.
+The button gently pulses for five seconds on the first load of each tab session.
+Reloading does not repeat it; reduced-motion settings use a static highlight.
 The on-screen cursor first moves down the left controls, demonstrating the four
 base sequences, a custom sequence, adjacent swaps, playback, and speed. It then
 follows the right sidebar from top to bottom: fullscreen, swept volume, hinge

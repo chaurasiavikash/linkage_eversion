@@ -773,6 +773,14 @@ svg {
   display: block;
 }
 .tutorial-target { outline: 2px solid #ff7474; outline-offset: 3px; }
+#tutorialButton.tutorial-attention {
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, .5), 0 0 12px rgba(255, 0, 0, .25);
+  animation: tutorial-attention-pulse 1.65s ease-in-out 3;
+}
+@keyframes tutorial-attention-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255, 0, 0, .25), 0 0 5px rgba(255, 0, 0, .1); }
+  50% { box-shadow: 0 0 0 3px rgba(255, 0, 0, .8), 0 0 20px rgba(255, 0, 0, .5); }
+}
 .shepherd-element.linkage-tutorial { max-width: 320px; background: #262c29; font: 14px/1.5 monospace; }
 .linkage-tutorial .shepherd-header { background: #262c29 !important; }
 .linkage-tutorial .shepherd-title { color: #ff7474; font: 16px monospace; }
@@ -783,4 +791,5 @@ svg {
 .linkage-tutorial .shepherd-button.shepherd-button-secondary { background: #555; color: #fff; }
 @media (prefers-reduced-motion: reduce) {
   .tutorial-running .cursor { transition: none; }
+  #tutorialButton.tutorial-attention { animation: none; }
 }

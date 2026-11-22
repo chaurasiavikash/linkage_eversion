@@ -16,6 +16,26 @@ document.addEventListener('DOMContentLoaded', function () {
   let timer = null, pending = null, generation = 0;
   const api = () => window.linkageTutorial;
 
+  // Draw attention once per tab session, after the visualizer is ready.
+  const attentionKey = 'linkage-tutorial-attention-shown';
+  let attentionShown = false, attentionTimer = null;
+  function stopTutorialAttention() {
+    clearTimeout(attentionTimer);
+    attentionTimer = null;
+    button.classList.remove('tutorial-attention');
+  }
+  function readyTutorial() {
+    button.disabled = false;
+    if (attentionShown || saved || closing) return;
+    attentionShown = true;
+    try {
+      if (window.sessionStorage.getItem(attentionKey)) return;
+      window.sessionStorage.setItem(attentionKey, '1');
+    } catch (_) { /* Storage can be unavailable; keep the first-load highlight. */ }
+    button.classList.add('tutorial-attention');
+    attentionTimer = setTimeout(stopTutorialAttention, 5000);
+  }
+
   function clearWork() {
     clearTimeout(timer);
     timer = pending = null;
@@ -174,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   window.startTour = function () {
     if (!api() || saved || closing) return;
+    stopTutorialAttention();
     saved = {
       motion: api().capture(), cursorStyle: cursor.style.cssText,
       scroll: Array.from(document.querySelectorAll('.leftbar, .rightbar'), element => [element, element.scrollTop]),
@@ -188,6 +209,6 @@ document.addEventListener('DOMContentLoaded', function () {
     tour.start();
   };
   button.addEventListener('click', () => saved ? tour.cancel() : window.startTour());
-  document.addEventListener('linkageTutorialReady', () => { button.disabled = false; });
-  if (api()) button.disabled = false;
+  document.addEventListener('linkageTutorialReady', readyTutorial);
+  if (api()) readyTutorial();
 });
